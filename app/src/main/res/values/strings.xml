@@ -5,5 +5,6 @@
     <string name="signup_string">No invitaion,sign me up! \nI\'m new here, walk me through this</string>
     <string name="signin_string">Already have an account! Sign In</string>
     <string name="teststr"> <small><font color='#008000'>Already have an account!</font></small> <big> Sign In</big></string>
+    <string name="title_activity_create_account"></string>
 
 </resources>
