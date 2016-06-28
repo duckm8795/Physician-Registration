@@ -1,14 +1,18 @@
 package com.trainingandroidpart1.physicianregistration;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Html;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.view.Window;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.Toast;
+
+import com.trainingandroidpart1.physicianregistration.Response.CreateProviderAccount.CreateProviderAccountResponse;
+import com.trainingandroidpart1.physicianregistration.Service.ServiceAPI;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,11 +20,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button button = (Button) findViewById(R.id.btn_invitation);
 
     }
-    public void sign_up( View view){
+    public void sign_up(View view) {
         Intent intent = new Intent(this, CreateAccountActivity.class);
         startActivity(intent);
     }
+
+
 }

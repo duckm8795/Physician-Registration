@@ -36,13 +36,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="Họ"
+                android:text="Tên"
                 />
             <EditText
+                android:id="@+id/firstName_textView"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:background="@null"
-                 />
+                android:singleLine="true"
+                android:nextFocusDown="@+id/surName_textView"
+                >
+                <requestFocus />
+            </EditText>
+
         </LinearLayout>
         <View
 
@@ -59,12 +65,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="20dp"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text="  Tên"
+                android:text="  Họ"
                 />
             <EditText
+                android:id="@+id/surName_textView"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:background="@null"
+                android:singleLine="true"
                 />
         </LinearLayout>
 
@@ -83,29 +91,31 @@
         <RadioGroup
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+
             android:orientation="horizontal">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Giới tính"/>
+                android:layout_marginRight="80dp"
+                android:layout_gravity="end"
+                android:text="Giới tính" />
             <RadioButton
-                android:layout_width="20dp"
+                android:id="@+id/male_toggle_button"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:background="@drawable/custom_radiobtn_male"
                 android:button="@null"
-                android:layout_marginRight="20dp"
-                android:layout_weight="1" />
+
+                android:layout_marginRight="50dp" />
 
             <RadioButton
-                android:layout_width="20dp"
+                android:id="@+id/female_toggle_button"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginRight="20dp"
                 android:background="@drawable/custom_radiobtn_female"
-                android:button="@null"
-                android:layout_weight="1"/>
+                android:button="@null" />
         </RadioGroup>
 
     </LinearLayout>
@@ -127,9 +137,12 @@
             android:text="Email"
             />
         <EditText
+            android:id="@+id/email_textView"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:background="@null"
+            android:singleLine="true"
+            android:inputType="textEmailAddress"
             />
     </LinearLayout>
 
@@ -151,11 +164,15 @@
                 android:layout_height="20dp"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Password"
+
                 />
             <EditText
+                android:id="@+id/password_textView"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:background="@null"
+                android:singleLine="true"
+                android:inputType="textPassword"
                 />
             <ImageButton
                 android:layout_width="20dp"
@@ -164,8 +181,9 @@
         </LinearLayout>
 
         <RadioButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/showHiddenPassword_toggle_button"
+            android:layout_width="38dp"
+            android:layout_height="32dp"
             android:layout_gravity="center"
             android:background="@drawable/custom_radiobtn_eye"
             android:button="@null"
@@ -188,9 +206,11 @@
             android:background="@drawable/ic_info_enabled"
             />
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:lines="2"
+            android:singleLine="true"
+            android:scrollHorizontally="true"
+
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Mật khẩu mới phải dài ít nhất 8 ký tự và chứa  ít nhất 1 chữ số" />
     </LinearLayout>
@@ -211,13 +231,14 @@
         android:orientation="horizontal">
 
         <CheckBox
+            android:id="@+id/agreeTerm_checkbox"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-
             android:text="Tôi đồng ý với Jio Health về điều khoản sử dụng và Chính sách bảo mật." />
     </LinearLayout>
 
@@ -227,6 +248,7 @@
         android:layout_gravity="center"
         android:layout_margin="20dp"
         android:text="Tiếp tục"
+        android:onClick="create_new_provider_account"
         android:backgroundTint="#5d6ace"
         android:textColor="#ffffff"
         android:layout_weight="0.08" />
