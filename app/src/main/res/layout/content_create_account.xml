@@ -100,7 +100,7 @@
                 android:layout_gravity="end"
                 android:text="Giới tính" />
             <RadioButton
-                android:id="@+id/male_toggle_button"
+                android:id="@+id/male_radio_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/custom_radiobtn_male"
@@ -109,7 +109,7 @@
                 android:layout_marginRight="50dp" />
 
             <RadioButton
-                android:id="@+id/female_toggle_button"
+                android:id="@+id/female_radio_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -174,17 +174,18 @@
                 android:singleLine="true"
                 android:inputType="textPassword"
                 />
-            <ImageButton
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:background="@drawable/icon_eye_disabled"/>
+            <!--<ImageButton-->
+                <!--android:layout_width="20dp"-->
+                <!--android:layout_height="20dp"-->
+                <!--android:background="@drawable/icon_eye_disabled"/>-->
         </LinearLayout>
 
-        <RadioButton
+        <ToggleButton
             android:id="@+id/showHiddenPassword_toggle_button"
             android:layout_width="38dp"
             android:layout_height="32dp"
             android:layout_gravity="center"
+
             android:background="@drawable/custom_radiobtn_eye"
             android:button="@null"
             />

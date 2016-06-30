@@ -1,97 +1,116 @@
 package com.trainingandroidpart1.physicianregistration.Response.CreateProviderAccount;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by Admin on 6/28/2016.
  */
 public class CreateProviderAccountResponse {
-    String displayUnit;
-    String email;
-    String firstName;
-    String languageCode;
-    String lastName;
-    String password;
-    String regionCode;
-    String gender;
-    String timeZoneName;
-    String message;
+    private Boolean success;
+    private String message;
+    private Integer userID;
+    private String accessToken;
+    private List<Integer> officeIDs = new ArrayList<Integer>();
+    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
+    /**
+     *
+     * @return
+     * The success
+     */
+    public Boolean getSuccess() {
+        return success;
+    }
+
+    /**
+     *
+     * @param success
+     * The success
+     */
+    public void setSuccess(Boolean success) {
+        this.success = success;
+    }
+
+    /**
+     *
+     * @return
+     * The message
+     */
     public String getMessage() {
         return message;
     }
 
+    /**
+     *
+     * @param message
+     * The message
+     */
     public void setMessage(String message) {
         this.message = message;
     }
 
-    public String getDisplayUnit() {
-        return displayUnit;
+    /**
+     *
+     * @return
+     * The userID
+     */
+    public Integer getUserID() {
+        return userID;
     }
 
-    public void setDisplayUnit(String displayUnit) {
-        this.displayUnit = displayUnit;
+    /**
+     *
+     * @param userID
+     * The userID
+     */
+    public void setUserID(Integer userID) {
+        this.userID = userID;
     }
 
-    public String getEmail() {
-        return email;
+    /**
+     *
+     * @return
+     * The accessToken
+     */
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    /**
+     *
+     * @param accessToken
+     * The accessToken
+     */
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
-    public String getFirstName() {
-        return firstName;
+    /**
+     *
+     * @return
+     * The officeIDs
+     */
+    public List<Integer> getOfficeIDs() {
+        return officeIDs;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    /**
+     *
+     * @param officeIDs
+     * The officeIDs
+     */
+    public void setOfficeIDs(List<Integer> officeIDs) {
+        this.officeIDs = officeIDs;
     }
 
-    public String getLanguageCode() {
-        return languageCode;
+    public Map<String, Object> getAdditionalProperties() {
+        return this.additionalProperties;
     }
 
-    public void setLanguageCode(String languageCode) {
-        this.languageCode = languageCode;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getRegionCode() {
-        return regionCode;
-    }
-
-    public void setRegionCode(String regionCode) {
-        this.regionCode = regionCode;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public String getTimeZoneName() {
-        return timeZoneName;
-    }
-
-    public void setTimeZoneName(String timeZoneName) {
-        this.timeZoneName = timeZoneName;
+    public void setAdditionalProperty(String name, Object value) {
+        this.additionalProperties.put(name, value);
     }
 }

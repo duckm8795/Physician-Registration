@@ -6,5 +6,8 @@
     <string name="signin_string">Already have an account! Sign In</string>
     <string name="teststr"> <small><font color='#008000'>Already have an account!</font></small> <big> Sign In</big></string>
     <string name="title_activity_create_account"></string>
+    <string name="title_activity_passcode"></string>
+    <string name="title_activity_re_passcode"></string>
+    <string name="title_activity_physical_vertification">PhysicalVertificationActivity</string>
 
 </resources>

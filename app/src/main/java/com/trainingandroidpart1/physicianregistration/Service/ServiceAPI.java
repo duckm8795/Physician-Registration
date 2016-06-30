@@ -17,12 +17,7 @@ public interface ServiceAPI {
     String BASE_URL = "http://dev.jiohealth.com:8081/";
     /*create account*/
 
-    @POST(ServiceConfig.API_SET_SECURITY_PIN)
-    Call<SetSecurityPinResponse> setSecurityPin(@Query(ProviderConstants.SET_SECURITY_PIN.TOKEN) String token,
-                                                @Query(ProviderConstants.SET_SECURITY_PIN.USER_ID) String userID,
-                                                @Query(ProviderConstants.SET_SECURITY_PIN.SECURITY_PIN) String securityPin
 
-    );
     @POST(ServiceConfig.API_CREATE_PROVIDER_ACCOUNT)
     Call<CreateProviderAccountResponse> createProviderAccount(
             @Query(ProviderConstants.CREATE_PROVIDER_ACCOUNT.DISPLAY_UNIT) String displayUnit,
@@ -34,6 +29,12 @@ public interface ServiceAPI {
             @Query(ProviderConstants.CREATE_PROVIDER_ACCOUNT.REGION_CODE) String regionalCode,
             @Query(ProviderConstants.CREATE_PROVIDER_ACCOUNT.GENDER) String gender,
             @Query(ProviderConstants.CREATE_PROVIDER_ACCOUNT.TIME_ZONE_NAME) String timeZoneName
+    );
+    @POST(ServiceConfig.API_SET_SECURITY_PIN)
+    Call<SetSecurityPinResponse> setSecurityPin(
+            @Query("userID") long userID,
+            @Query("token") String token,
+            @Query("securityPin") String securityPin
     );
     Retrofit retrofit =  new Retrofit.Builder()
             .baseUrl(BASE_URL)
