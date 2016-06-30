@@ -8,6 +8,6 @@
     <string name="title_activity_create_account"></string>
     <string name="title_activity_passcode"></string>
     <string name="title_activity_re_passcode"></string>
-    <string name="title_activity_physical_vertification">PhysicalVertificationActivity</string>
+    <string name="title_activity_physical_vertification"></string>
 
 </resources>

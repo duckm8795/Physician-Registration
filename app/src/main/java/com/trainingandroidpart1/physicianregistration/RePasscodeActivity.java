@@ -53,7 +53,10 @@ public class RePasscodeActivity extends AppCompatActivity {
                         public void onResponse(Call<SetSecurityPinResponse> call, Response<SetSecurityPinResponse> response) {
                             if( response.body().getSuccess()){
                                 Intent intent = new Intent(RePasscodeActivity.this,PhysicalVertificationActivity.class);
+                                intent.putExtra(PhysicalVertificationActivity.VERIFY_USER_ID,userID);
+                                intent.putExtra(PhysicalVertificationActivity.VERIFY_ACCESS_TOKEN,accessToken);
                                 startActivity(intent);
+//                                Toast.makeText(RePasscodeActivity.this,"Ngon roi",Toast.LENGTH_LONG).show();
                             }
 
                         }

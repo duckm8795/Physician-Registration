@@ -14,6 +14,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.trainingandroidpart1.physicianregistration.Response.CreateProviderAccount.CreateProviderAccountResponse;
+import com.trainingandroidpart1.physicianregistration.Service.ProviderConstants;
 import com.trainingandroidpart1.physicianregistration.Service.ServiceAPI;
 
 import retrofit2.Call;
@@ -77,6 +78,10 @@ public class CreateAccountActivity extends AppCompatActivity {
                         Intent intent = new Intent(CreateAccountActivity.this,PasscodeActivity.class);
                         intent.putExtra(PasscodeActivity.USER_ID,userID);
                         intent.putExtra(PasscodeActivity.ACCESS_TOKEN,accessToken);
+
+//                        intent.putExtra(ProviderConstants.TEST.USERID_TEST,userID);
+//                        intent.putExtra(ProviderConstants.TEST.TOKEN_TEST,accessToken);
+
                         startActivity(intent);
                     }else{
                         Toast.makeText(CreateAccountActivity.this,response.body().getMessage(),Toast.LENGTH_LONG).show();

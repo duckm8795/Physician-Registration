@@ -22,5 +22,20 @@ public interface ProviderConstants  {
         String USER_ID = "userID";
         String SECURITY_PIN = "securityPin";
     }
+    interface  TEST{
+        String USERID_TEST = "userIDTest";
+        String TOKEN_TEST = "tokenTest";
+    }
+    interface VERIFY_PHYSICIAN{
+        String COUNTRY_ID = "countryID";
+        String LANGUAGE_CODE = "languageCode";
+        String REGION_CODE = "regionCode";
+        String TOKEN = "token";
+        String USER_ID = "userID";
+    }
+    interface GET_PROFILE{
+        String TOKEN = "token";
+        String USER_ID = "userID";
+    }
 
 }

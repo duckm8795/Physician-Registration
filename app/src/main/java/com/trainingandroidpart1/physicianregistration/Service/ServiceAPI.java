@@ -1,7 +1,9 @@
 package com.trainingandroidpart1.physicianregistration.Service;
 
 import com.trainingandroidpart1.physicianregistration.Response.CreateProviderAccount.CreateProviderAccountResponse;
+import com.trainingandroidpart1.physicianregistration.Response.GetProfile.GetProfileResponse;
 import com.trainingandroidpart1.physicianregistration.Response.SetSecurityPin.SetSecurityPinResponse;
+import com.trainingandroidpart1.physicianregistration.Response.VerifyPhysician.Main;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -17,7 +19,7 @@ public interface ServiceAPI {
     String BASE_URL = "http://dev.jiohealth.com:8081/";
     /*create account*/
 
-
+    /* craete provider account */
     @POST(ServiceConfig.API_CREATE_PROVIDER_ACCOUNT)
     Call<CreateProviderAccountResponse> createProviderAccount(
             @Query(ProviderConstants.CREATE_PROVIDER_ACCOUNT.DISPLAY_UNIT) String displayUnit,
@@ -30,11 +32,30 @@ public interface ServiceAPI {
             @Query(ProviderConstants.CREATE_PROVIDER_ACCOUNT.GENDER) String gender,
             @Query(ProviderConstants.CREATE_PROVIDER_ACCOUNT.TIME_ZONE_NAME) String timeZoneName
     );
+
+    /* set security pin*/
     @POST(ServiceConfig.API_SET_SECURITY_PIN)
     Call<SetSecurityPinResponse> setSecurityPin(
-            @Query("userID") long userID,
-            @Query("token") String token,
-            @Query("securityPin") String securityPin
+            @Query(ProviderConstants.SET_SECURITY_PIN.USER_ID) long userID,
+            @Query(ProviderConstants.SET_SECURITY_PIN.TOKEN) String token,
+            @Query(ProviderConstants.SET_SECURITY_PIN.SECURITY_PIN) String securityPin
+    );
+
+    /* verify physician */
+    @POST(ServiceConfig.VERIFY_PHYSICIAN)
+    Call<Main> verify(
+            @Query(ProviderConstants.VERIFY_PHYSICIAN.COUNTRY_ID)  long countryID,
+            @Query(ProviderConstants.VERIFY_PHYSICIAN.LANGUAGE_CODE) String languageCode,
+            @Query(ProviderConstants.VERIFY_PHYSICIAN.REGION_CODE) String regionCode,
+            @Query(ProviderConstants.VERIFY_PHYSICIAN.TOKEN) String token,
+            @Query(ProviderConstants.VERIFY_PHYSICIAN.USER_ID) long userID
+    );
+
+    /* get provider profile */
+    @POST(ServiceConfig.GET_PROVIDER_PROFILE)
+    Call<GetProfileResponse> getProfile(
+            @Query(ProviderConstants.GET_PROFILE.TOKEN) String token,
+            @Query(ProviderConstants.GET_PROFILE.USER_ID) long userID
     );
     Retrofit retrofit =  new Retrofit.Builder()
             .baseUrl(BASE_URL)
