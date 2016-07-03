@@ -1,9 +1,13 @@
 <resources>
     <string name="app_name">PhysicianRegistration</string>
-    <string name="logo_string">Connect with your patients to \n provide better care.</string>
-    <string name="invitation_string">I have an invitation \nI have received an invitation code</string>
-    <string name="signup_string">No invitaion,sign me up! \nI\'m new here, walk me through this</string>
-    <string name="signin_string">Already have an account! Sign In</string>
+    <string name="logo_string">Kết nối với bệnh nhân để nâng cao chất lượng dịch vụ.</string>
+    <string name="invitation_string">Tôi có một lời mời\nTôi đã nhân được mã đăng ký.</string>
+    <string name="signup_string">Chưa có lời mời.Đăng ký! \nTôi mới sử dụng,vui lòng hướng dẫn</string>
+    <string name="signin_string">Bạn đã có tài khoản rồi ! Đăng nhập</string>
     <string name="teststr"> <small><font color='#008000'>Already have an account!</font></small> <big> Sign In</big></string>
+    <string name="title_activity_create_account"></string>
+    <string name="title_activity_passcode"></string>
+    <string name="title_activity_re_passcode"></string>
+    <string name="title_activity_physical_vertification"></string>
 
 </resources>

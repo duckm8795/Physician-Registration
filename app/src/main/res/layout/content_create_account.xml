@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.trainingandroidpart1.physicianregistration.CreateAccountActivity"
+    tools:showIn="@layout/activity_create_account"
+    android:weightSum="1">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Tạo tài khoản mới" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@android:color/darker_gray" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Tên"
+                />
+            <EditText
+                android:id="@+id/firstName_textView"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@null"
+                android:singleLine="true"
+                android:nextFocusDown="@+id/surName_textView"
+                >
+                <requestFocus />
+            </EditText>
+
+        </LinearLayout>
+        <View
+
+            android:layout_width="1dip"
+            android:layout_height="500dip"
+            android:background="@android:color/darker_gray"
+            />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="  Họ"
+                />
+            <EditText
+                android:id="@+id/surName_textView"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@null"
+                android:singleLine="true"
+                />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@android:color/darker_gray" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        >
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="80dp"
+                android:layout_gravity="end"
+                android:text="Giới tính" />
+            <RadioButton
+                android:id="@+id/male_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_radiobtn_male"
+                android:button="@null"
+
+                android:layout_marginRight="50dp" />
+
+            <RadioButton
+                android:id="@+id/female_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/custom_radiobtn_female"
+                android:button="@null" />
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@android:color/darker_gray" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Email"
+            />
+        <EditText
+            android:id="@+id/email_textView"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:background="@null"
+            android:singleLine="true"
+            android:inputType="textEmailAddress"
+            />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@android:color/darker_gray" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Password"
+
+                />
+            <EditText
+                android:id="@+id/password_textView"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:background="@null"
+                android:singleLine="true"
+                android:inputType="textPassword"
+                />
+            <!--<ImageButton-->
+                <!--android:layout_width="20dp"-->
+                <!--android:layout_height="20dp"-->
+                <!--android:background="@drawable/icon_eye_disabled"/>-->
+        </LinearLayout>
+
+        <ToggleButton
+            android:id="@+id/showHiddenPassword_toggle_button"
+            android:layout_width="38dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+
+            android:background="@drawable/custom_radiobtn_eye"
+            android:button="@null"
+            />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@android:color/darker_gray" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+        <ImageButton
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginRight="4dp"
+            android:background="@drawable/ic_info_enabled"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:scrollHorizontally="true"
+
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Mật khẩu mới phải dài ít nhất 8 ký tự và chứa  ít nhất 1 chữ số" />
+    </LinearLayout>
+
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:background="@drawable/icon_dots_blue" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="0dp"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/agreeTerm_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Tôi đồng ý với Jio Health về điều khoản sử dụng và Chính sách bảo mật." />
+    </LinearLayout>
+
+    <Button
+        android:layout_width="116dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
+        android:text="Tiếp tục"
+        android:onClick="create_new_provider_account"
+        android:backgroundTint="#5d6ace"
+        android:textColor="#ffffff"
+        android:layout_weight="0.08" />
+
+</LinearLayout>

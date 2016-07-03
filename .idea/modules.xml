@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Physician-Registration.iml" filepath="$PROJECT_DIR$/Physician-Registration.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PhysicianRegistration.iml" filepath="$PROJECT_DIR$/PhysicianRegistration.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/iospasscode/iospasscode.iml" filepath="$PROJECT_DIR$/iospasscode/iospasscode.iml" />
     </modules>
   </component>
 </project>

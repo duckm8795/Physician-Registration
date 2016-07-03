@@ -2,21 +2,62 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.trainingandroidpart1.physicianregistration">
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
-
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"    android:theme="@style/AppTheme.NoTitle" android:screenOrientation="portrait">
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoTitle">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".CreateAccountActivity"
+            android:label="@string/title_activity_create_account"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateVisible">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.trainingandroidpart1.physicianregistration.MainActivity" />
+        </activity>
+        <activity
+            android:name=".PasscodeActivity"
+            android:label="@string/title_activity_passcode"
+            android:parentActivityName=".CreateAccountActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.trainingandroidpart1.physicianregistration.CreateAccountActivity" />
+        </activity>
+        <activity
+            android:name=".RePasscodeActivity"
+            android:label="@string/title_activity_re_passcode"
+            android:parentActivityName=".PasscodeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.trainingandroidpart1.physicianregistration.PasscodeActivity" />
+        </activity>
+        <activity
+            android:name=".PhysicalVertificationActivity"
+            android:label="@string/title_activity_physical_vertification"
+            android:parentActivityName=".RePasscodeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.trainingandroidpart1.physicianregistration.RePasscodeActivity" />
+        </activity>
     </application>
 
 </manifest>
