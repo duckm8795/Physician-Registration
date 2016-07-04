@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.RadioButton;
@@ -78,10 +80,6 @@ public class CreateAccountActivity extends AppCompatActivity {
                         Intent intent = new Intent(CreateAccountActivity.this,PasscodeActivity.class);
                         intent.putExtra(PasscodeActivity.USER_ID,userID);
                         intent.putExtra(PasscodeActivity.ACCESS_TOKEN,accessToken);
-
-//                        intent.putExtra(ProviderConstants.TEST.USERID_TEST,userID);
-//                        intent.putExtra(ProviderConstants.TEST.TOKEN_TEST,accessToken);
-
                         startActivity(intent);
                     }else{
                         Toast.makeText(CreateAccountActivity.this,response.body().getMessage(),Toast.LENGTH_LONG).show();
@@ -108,16 +106,18 @@ public class CreateAccountActivity extends AppCompatActivity {
         showHiddenPassword = (ToggleButton) findViewById(R.id.showHiddenPassword_toggle_button);
         maleGender = (RadioButton) findViewById(R.id.male_radio_button);
         femaleGender = (RadioButton) findViewById(R.id.female_radio_button);
-
         showHiddenPassword.setText(null);
         showHiddenPassword.setTextOn(null);
         showHiddenPassword.setTextOff(null);
-//        if( password)
-//        if (showHiddenPassword.isChecked()){
-//            password.setInputType(InputType.TYPE_CLASS_TEXT);
-//        }else {
-//            password.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+//        if ( password == null || !password.getText().equals("")){
+//            showHiddenPassword.setChecked(false);
 //        }
+//        if (showHiddenPassword.isChecked()  ){
+//            password.setTransformationMethod(null);
+//        }else {
+//            et_password.setTransformationMethod(null);
+//        }
+
     }
 
     public void showAlertGender() {

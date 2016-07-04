@@ -58,6 +58,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.trainingandroidpart1.physicianregistration.RePasscodeActivity" />
         </activity>
+        <activity
+            android:name=".CameraSelfieActivity"
+            android:label="@string/title_activity_camera_selfie"
+            android:parentActivityName=".PhysicalVertificationActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.trainingandroidpart1.physicianregistration.PhysicalVertificationActivity" />
+        </activity>
     </application>
 
 </manifest>

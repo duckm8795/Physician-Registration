@@ -185,7 +185,7 @@
             android:layout_width="38dp"
             android:layout_height="32dp"
             android:layout_gravity="center"
-
+            android:checked="false"
             android:background="@drawable/custom_radiobtn_eye"
             android:button="@null"
             />

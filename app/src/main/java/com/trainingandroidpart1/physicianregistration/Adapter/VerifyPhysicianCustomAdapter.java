@@ -47,7 +47,10 @@ public class VerifyPhysicianCustomAdapter extends BaseAdapter{
             convertView = layoutInflater.inflate(R.layout.custom_list_item_verify_physician, null);
             holder = new ViewHolder();
             holder.titleTextView = (TextView) convertView.findViewById(R.id.title);
+            holder.titleTextView.setTextSize(15);
+
             holder.descriptionTextView = (TextView) convertView.findViewById(R.id.description);
+            holder.descriptionTextView.setTextColor(R.color.colorDarkGrey);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -59,6 +62,7 @@ public class VerifyPhysicianCustomAdapter extends BaseAdapter{
 
         return convertView;
     }
+
 
     static class ViewHolder {
         TextView titleTextView;

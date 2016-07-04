@@ -6,19 +6,19 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-
+    android:background="@color/colorDarkGrey"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.trainingandroidpart1.physicianregistration.PhysicalVertificationActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginTop="20dp"
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_gravity="center"
 
             android:background="@drawable/ic_verification_illustration" />
@@ -32,17 +32,20 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:text="Xin chào," />
 
             <TextView
                 android:id="@+id/namePhysician"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textStyle="bold"/>
         </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
             android:text="Để xác nhận bạn là một bác sỹ , chúng tôi cần bạn cung cấp một số giấy tờ dưới dây"
             android:textAlignment="center" />
 
@@ -50,17 +53,29 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
+        android:layout_height="0.3dp"
         android:background="@android:color/darker_gray" />
-
-    <ListView
-        android:id="@+id/listView"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true" />
+
+        android:layout_height="230dp">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:fillViewport="true">
+            <ListView
+                android:id="@+id/listView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true" />
+        </ScrollView>
+    </LinearLayout>
+
+
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
+        android:layout_height="0.3dp"
         android:background="@android:color/darker_gray" />
 </LinearLayout>

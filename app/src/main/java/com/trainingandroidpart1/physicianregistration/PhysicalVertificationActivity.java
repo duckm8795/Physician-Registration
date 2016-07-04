@@ -9,6 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +27,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PhysicalVertificationActivity extends AppCompatActivity {
+public class PhysicalVertificationActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     public static final String VERIFY_USER_ID = "VERIFY_USER_ID";
     public static final String VERIFY_ACCESS_TOKEN = "VERIFY_ACCESS_TOKEN";
     ListView listview;
@@ -38,7 +40,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_physical_vertification);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
         userID = intent.getLongExtra(VERIFY_USER_ID,userID);
@@ -48,6 +50,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
         Log.d("TEST",accessToken);
         listview = (ListView) findViewById(R.id.listView);
         textView = (TextView) findViewById(R.id.namePhysician);
+
         ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
 
         Call<Main> call = serviceAPI.verify(180,"vi","VN",accessToken,userID);
@@ -57,6 +60,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
                 if ( response.body().getSuccess()){
                     Toast.makeText(PhysicalVertificationActivity.this, "True", Toast.LENGTH_SHORT).show();
                     List<VerificationDocType> verificationDocTypes = response.body().getVerificationDocTypes();
+
                     listview.setAdapter(new VerifyPhysicianCustomAdapter(PhysicalVertificationActivity.this, verificationDocTypes));
 
                 }
@@ -83,7 +87,9 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
 
             }
         });
+
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -112,5 +118,10 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(getApplicationContext(),"SSSS",Toast.LENGTH_SHORT).show();
     }
 }
