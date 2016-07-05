@@ -22,4 +22,12 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="create_account_green_text">
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:textColor">#D0DEE8</item>
+        <item name="android:gravity">left</item>
+        <item name="android:layout_marginLeft">10dp</item>
+    </style>
 </resources>

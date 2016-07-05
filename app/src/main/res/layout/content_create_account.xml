@@ -5,10 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.trainingandroidpart1.physicianregistration.CreateAccountActivity"
     tools:showIn="@layout/activity_create_account"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:background="#f3eeee">
 
     <TextView
         android:layout_width="wrap_content"
@@ -198,7 +200,7 @@
         android:background="@android:color/darker_gray" />
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="37dp"
         android:layout_marginTop="20dp"
         android:orientation="horizontal">
         <ImageButton
@@ -220,8 +222,8 @@
 
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="56dp"
+        android:layout_height="8dp"
         android:layout_gravity="center"
         android:layout_margin="5dp"
         android:background="@drawable/icon_dots_blue" />
@@ -231,17 +233,24 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="0dp"
+
         android:orientation="horizontal">
 
         <CheckBox
             android:id="@+id/agreeTerm_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            />
+            android:layout_width="40dp"
+            android:layout_height="43dp"
+            android:layout_marginRight="5dp"
+            android:checked="false"
+            android:button="@null"
+            android:background="@drawable/custom_checkbox" />
 
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:layout_gravity="center"
+            android:textSize="13dp"
             android:text="Tôi đồng ý với Jio Health về điều khoản sử dụng và Chính sách bảo mật." />
     </LinearLayout>
 

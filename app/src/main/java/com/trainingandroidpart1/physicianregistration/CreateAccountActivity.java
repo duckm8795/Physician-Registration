@@ -11,6 +11,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,10 +49,29 @@ public class CreateAccountActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         initView();
+        ToggleHiddenShowPassword();
+
+
 
 
     }
-
+    public void ToggleHiddenShowPassword(){
+//        if (password.getText().toString() == ""){
+//            showHiddenPassword.setClickable(false);
+//        }else{
+//            showHiddenPassword.setClickable(true);
+//        }
+        showHiddenPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (showHiddenPassword.isChecked()){
+                    password.setTransformationMethod(null);
+                }else{
+                    password.setTransformationMethod(new PasswordTransformationMethod());
+                }
+            }
+        });
+    }
     public void create_new_provider_account(View view){
         if ( agreeTerm()){
             if(isMissingInput()){
@@ -61,6 +81,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                 if(isValidEmail(email.getText().toString())){
                     if(isValidPassword(password.getText().toString())){
 //                        Toast.makeText(getApplicationContext(),"Perfect",Toast.LENGTH_LONG).show();
+
                         sendRequest();
                     }else{
                        showInvalidPassword();
@@ -142,14 +163,13 @@ public class CreateAccountActivity extends AppCompatActivity {
         showHiddenPassword.setText(null);
         showHiddenPassword.setTextOn(null);
         showHiddenPassword.setTextOff(null);
-//        if ( password == null || !password.getText().equals("")){
-//            showHiddenPassword.setChecked(false);
+//        showHiddenPassword.setClickable(false);
+//        if ( password == null || !password.getText().toString().equals("")){
+//            showHiddenPassword.
 //        }
-//        if (showHiddenPassword.isChecked()  ){
-//            password.setTransformationMethod(null);
-//        }else {
-//            et_password.setTransformationMethod(null);
-//        }
+
+
+
 
     }
     public void sendRequest(){
