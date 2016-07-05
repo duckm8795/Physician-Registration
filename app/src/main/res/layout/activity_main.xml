@@ -9,7 +9,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="20"
+        android:layout_weight="40"
         android:background="@drawable/welcome_bg">
         <ImageButton
             android:layout_width="20dp"
@@ -17,7 +17,7 @@
             android:layout_margin="20dp"
             android:background="@drawable/globe"/>
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/imageButtonLogo"
             android:layout_width="150dp"
             android:layout_height="43dp"
             android:layout_gravity="center"
@@ -68,21 +68,12 @@
         <!--android:textColor="@color/colorPrimary"-->
         <!--android:drawableRight="@drawable/ic_chevron_right_black_24dp"-->
         <!--android:text="@string/signup_string" />-->
-<<<<<<< HEAD
 
     <!--<View-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="0.5dp"-->
         <!--android:background="@android:color/darker_gray" />-->
 
-=======
-
-    <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0.5dp"-->
-        <!--android:background="@android:color/darker_gray" />-->
-
->>>>>>> origin/master
     <!--<Button-->
         <!--android:id="@+id/button"-->
         <!--android:layout_width="match_parent"-->
@@ -100,66 +91,52 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="70dp">
+            android:layout_height="50dp"
+            android:gravity="center"
+            >
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-<<<<<<< HEAD
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Tôi có một lời mời"
-                android:id="@+id/textView"
+                android:id="@+id/textView1"
                 android:textColor="@android:color/holo_green_light"
                 android:layout_above="@+id/textView2"
-=======
-                android:textColor="@android:color/holo_green_light"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Tôi có một lời mời"
-                android:id="@+id/textView"
-                android:layout_centerVertical="true"
->>>>>>> origin/master
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:textSize="13dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Tôi đã nhận được mã đăng ký."
-<<<<<<< HEAD
                 android:id="@+id/textView2"
                 android:textColor="@android:color/darker_gray"
-                android:layout_alignBottom="@+id/imageButton2"
-=======
-                android:textColor="@android:color/darker_gray"
-                android:id="@+id/textView2"
-                android:layout_below="@+id/textView"
->>>>>>> origin/master
+                android:layout_alignBottom="@+id/imageButton"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:textSize="13dp" />
 
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/imageButton2"
-<<<<<<< HEAD
+                android:id="@+id/imageButton"
                 android:background="@drawable/ic_chevron_right_black_24dp"
-                android:layout_centerVertical="true"
-=======
-
-                android:background="@drawable/ic_chevron_right_black_24dp"
-                android:layout_alignTop="@+id/textView"
->>>>>>> origin/master
                 android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="false"
+                android:layout_centerInParent="true" />
         </RelativeLayout>
         <View
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
+            android:layout_height="0.1dp"
             android:background="@android:color/darker_gray" />
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="69dp"
+            android:layout_height="50dp"
             android:onClick="sign_up"
+            android:gravity="center"
             >
 
             <TextView
@@ -167,30 +144,26 @@
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Chưa có lời mời. Đăng ký !"
-                android:id="@+id/textView"
+                android:id="@+id/textView3"
                 android:textColor="@android:color/holo_blue_light"
-<<<<<<< HEAD
-                android:layout_above="@+id/textView2"
-=======
-                android:layout_alignTop="@+id/imageButton2"
->>>>>>> origin/master
+                android:layout_above="@+id/textView4"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:textSize="13dp"
+                android:textIsSelectable="false" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Tôi mới sử dụng , vui lòng hướng dẫn."
-                android:id="@+id/textView2"
+                android:id="@+id/textView4"
                 android:textColor="@android:color/darker_gray"
-<<<<<<< HEAD
                 android:layout_alignBottom="@+id/imageButton2"
-=======
-                android:layout_below="@+id/textView"
->>>>>>> origin/master
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:textSize="13dp"
+                android:textIsSelectable="false" />
 
             <ImageButton
                 android:layout_width="wrap_content"
@@ -198,43 +171,54 @@
                 android:id="@+id/imageButton2"
                 android:background="@drawable/ic_chevron_right_black_24dp"
                 android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true" />
         </RelativeLayout>
         <View
             android:layout_width="match_parent"
-            android:layout_height="0.5dp"
+            android:layout_height="0.2dp"
             android:background="@android:color/darker_gray" />
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="47dp">
-            <LinearLayout
+            android:layout_height="40dp"
+
+
+            android:gravity="center"
+            >
+            <!--<LinearLayout-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:background="@android:color/darker_gray"-->
+                <!--android:gravity="center">-->
+                <!---->
+            <!--</LinearLayout>-->
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="center">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Bạn đã có tài khoản rồi?"
-                    android:id="@+id/textView"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Bạn đã có tài khoản rồi?"
+                android:id="@+id/textView5"
+                android:layout_marginLeft="41dp"
+                android:layout_marginStart="41dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:textSize="13dp" />
 
-                    android:layout_marginLeft="54dp"
-                    android:layout_marginStart="54dp"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text=" Đăng nhập"
-                    android:textColor="@color/colorPrimaryDark"
-                    android:id="@+id/textView3"
-                    android:textStyle="bold"
-                    />
-            </LinearLayout>
-
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text=" Đăng nhập"
+                android:textColor="@color/colorPrimaryDark"
+                android:id="@+id/textView6"
+                android:textStyle="bold"
+                android:layout_alignTop="@+id/textView5"
+                android:layout_toRightOf="@+id/textView5"
+                android:layout_toEndOf="@+id/textView5"
+                android:textSize="13dp" />
         </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

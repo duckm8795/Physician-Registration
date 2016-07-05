@@ -37,7 +37,7 @@
                 android:layout_height="20dp"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Tên"
-                />
+                android:textSize="13dp" />
             <EditText
                 android:id="@+id/firstName_textView"
                 android:layout_width="match_parent"
@@ -66,7 +66,7 @@
                 android:layout_height="20dp"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="  Họ"
-                />
+                android:textSize="13dp" />
             <EditText
                 android:id="@+id/surName_textView"
                 android:layout_width="match_parent"
@@ -98,7 +98,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="80dp"
                 android:layout_gravity="end"
-                android:text="Giới tính" />
+                android:text="Giới tính"
+                android:textSize="13dp" />
             <RadioButton
                 android:id="@+id/male_radio_button"
                 android:layout_width="wrap_content"
@@ -135,7 +136,7 @@
             android:layout_height="20dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Email"
-            />
+            android:textSize="13dp" />
         <EditText
             android:id="@+id/email_textView"
             android:layout_width="match_parent"
@@ -165,7 +166,7 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Password"
 
-                />
+                android:textSize="13dp" />
             <EditText
                 android:id="@+id/password_textView"
                 android:layout_width="match_parent"
@@ -213,7 +214,8 @@
             android:scrollHorizontally="true"
 
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Mật khẩu mới phải dài ít nhất 8 ký tự và chứa  ít nhất 1 chữ số" />
+            android:text=" Mật khẩu mới phải dài ít nhất 8 ký tự và chứa  ít nhất 1 chữ số."
+            android:textSize="12dp" />
     </LinearLayout>
 
 
@@ -221,7 +223,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="10dp"
+        android:layout_margin="5dp"
         android:background="@drawable/icon_dots_blue" />
 
     <LinearLayout
@@ -252,6 +254,8 @@
         android:onClick="create_new_provider_account"
         android:backgroundTint="#5d6ace"
         android:textColor="#ffffff"
-        android:layout_weight="0.08" />
+        android:layout_weight="0.08"
+        android:textAllCaps="false"
+        android:focusable="false" />
 
 </LinearLayout>
