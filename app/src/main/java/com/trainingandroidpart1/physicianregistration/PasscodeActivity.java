@@ -23,9 +23,9 @@ public class PasscodeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_passcode);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = getIntent();
 
         userID = intent.getLongExtra(USER_ID,userID);
@@ -42,6 +42,8 @@ public class PasscodeActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(),RePasscodeActivity.class);
                     intent.putExtra(RePasscodeActivity.PASS_CODE,passcodeView.getPasscode());
                     intent.putExtra(RePasscodeActivity.RE_USER_ID,userID);
+                    Toast.makeText(getApplicationContext(),String.valueOf(userID),Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),accessToken,Toast.LENGTH_LONG).show();
                     intent.putExtra(RePasscodeActivity.RE_ACCESS_TOKEN,accessToken);
                     startActivity(intent);
                 }
@@ -65,5 +67,6 @@ public class PasscodeActivity extends AppCompatActivity {
             }
         });
     }
+
 
 }

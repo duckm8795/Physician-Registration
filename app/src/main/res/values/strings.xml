@@ -8,6 +8,10 @@
     <string name="title_activity_create_account"></string>
     <string name="title_activity_passcode"></string>
     <string name="title_activity_re_passcode"></string>
-    <string name="title_activity_physical_vertification"></string>
-
+    <string name="title_activity_physical_vertification">Xác nhận bác sỹ</string>
+    <string name="title_activity_camera_selfie">CameraSelfieActivity</string>
+    <string name="PASSWORD_PATTERN">((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})</string>
+    <string name="EMAIL_PATTERN">^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@"
+                + "[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$</string>
+    <string name="title_activity_avatar_physical">Ảnh đại diện</string>
 </resources>

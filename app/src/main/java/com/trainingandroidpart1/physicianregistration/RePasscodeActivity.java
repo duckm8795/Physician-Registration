@@ -30,9 +30,9 @@ public class RePasscodeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_re_passcode);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
         userID = intent.getLongExtra(RE_USER_ID,userID);
@@ -56,7 +56,7 @@ public class RePasscodeActivity extends AppCompatActivity {
                                 intent.putExtra(PhysicalVertificationActivity.VERIFY_USER_ID,userID);
                                 intent.putExtra(PhysicalVertificationActivity.VERIFY_ACCESS_TOKEN,accessToken);
                                 startActivity(intent);
-//                                Toast.makeText(RePasscodeActivity.this,"Ngon roi",Toast.LENGTH_LONG).show();
+
                             }
 
                         }
@@ -90,6 +90,12 @@ public class RePasscodeActivity extends AppCompatActivity {
 
             }
         });
+    }
+    public void back_to_parent_activity (View view){
+        Intent intent = new Intent(RePasscodeActivity.this,PasscodeActivity.class);
+
+        startActivity(intent);
+
     }
 
 

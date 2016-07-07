@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:orientation="vertical"
+    android:background="@drawable/avatar_blur"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.trainingandroidpart1.physicianregistration.AvatarPhysicalActivity"
+    tools:showIn="@layout/activity_avatar_physical"
+    android:weightSum="1">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Chúng tôi vừa thêm ảnh đại diện mặc định cho bạn ,vui lòng bấm vào ảnh để thay đổi."
+        android:gravity="center"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:id="@+id/textView_intro_avatar_string" />
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/profile_image"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:src="@drawable/icon_male_enabled"
+        app:civ_border_width="0.5dp"
+        android:onClick="choose_avatar"
+        android:layout_gravity="center"
+        app:civ_border_color="#FF000000"/>
+    <Button
+        android:layout_width="126dp"
+        android:layout_height="wrap_content"
+        android:text="Tiếp tục"
+        android:textAllCaps="false"
+        android:layout_gravity="center"
+        android:layout_margin="30dp"
+        android:textColor="@android:color/white"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:id="@+id/button"
+        android:layout_weight="0.05" />
+
+
+</LinearLayout>

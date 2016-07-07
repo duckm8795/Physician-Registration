@@ -1,6 +1,8 @@
 package com.trainingandroidpart1.physicianregistration.Adapter;
 
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,12 +44,16 @@ public class VerifyPhysicianCustomAdapter extends BaseAdapter{
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
+//        Context context = null;
         ViewHolder holder;
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.custom_list_item_verify_physician, null);
             holder = new ViewHolder();
             holder.titleTextView = (TextView) convertView.findViewById(R.id.title);
+            holder.titleTextView.setTextSize(15);
+
             holder.descriptionTextView = (TextView) convertView.findViewById(R.id.description);
+            holder.descriptionTextView.setTextColor(R.color.colorDarkGrey);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -57,8 +63,14 @@ public class VerifyPhysicianCustomAdapter extends BaseAdapter{
         holder.titleTextView.setText(verificationDocTypes.getTitle());
         holder.descriptionTextView.setText(verificationDocTypes.getBriefDescription());
 
+//        Typeface font_medium = Typeface.createFromAsset(, "Ubuntu-Medium.ttf");
+//        Typeface font_light = Typeface.createFromAsset(context.getAssets(), "Ubuntu-Light.ttf");
+//        holder.titleTextView.setTypeface(font_medium);
+//        holder.descriptionTextView.setTypeface(font_light);
+
         return convertView;
     }
+
 
     static class ViewHolder {
         TextView titleTextView;

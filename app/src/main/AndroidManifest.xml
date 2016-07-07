@@ -4,7 +4,9 @@
 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-feature android:name="android.hardware.camera" />
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_logo"
@@ -57,6 +59,24 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.trainingandroidpart1.physicianregistration.RePasscodeActivity" />
+        </activity>
+        <activity
+            android:name=".CameraSelfieActivity"
+            android:label="@string/title_activity_camera_selfie"
+            android:parentActivityName=".PhysicalVertificationActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.trainingandroidpart1.physicianregistration.PhysicalVertificationActivity" />
+        </activity>
+        <activity
+            android:name=".AvatarPhysicalActivity"
+            android:label="@string/title_activity_avatar_physical"
+            android:parentActivityName=".PhysicalVertificationActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.trainingandroidpart1.physicianregistration.PhysicalVertificationActivity" />
         </activity>
     </application>
 

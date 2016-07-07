@@ -2,6 +2,7 @@ package com.trainingandroidpart1.physicianregistration;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +28,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PhysicalVertificationActivity extends AppCompatActivity {
+public class PhysicalVertificationActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     public static final String VERIFY_USER_ID = "VERIFY_USER_ID";
     public static final String VERIFY_ACCESS_TOKEN = "VERIFY_ACCESS_TOKEN";
     ListView listview;
@@ -38,8 +41,8 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_physical_vertification);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        initView();
         Intent intent = getIntent();
         userID = intent.getLongExtra(VERIFY_USER_ID,userID);
         accessToken = intent.getStringExtra(VERIFY_ACCESS_TOKEN);
@@ -48,6 +51,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
         Log.d("TEST",accessToken);
         listview = (ListView) findViewById(R.id.listView);
         textView = (TextView) findViewById(R.id.namePhysician);
+
         ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
 
         Call<Main> call = serviceAPI.verify(180,"vi","VN",accessToken,userID);
@@ -55,8 +59,9 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Main> call, Response<Main> response) {
                 if ( response.body().getSuccess()){
-                    Toast.makeText(PhysicalVertificationActivity.this, "True", Toast.LENGTH_SHORT).show();
+
                     List<VerificationDocType> verificationDocTypes = response.body().getVerificationDocTypes();
+
                     listview.setAdapter(new VerifyPhysicianCustomAdapter(PhysicalVertificationActivity.this, verificationDocTypes));
 
                 }
@@ -83,8 +88,20 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
+    public void initView(){
+        TextView intro_string_vp1 = (TextView) findViewById(R.id.intro_string_vp1);
+        TextView intro_string_vp2 = (TextView) findViewById(R.id.intro_string_vp2);
+        TextView namePhysician = (TextView) findViewById(R.id.namePhysician);
+
+        Typeface font_medium = Typeface.createFromAsset(getAssets(), "Ubuntu-Medium.ttf");
+        intro_string_vp1.setTypeface(font_medium);
+        intro_string_vp2.setTypeface(font_medium);
+        namePhysician.setTypeface(font_medium);
+
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.verify_physician_main,menu);
@@ -108,9 +125,22 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
+                })
+                .setNegativeButton("Để sau ", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(PhysicalVertificationActivity.this,AvatarPhysicalActivity.class);
+                        startActivity(intent);
+                    }
                 });
+
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(getApplicationContext(),"SSSS",Toast.LENGTH_SHORT).show();
     }
 }

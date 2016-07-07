@@ -1,13 +1,20 @@
 package com.trainingandroidpart1.physicianregistration;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
+import android.text.method.PasswordTransformationMethod;
+import android.util.Patterns;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +23,9 @@ import android.widget.ToggleButton;
 import com.trainingandroidpart1.physicianregistration.Response.CreateProviderAccount.CreateProviderAccountResponse;
 import com.trainingandroidpart1.physicianregistration.Service.ProviderConstants;
 import com.trainingandroidpart1.physicianregistration.Service.ServiceAPI;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,7 +39,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     CheckBox agreeTerm;
     ToggleButton showHiddenPassword;
     RadioButton maleGender;
-
+    ProgressDialog progressDialog;
     RadioButton femaleGender;
     long userID;
     String accessToken;
@@ -42,7 +52,182 @@ public class CreateAccountActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         initView();
+        ToggleHiddenShowPassword();
 
+
+
+
+    }
+    public void ToggleHiddenShowPassword(){
+//        if (password.getText().toString() == ""){
+//            showHiddenPassword.setClickable(false);
+//        }else{
+//            showHiddenPassword.setClickable(true);
+//        }
+        showHiddenPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (showHiddenPassword.isChecked()){
+                    password.setTransformationMethod(null);
+                }else{
+                    password.setTransformationMethod(new PasswordTransformationMethod());
+                }
+            }
+        });
+    }
+    public void create_new_provider_account(View view){
+        if ( agreeTerm()){
+            if(isMissingInput()){
+
+            }else{
+                //Toast.makeText(getApplicationContext(),"Full",Toast.LENGTH_LONG).show();
+                if(isValidEmail(email.getText().toString())){
+                    if(isValidPassword(password.getText().toString())){
+//                        Toast.makeText(getApplicationContext(),"Perfect",Toast.LENGTH_LONG).show();
+
+
+                        sendRequest();
+                    }else{
+                       showInvalidPassword();
+                    }
+
+                }else{
+                    showInvalidEmail();
+                }
+
+            }
+
+        }else{
+            showAlertTerm();
+        }
+
+    }
+
+    public boolean isMissingInput(){
+        if(firstName.getText().toString().equals("")) {
+            showAlertName();
+        }else {
+            if(surName.getText().toString().equals("")) {
+                showAlertSurname();
+            }else {
+                if(!maleGender.isChecked() && !femaleGender.isChecked()){
+                    showAlertGender();
+                }else {
+                    if(email.getText().toString().equals("")) {
+                        showAlertEmail();
+                    }else {
+                        if(password.getText().toString().equals("")) {
+                            showAlertPassword();
+                        }else{
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+
+    }
+    public boolean isValidPassword(String data){
+
+        if (data.length() <= 8) {
+            return false;
+        } else {
+            char c;
+            int count = 0;
+            for (int i = 0; i < data.length(); i++) {
+                c = data.charAt(i);
+                if (!Character.isLetterOrDigit(c)) {
+                    return false;
+                } else if (Character.isDigit(c)) {
+                    count++;
+                }
+            }
+            if (count < 2)   {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    public boolean isValidEmail(String data ) {
+        return data != null && Patterns.EMAIL_ADDRESS.matcher(data).matches();
+    }
+
+    public void initView(){
+        firstName = (TextView) findViewById(R.id.firstName_textView);
+        surName = (TextView) findViewById(R.id.surName_textView);
+        email = (TextView) findViewById(R.id.email_textView);
+        password = (TextView) findViewById(R.id.password_textView);
+        agreeTerm = (CheckBox) findViewById(R.id.agreeTerm_checkbox);
+        showHiddenPassword = (ToggleButton) findViewById(R.id.showHiddenPassword_toggle_button);
+        maleGender = (RadioButton) findViewById(R.id.male_radio_button);
+        femaleGender = (RadioButton) findViewById(R.id.female_radio_button);
+        showHiddenPassword.setText(null);
+        showHiddenPassword.setTextOn(null);
+        showHiddenPassword.setTextOff(null);
+
+        TextView create_account_string = (TextView) findViewById(R.id.create_account_string);
+        TextView requirement_password_string = (TextView) findViewById(R.id.requirement_password_string);
+        TextView term_string = (TextView) findViewById(R.id.term_string);
+        Button create_account_btn = (Button) findViewById(R.id.create_account_btn);
+        // set font
+        Typeface font_medium = Typeface.createFromAsset(getAssets(), "Ubuntu-Regular.ttf");
+        firstName.setTypeface(font_medium);
+        surName.setTypeface(font_medium);
+        email.setTypeface(font_medium);
+        password.setTypeface(font_medium);
+        create_account_string.setTypeface(font_medium);
+        requirement_password_string.setTypeface(font_medium);
+        term_string.setTypeface(font_medium);
+        create_account_btn.setTypeface(font_medium);
+
+    }
+    public void sendRequest(){
+        progressDialog= new ProgressDialog(CreateAccountActivity.this);
+        progressDialog.setMessage("Đang kết nối tới server...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
+        Call<CreateProviderAccountResponse> call =
+                serviceAPI.createProviderAccount("M", email.getText().toString(),firstName.getText().toString(),
+                        "vi",surName.getText().toString(),password.getText().toString(),"VN",genderCheck(),"Asia/Saigon");
+        call.enqueue(new Callback<CreateProviderAccountResponse>() {
+            @Override
+            public void onResponse(Call<CreateProviderAccountResponse> call, Response<CreateProviderAccountResponse> response) {
+
+                if ( response.body().getMessage().equals("")){
+                    progressDialog.dismiss();
+                    userID = response.body().getUserID();
+                    accessToken = response.body().getAccessToken();
+                    Intent intent = new Intent(CreateAccountActivity.this,PasscodeActivity.class);
+                    intent.putExtra(PasscodeActivity.USER_ID,userID);
+                    intent.putExtra(PasscodeActivity.ACCESS_TOKEN,accessToken);
+                    startActivity(intent);
+
+                }else{
+                    progressDialog.dismiss();
+                    showAlertCreateAccountResponse(response.body().getMessage());
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<CreateProviderAccountResponse> call, Throwable t) {
+
+            }
+        });
 
     }
     public String genderCheck(){
@@ -62,63 +247,8 @@ public class CreateAccountActivity extends AppCompatActivity {
             return false;
         }
     }
-    public void create_new_provider_account(View view){
-        if ( agreeTerm()){
-            ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
-            Call<CreateProviderAccountResponse> call =
-                    serviceAPI.createProviderAccount("M", email.getText().toString(),firstName.getText().toString(),
-                            "vi",surName.getText().toString(),password.getText().toString(),"VN",genderCheck(),"Asia/Saigon");
-            call.enqueue(new Callback<CreateProviderAccountResponse>() {
-                @Override
-                public void onResponse(Call<CreateProviderAccountResponse> call, Response<CreateProviderAccountResponse> response) {
-                    if ( response.body().getMessage().equals("")){
-                        Toast.makeText(CreateAccountActivity.this,response.body().getMessage(),Toast.LENGTH_LONG).show();
-                        userID = response.body().getUserID();
-                        accessToken = response.body().getAccessToken();
-                        Intent intent = new Intent(CreateAccountActivity.this,PasscodeActivity.class);
-                        intent.putExtra(PasscodeActivity.USER_ID,userID);
-                        intent.putExtra(PasscodeActivity.ACCESS_TOKEN,accessToken);
 
-//                        intent.putExtra(ProviderConstants.TEST.USERID_TEST,userID);
-//                        intent.putExtra(ProviderConstants.TEST.TOKEN_TEST,accessToken);
 
-                        startActivity(intent);
-                    }else{
-                        Toast.makeText(CreateAccountActivity.this,response.body().getMessage(),Toast.LENGTH_LONG).show();
-                    }
-
-                }
-
-                @Override
-                public void onFailure(Call<CreateProviderAccountResponse> call, Throwable t) {
-
-                }
-            });
-        }else{
-            showAlertTerm();
-        }
-
-    }
-    public void initView(){
-        firstName = (TextView) findViewById(R.id.firstName_textView);
-        surName = (TextView) findViewById(R.id.surName_textView);
-        email = (TextView) findViewById(R.id.email_textView);
-        password = (TextView) findViewById(R.id.password_textView);
-        agreeTerm = (CheckBox) findViewById(R.id.agreeTerm_checkbox);
-        showHiddenPassword = (ToggleButton) findViewById(R.id.showHiddenPassword_toggle_button);
-        maleGender = (RadioButton) findViewById(R.id.male_radio_button);
-        femaleGender = (RadioButton) findViewById(R.id.female_radio_button);
-
-        showHiddenPassword.setText(null);
-        showHiddenPassword.setTextOn(null);
-        showHiddenPassword.setTextOff(null);
-//        if( password)
-//        if (showHiddenPassword.isChecked()){
-//            password.setInputType(InputType.TYPE_CLASS_TEXT);
-//        }else {
-//            password.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-//        }
-    }
 
     public void showAlertGender() {
 
@@ -187,6 +317,32 @@ public class CreateAccountActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+    public void showInvalidPassword() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Mật khẩu mới phải dài ít nhất 8 ký tự và chứa ít nhất 1 chữ số.")
+                .setTitle("Jio Doctor")
+                .setPositiveButton("Đóng", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    public void showInvalidEmail() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Vui lòng nhập địa chỉ email chính xác.")
+                .setTitle("Jio Doctor")
+                .setPositiveButton("Đóng", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
     public void showAlertTerm() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Vui lòng chấp nhận các điều khoản sử dụng và chính sách bảo mật trước khi tạo tài khoản.")
@@ -200,4 +356,18 @@ public class CreateAccountActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+    public void showAlertCreateAccountResponse(String data) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(data)
+                .setTitle("Jio Doctor")
+                .setPositiveButton("Đóng", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
 }

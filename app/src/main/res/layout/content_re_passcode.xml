@@ -1,27 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     android:background="@color/colorPrimary"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.trainingandroidpart1.physicianregistration.RePasscodeActivity"
-    tools:showIn="@layout/activity_re_passcode">
-    <com.ngocbeo1121.iospasscode.IOSPasscodeView
-        android:id="@+id/re_passcodeView"
+    >
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        app:deleteText="Delete"
-        app:cancelText=""
-        app:enterPasscodeText="Enter Passcode"
-        app:vibrateOnIncorrect="true"
-        app:vibrateDuration="450">
+        android:id="@+id/imageButton3"
+        android:onClick="back_to_parent_activity"
+        android:background="@drawable/ic_arrow_back_black_24dp"
+        android:layout_margin="10dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_margin="30dp"
+        android:orientation="vertical"
+        >
 
-    </com.ngocbeo1121.iospasscode.IOSPasscodeView>
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cài đặt Mã bảo mật"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+
+            android:textColor="#ffffff" />
+
+
+        <com.ngocbeo1121.iospasscode.IOSPasscodeView
+            android:id="@+id/re_passcodeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cancelText=""
+            app:deleteText="Delete"
+            app:enterPasscodeText="Xác nhận mã bảo mật"
+            app:vibrateDuration="450"
+            app:vibrateOnIncorrect="true">
+
+        </com.ngocbeo1121.iospasscode.IOSPasscodeView>
+    </LinearLayout>
 </RelativeLayout>
