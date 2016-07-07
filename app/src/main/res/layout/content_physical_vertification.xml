@@ -33,14 +33,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
+<<<<<<< HEAD
                 android:id="@+id/intro_string_vp1"
+=======
+>>>>>>> origin/master
                 android:text="Xin chào," />
 
             <TextView
                 android:id="@+id/namePhysician"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
                 android:textStyle="bold"/>
         </LinearLayout>
 
@@ -48,8 +54,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
+<<<<<<< HEAD
             android:layout_margin="10dp"
             android:id="@+id/intro_string_vp2"
+=======
+>>>>>>> origin/master
             android:text="Để xác nhận bạn là một bác sỹ , chúng tôi cần bạn cung cấp một số giấy tờ dưới dây"
             android:textAlignment="center" />
 
@@ -72,7 +81,10 @@
                 android:id="@+id/listView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
                 android:layout_centerHorizontal="true" />
         </ScrollView>
     </LinearLayout>

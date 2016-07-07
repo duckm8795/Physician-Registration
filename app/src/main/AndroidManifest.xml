@@ -69,6 +69,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.trainingandroidpart1.physicianregistration.PhysicalVertificationActivity" />
         </activity>
+<<<<<<< HEAD
         <activity
             android:name=".AvatarPhysicalActivity"
             android:label="@string/title_activity_avatar_physical"
@@ -78,6 +79,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.trainingandroidpart1.physicianregistration.PhysicalVertificationActivity" />
         </activity>
+=======
+>>>>>>> origin/master
     </application>
 
 </manifest>
