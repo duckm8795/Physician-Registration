@@ -1,10 +1,13 @@
 package com.trainingandroidpart1.physicianregistration;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -43,6 +46,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     RadioButton femaleGender;
     long userID;
     String accessToken;
+    SharedPreferences sharedPreferences = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,10 +89,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                     if(isValidPassword(password.getText().toString())){
 //                        Toast.makeText(getApplicationContext(),"Perfect",Toast.LENGTH_LONG).show();
 
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
                         sendRequest();
                     }else{
                        showInvalidPassword();
@@ -170,7 +171,6 @@ public class CreateAccountActivity extends AppCompatActivity {
         showHiddenPassword.setText(null);
         showHiddenPassword.setTextOn(null);
         showHiddenPassword.setTextOff(null);
-<<<<<<< HEAD
 
         TextView create_account_string = (TextView) findViewById(R.id.create_account_string);
         TextView requirement_password_string = (TextView) findViewById(R.id.requirement_password_string);
@@ -215,6 +215,14 @@ public class CreateAccountActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     userID = response.body().getUserID();
                     accessToken = response.body().getAccessToken();
+                    sharedPreferences= getSharedPreferences("MyPrefer", Context.MODE_PRIVATE);
+                    //sharedPreferences.edit().putString("storeID",Long.toString(userID)).apply();
+                    sharedPreferences.edit().putString(getString(R.string.storePreToken),accessToken).apply();
+                    sharedPreferences.edit().putString(getString(R.string.storePreID),String.valueOf(userID)).apply();
+
+//                    SharedPreferences sharedPreferences1 = PreferenceManager.getDefaultSharedPreferences();
+//                    String language  = sharedPreferences1.getString(getString(R.string.testStore),"DEFAULT");
+//                  Toast.makeText(getApplicationContext(),language,Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(CreateAccountActivity.this,PasscodeActivity.class);
                     intent.putExtra(PasscodeActivity.USER_ID,userID);
                     intent.putExtra(PasscodeActivity.ACCESS_TOKEN,accessToken);
@@ -250,64 +258,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         }else{
             return false;
         }
-=======
-//        showHiddenPassword.setClickable(false);
-//        if ( password == null || !password.getText().toString().equals("")){
-//            showHiddenPassword.
-//        }
-
-
-
-
->>>>>>> origin/master
     }
-    public void sendRequest(){
-        ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
-        Call<CreateProviderAccountResponse> call =
-                serviceAPI.createProviderAccount("M", email.getText().toString(),firstName.getText().toString(),
-                        "vi",surName.getText().toString(),password.getText().toString(),"VN",genderCheck(),"Asia/Saigon");
-        call.enqueue(new Callback<CreateProviderAccountResponse>() {
-            @Override
-            public void onResponse(Call<CreateProviderAccountResponse> call, Response<CreateProviderAccountResponse> response) {
-                if ( response.body().getMessage().equals("")){
-                    Toast.makeText(CreateAccountActivity.this,response.body().getMessage(),Toast.LENGTH_LONG).show();
-                    userID = response.body().getUserID();
-                    accessToken = response.body().getAccessToken();
-                    Intent intent = new Intent(CreateAccountActivity.this,PasscodeActivity.class);
-                    intent.putExtra(PasscodeActivity.USER_ID,userID);
-                    intent.putExtra(PasscodeActivity.ACCESS_TOKEN,accessToken);
-                    startActivity(intent);
-                }else{
-                    showAlertCreateAccountResponse(response.body().getMessage());
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<CreateProviderAccountResponse> call, Throwable t) {
-
-            }
-        });
-    }
-    public String genderCheck(){
-        if( maleGender.isChecked()){
-            return  "M";
-        }
-        else if (femaleGender.isChecked()){
-            return  "F";
-        }else {
-            return "M";
-        }
-    }
-    public boolean agreeTerm(){
-        if ( agreeTerm.isChecked()){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-
 
 
 

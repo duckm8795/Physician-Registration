@@ -1,7 +1,10 @@
 package com.trainingandroidpart1.physicianregistration;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -18,10 +21,16 @@ public class PasscodeActivity extends AppCompatActivity {
     public static final String ACCESS_TOKEN = "ACCESS_TOKEN";
     long userID;
     String accessToken;
+    SharedPreferences sharedPreferences= null;
+    String valuetest = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_passcode);
+        sharedPreferences= getSharedPreferences("MyPrefer", Context.MODE_PRIVATE);
+        valuetest = sharedPreferences.getString(getString(R.string.storePreID),"");
+        //Toast.makeText(getApplicationContext(),valuetest,Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),valuetest,Toast.LENGTH_LONG).show();
 
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);

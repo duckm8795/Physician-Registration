@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -14,8 +15,11 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.soundcloud.android.crop.Crop;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -44,6 +48,16 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
         circleImageView = (CircleImageView) findViewById(R.id.profile_image);
         Typeface font_medium = Typeface.createFromAsset(getAssets(), "Ubuntu-Regular.ttf");
         textView.setTypeface(font_medium);
+        Button next_activity = (Button) findViewById(R.id.next_to_degree_activity);
+        if (next_activity != null) {
+            next_activity.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(AvatarPhysicalActivity.this,DegreeListActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
 
@@ -60,20 +74,21 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
                 if (items[item].equals("Chụp ảnh mới")) {
                     cameraIntent();
 
-                } else if (items[item].equals("Choose from Library")) {
-                    galleryIntent();
+                } else if (items[item].equals("Chọn ảnh")) {
+                    circleImageView.setImageDrawable(null);
+                    Crop.pickImage(AvatarPhysicalActivity.this);
                 }
             }
         });
         builder.show();
     }
-    private void galleryIntent()
-    {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);//
-        startActivityForResult(Intent.createChooser(intent, "Select File"),SELECT_FILE);
-    }
+//    private void galleryIntent()
+//    {
+//        Intent intent = new Intent();
+//        intent.setType("image/*");
+//        intent.setAction(Intent.ACTION_GET_CONTENT);//
+//        startActivityForResult(Intent.createChooser(intent, "Select File"),SELECT_FILE);
+//    }
 
     private void cameraIntent()
     {
@@ -85,8 +100,11 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SELECT_FILE)
-                onSelectFromGalleryResult(data);
+            if (requestCode == Crop.REQUEST_PICK && resultCode == RESULT_OK) {
+                beginCrop(data.getData());
+            } else if (requestCode == Crop.REQUEST_CROP) {
+                handleCrop(resultCode, data);
+            }
             else if (requestCode == REQUEST_CAMERA)
                 onCaptureImageResult(data);
         }
@@ -115,18 +133,17 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
         circleImageView.setImageBitmap(thumbnail);
     }
 
-    @SuppressWarnings("deprecation")
-    private void onSelectFromGalleryResult(Intent data) {
 
-        Bitmap bm=null;
-        if (data != null) {
-            try {
-                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    private void beginCrop(Uri source) {
+        Uri destination = Uri.fromFile(new File(getCacheDir(), "cropped"));
+        Crop.of(source, destination).asSquare().start(this);
+    }
+
+    private void handleCrop(int resultCode, Intent result) {
+        if (resultCode == RESULT_OK) {
+            circleImageView.setImageURI(Crop.getOutput(result));
+        } else if (resultCode == Crop.RESULT_ERROR) {
+            Toast.makeText(this, Crop.getError(result).getMessage(), Toast.LENGTH_SHORT).show();
         }
-
-        circleImageView.setImageBitmap(bm);
     }
 }

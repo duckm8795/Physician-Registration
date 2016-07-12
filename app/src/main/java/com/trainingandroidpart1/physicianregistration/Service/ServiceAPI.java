@@ -1,8 +1,11 @@
 package com.trainingandroidpart1.physicianregistration.Service;
 
 import com.trainingandroidpart1.physicianregistration.Response.CreateProviderAccount.CreateProviderAccountResponse;
+import com.trainingandroidpart1.physicianregistration.Response.GetDegreeList.DegreeList;
 import com.trainingandroidpart1.physicianregistration.Response.GetProfile.GetProfileResponse;
+import com.trainingandroidpart1.physicianregistration.Response.LanguageListResponse.MainLanguageListResponse;
 import com.trainingandroidpart1.physicianregistration.Response.SetSecurityPin.SetSecurityPinResponse;
+import com.trainingandroidpart1.physicianregistration.Response.SpecialistReponse.MainSpecialList;
 import com.trainingandroidpart1.physicianregistration.Response.VerifyPhysician.Main;
 
 import retrofit2.Call;
@@ -56,6 +59,28 @@ public interface ServiceAPI {
     Call<GetProfileResponse> getProfile(
             @Query(ProviderConstants.GET_PROFILE.TOKEN) String token,
             @Query(ProviderConstants.GET_PROFILE.USER_ID) long userID
+    );
+    /* get provider profile */
+    @POST(ServiceConfig.GET_DEGREE_LIST)
+    Call<DegreeList> getDegreeList(
+            @Query(ProviderConstants.GET_DEGREE_LIST.COUNTRY_ID) String countryID
+
+    );
+    @POST(ServiceConfig.GET_SPECIALTY_LIST)
+    Call<MainSpecialList> getSpecialtyList(
+            @Query(ProviderConstants.GET_SPECIALTY_LIST.LANGUAGE_CODE) String languageCode,
+            @Query(ProviderConstants.GET_SPECIALTY_LIST.REGION_CODE) String regionCode,
+            @Query(ProviderConstants.GET_SPECIALTY_LIST.TOKEN) String token,
+            @Query(ProviderConstants.GET_SPECIALTY_LIST.USER_ID) long userID
+
+    );
+    @POST(ServiceConfig.GET_LANGUAGE_LIST)
+    Call<MainLanguageListResponse> getLanguageList(
+            @Query(ProviderConstants.GET_SPECIALTY_LIST.LANGUAGE_CODE) String languageCode,
+            @Query(ProviderConstants.GET_SPECIALTY_LIST.REGION_CODE) String regionCode,
+            @Query(ProviderConstants.GET_SPECIALTY_LIST.TOKEN) String token,
+            @Query(ProviderConstants.GET_SPECIALTY_LIST.USER_ID) long userID
+
     );
     Retrofit retrofit =  new Retrofit.Builder()
             .baseUrl(BASE_URL)

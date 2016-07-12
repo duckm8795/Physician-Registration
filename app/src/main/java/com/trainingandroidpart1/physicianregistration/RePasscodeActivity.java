@@ -93,13 +93,9 @@ public class RePasscodeActivity extends AppCompatActivity {
     }
     public void back_to_parent_activity (View view){
         Intent intent = new Intent(RePasscodeActivity.this,PasscodeActivity.class);
-<<<<<<< HEAD
 
         startActivity(intent);
 
-=======
-        startActivity(intent);
->>>>>>> origin/master
     }
 
 

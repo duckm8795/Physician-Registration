@@ -218,11 +218,7 @@
             android:id="@+id/requirement_password_string"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text=" Mật khẩu mới phải dài ít nhất 8 ký tự và chứa  ít nhất 1 chữ số."
-<<<<<<< HEAD
             android:textSize="11dp" />
-=======
-            android:textSize="12dp" />
->>>>>>> origin/master
     </LinearLayout>
 
 
@@ -255,10 +251,7 @@
             android:layout_height="wrap_content"
             android:gravity="left"
             android:layout_gravity="center"
-<<<<<<< HEAD
             android:id="@+id/term_string"
-=======
->>>>>>> origin/master
             android:textSize="13dp"
             android:text="Tôi đồng ý với Jio Health về điều khoản sử dụng và Chính sách bảo mật." />
     </LinearLayout>

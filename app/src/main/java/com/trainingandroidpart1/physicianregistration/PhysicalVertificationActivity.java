@@ -42,11 +42,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity implements 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-<<<<<<< HEAD
         initView();
-=======
-
->>>>>>> origin/master
         Intent intent = getIntent();
         userID = intent.getLongExtra(VERIFY_USER_ID,userID);
         accessToken = intent.getStringExtra(VERIFY_ACCESS_TOKEN);
@@ -95,7 +91,6 @@ public class PhysicalVertificationActivity extends AppCompatActivity implements 
 
     }
 
-<<<<<<< HEAD
     public void initView(){
         TextView intro_string_vp1 = (TextView) findViewById(R.id.intro_string_vp1);
         TextView intro_string_vp2 = (TextView) findViewById(R.id.intro_string_vp2);
@@ -107,9 +102,6 @@ public class PhysicalVertificationActivity extends AppCompatActivity implements 
         namePhysician.setTypeface(font_medium);
 
     }
-=======
-
->>>>>>> origin/master
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.verify_physician_main,menu);

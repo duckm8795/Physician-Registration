@@ -37,5 +37,20 @@ public interface ProviderConstants  {
         String TOKEN = "token";
         String USER_ID = "userID";
     }
+    interface GET_DEGREE_LIST{
+        String COUNTRY_ID = "countryID";
+    }
+    interface GET_SPECIALTY_LIST{
+        String LANGUAGE_CODE = "languageCode";
+        String REGION_CODE = "regionCode";
+        String TOKEN = "token";
+        String USER_ID = "userID";
+    }
+    interface GET_LANGUAGE_LIST{
+        String LANGUAGE_CODE = "languageCode";
+        String REGION_CODE = "regionCode";
+        String TOKEN = "token";
+        String USER_ID = "userID";
+    }
 
 }

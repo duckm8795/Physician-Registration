@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.trainingandroidpart1.physicianregistration.SpecialistActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="97dp"
+        android:background="@drawable/bg_actsplash"
+        android:orientation="vertical"
+        android:weightSum="1">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ngôn ngữ nói"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:textSize="20dp"
+            android:layout_weight="1.08" />
+        <SearchView
+            android:id="@+id/searchview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            android:background="@drawable/bg_searchview"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+
+
+
+            android:iconifiedByDefault="false"
+            android:queryBackground="@null"
+            android:queryHint="Tìm kiếm"/>
+    </LinearLayout>
+
+
+    <ListView
+        android:id="@+id/languageListView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:scrollbarSize="@dimen/activity_horizontal_margin"
+        android:background="@android:color/white"
+        android:layout_weight="1" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tiếp tục"
+        android:onClick="next_to_main_profile_activity"
+        android:textColor="@android:color/white"
+        android:background="@color/colorPrimaryDark"
+        android:textAllCaps="false"/>
+</LinearLayout>

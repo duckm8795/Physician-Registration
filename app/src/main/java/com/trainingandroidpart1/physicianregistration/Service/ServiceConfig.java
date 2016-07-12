@@ -12,4 +12,13 @@ public interface ServiceConfig {
     String VERIFY_PHYSICIAN = "JioMobileWS/rest/jio/getVerificationDocTypesByCountry";
     /* get provider profile*/
     String GET_PROVIDER_PROFILE = "JioMobileWS/rest/jio/getProviderProfile";
+
+    /* get degree list */
+    String GET_DEGREE_LIST = "JioMobileWS/rest/jio/getDegreeList";
+
+    /* get specialty list */
+    String GET_SPECIALTY_LIST = "JioMobileWS/rest/jio/getSpecialtyList";
+
+    /* get language list */
+    String GET_LANGUAGE_LIST = "JioMobileWS/rest/jio/getLanguageList";
 }

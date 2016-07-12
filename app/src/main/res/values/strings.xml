@@ -13,8 +13,13 @@
     <string name="PASSWORD_PATTERN">((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})</string>
     <string name="EMAIL_PATTERN">^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@"
                 + "[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$</string>
-<<<<<<< HEAD
     <string name="title_activity_avatar_physical">Ảnh đại diện</string>
-=======
->>>>>>> origin/master
+    <string name="title_activity_degree_list">Bằng cấp</string>
+    <string name="title_activity_specialist">SpecialistActivity</string>
+    <string name="title_activity_language_list">LanguageListActivity</string>
+
+    <string name="storePreToken">storeToken</string>
+    <string name="storePreID">storeID</string>
+
+    <string name="title_activity_main_profile">Trang cá nhân</string>
 </resources>
