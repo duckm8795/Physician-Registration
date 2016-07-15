@@ -34,18 +34,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Nếu bạn có nhiều bàng, bạn có thể bổ sung vào hồ sơ sau."
+        android:text="Nếu bạn có nhiều bằng, bạn có thể bổ sung vào hồ sơ sau."
         android:id="@+id/textView2"
+        android:gravity="center"
         android:layout_gravity="center_horizontal" />
 
 
-    <com.jaredrummler.materialspinner.MaterialSpinner
-        android:id="@+id/spinner_degree_list"
-        android:layout_width="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"/>
-
+    <!--<com.jaredrummler.materialspinner.MaterialSpinner-->
+        <!--android:id="@+id/spinner_degree_list"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="20dp"/>-->
+    <include layout="@layout/custom_dropdown_spinner_arrow"/>
     <Button
         android:layout_width="126dp"
         android:layout_height="wrap_content"
@@ -53,9 +54,10 @@
         android:id="@+id/next_activity"
         android:onClick="next_to_spcialist_activity"
         android:layout_gravity="center_horizontal"
-        android:layout_margin="10dp"
+
         android:textColor="@android:color/white"
-        android:background="@color/colorPrimaryDark"
+        android:background="@drawable/custom_btn"
+        android:backgroundTint="#3846b5"
         android:textAllCaps="false"
         android:layout_weight="0.05" />
 </LinearLayout>

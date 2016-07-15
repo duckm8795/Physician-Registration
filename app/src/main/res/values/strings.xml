@@ -8,18 +8,20 @@
     <string name="title_activity_create_account"></string>
     <string name="title_activity_passcode"></string>
     <string name="title_activity_re_passcode"></string>
-    <string name="title_activity_physical_vertification">Xác nhận bác sỹ</string>
-    <string name="title_activity_camera_selfie">CameraSelfieActivity</string>
+    <string name="title_activity_physical_vertification"></string>
+    <string name="title_activity_camera_selfie"></string>
     <string name="PASSWORD_PATTERN">((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})</string>
     <string name="EMAIL_PATTERN">^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@"
                 + "[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$</string>
-    <string name="title_activity_avatar_physical">Ảnh đại diện</string>
-    <string name="title_activity_degree_list">Bằng cấp</string>
-    <string name="title_activity_specialist">SpecialistActivity</string>
-    <string name="title_activity_language_list">LanguageListActivity</string>
+    <string name="title_activity_avatar_physical"></string>
+    <string name="title_activity_degree_list"></string>
+    <string name="title_activity_specialist"></string>
+    <string name="title_activity_language_list"></string>
 
     <string name="storePreToken">storeToken</string>
     <string name="storePreID">storeID</string>
 
-    <string name="title_activity_main_profile">Trang cá nhân</string>
+    <string name="title_activity_main_profile"></string>
+    <string name="sharePre_string">MyPrefer</string>
+    <string name="store_passcode_string">passcodeSharePre</string>
 </resources>

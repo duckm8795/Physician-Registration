@@ -18,8 +18,8 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Chúng tôi vừa thêm ảnh đại diện mặc định cho bạn ,vui lòng bấm vào ảnh để thay đổi."
         android:gravity="center"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="50dp"
         android:id="@+id/textView_intro_avatar_string" />
     <de.hdodenhof.circleimageview.CircleImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -30,6 +30,7 @@
         app:civ_border_width="0.5dp"
         android:onClick="choose_avatar"
         android:layout_gravity="center"
+        android:layout_marginBottom="50dp"
         app:civ_border_color="#FF000000"/>
     <Button
         android:layout_width="126dp"
@@ -38,8 +39,10 @@
         android:textAllCaps="false"
         android:layout_gravity="center"
         android:layout_margin="30dp"
+        android:onClick="next_to_degree_activity"
+        android:background="@drawable/custom_btn"
         android:textColor="@android:color/white"
-        android:backgroundTint="@color/colorPrimaryDark"
+        android:backgroundTint="#3846b5"
         android:id="@+id/next_to_degree_activity"
         android:layout_weight="0.05" />
 

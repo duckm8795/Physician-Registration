@@ -262,6 +262,7 @@
         android:layout_gravity="center"
         android:layout_margin="20dp"
         android:text="Tiếp tục"
+        android:background="@drawable/custom_btn"
         android:id="@+id/create_account_btn"
         android:onClick="create_new_provider_account"
         android:backgroundTint="#5d6ace"

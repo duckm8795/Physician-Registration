@@ -51,6 +51,6 @@
         android:text="Tiếp tục"
         android:onClick="next_to_main_profile_activity"
         android:textColor="@android:color/white"
-        android:background="@color/colorPrimaryDark"
+        android:background="#3846b5"
         android:textAllCaps="false"/>
 </LinearLayout>

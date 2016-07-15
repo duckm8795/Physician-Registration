@@ -63,10 +63,9 @@ public class VerifyPhysicianCustomAdapter extends BaseAdapter{
         holder.titleTextView.setText(verificationDocTypes.getTitle());
         holder.descriptionTextView.setText(verificationDocTypes.getBriefDescription());
 
-//        Typeface font_medium = Typeface.createFromAsset(, "Ubuntu-Medium.ttf");
-//        Typeface font_light = Typeface.createFromAsset(context.getAssets(), "Ubuntu-Light.ttf");
-//        holder.titleTextView.setTypeface(font_medium);
-//        holder.descriptionTextView.setTypeface(font_light);
+        Typeface typeface = Typeface.createFromAsset(context.getAssets(),"Ubuntu-Regular.ttf");
+        holder.titleTextView.setTypeface(typeface);
+        holder.descriptionTextView.setTypeface(typeface);
 
         return convertView;
     }

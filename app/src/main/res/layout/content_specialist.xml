@@ -45,7 +45,7 @@
         android:background="@android:color/white"
         app:indexListView_type_overlay="center"
         app:indexBar_textColor="@color/colorPrimaryDark"
-        app:indexListView_rightOverlayColor="@android:color/white"
+        app:indexListView_rightOverlayColor="#7B1FA2"
         app:indexBar_selected_textColor="@android:color/black"
         android:layout_weight="1" />
 
@@ -55,6 +55,6 @@
         android:text="Tiếp tục"
         android:onClick="next_to_language_activity"
         android:textColor="@android:color/white"
-        android:background="@color/colorPrimaryDark"
+        android:background="#3846b5"
         android:textAllCaps="false"/>
 </LinearLayout>

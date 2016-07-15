@@ -4,57 +4,36 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.Toast;
 
 import com.ngocbeo1121.iospasscode.IOSPasscodeView;
 import com.ngocbeo1121.iospasscode.IOSPasscodeViewCallback;
 
 public class PasscodeActivity extends AppCompatActivity {
-    IOSPasscodeView passcodeView;
-    public static final String USER_ID = "USER_ID";
-    public static final String ACCESS_TOKEN = "ACCESS_TOKEN";
-    long userID;
-    String accessToken;
-    SharedPreferences sharedPreferences= null;
-    String valuetest = null;
+    private IOSPasscodeView passcodeView;
+    private SharedPreferences sharedPreferences = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_passcode);
-        sharedPreferences= getSharedPreferences("MyPrefer", Context.MODE_PRIVATE);
-        valuetest = sharedPreferences.getString(getString(R.string.storePreID),"");
-        //Toast.makeText(getApplicationContext(),valuetest,Toast.LENGTH_LONG).show();
-        Toast.makeText(getApplicationContext(),valuetest,Toast.LENGTH_LONG).show();
+        initView();
+        callBackFromIOSPasscode();
 
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        Intent intent = getIntent();
+    }
 
-        userID = intent.getLongExtra(USER_ID,userID);
-        accessToken = intent.getStringExtra(ACCESS_TOKEN);
 
-        passcodeView = (IOSPasscodeView) findViewById(R.id.passcodeView);
+    public void callBackFromIOSPasscode(){
         passcodeView.setCallback(new IOSPasscodeViewCallback() {
             @Override
             public boolean onCompleted(final IOSPasscodeView passcodeView) {
 
                 int input_length = passcodeView.getPasscode().length();
-                Toast.makeText(PasscodeActivity.this, passcodeView.getPasscode(),Toast.LENGTH_LONG).show();
-                if (input_length == 4 ){
-                    Intent intent = new Intent(getApplicationContext(),RePasscodeActivity.class);
-                    intent.putExtra(RePasscodeActivity.PASS_CODE,passcodeView.getPasscode());
-                    intent.putExtra(RePasscodeActivity.RE_USER_ID,userID);
-                    Toast.makeText(getApplicationContext(),String.valueOf(userID),Toast.LENGTH_LONG).show();
-                    Toast.makeText(getApplicationContext(),accessToken,Toast.LENGTH_LONG).show();
-                    intent.putExtra(RePasscodeActivity.RE_ACCESS_TOKEN,accessToken);
-                    startActivity(intent);
+                if (input_length == 4) {
+                    sharedPreferences.edit().putString(getString(R.string.store_passcode_string), passcodeView.getPasscode()).apply();
+
+                    nextToRePassCodeActivity();
                 }
                 return true;
 
@@ -77,5 +56,15 @@ public class PasscodeActivity extends AppCompatActivity {
         });
     }
 
+    public void initView() {
+
+        sharedPreferences = getSharedPreferences(getString(R.string.sharePre_string), Context.MODE_PRIVATE);
+
+        passcodeView = (IOSPasscodeView) findViewById(R.id.passcodeView);
+    }
+    public void nextToRePassCodeActivity(){
+        Intent intent = new Intent(getApplicationContext(), RePasscodeActivity.class);
+        startActivity(intent);
+    }
 
 }

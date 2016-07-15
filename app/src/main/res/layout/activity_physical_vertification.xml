@@ -18,8 +18,18 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@drawable/bg_actsplash"
-            app:titleMarginStart="100dp"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+            app:popupTheme="@style/AppTheme.PopupOverlay" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Xác nhận bác sỹ"
+                android:layout_gravity="center"
+                android:id="@+id/toolbar_title"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:textColor="@android:color/white"/>
+        </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
