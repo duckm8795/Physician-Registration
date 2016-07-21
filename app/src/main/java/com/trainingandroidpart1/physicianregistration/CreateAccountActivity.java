@@ -21,7 +21,6 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-
 import com.trainingandroidpart1.physicianregistration.Response.CreateProviderAccount.CreateProviderAccountResponse;
 import com.trainingandroidpart1.physicianregistration.Service.ServiceAPI;
 
@@ -47,7 +46,9 @@ public class CreateAccountActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_create_account);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -58,6 +59,12 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+    }
+
     public void create_new_provider_account(View view) {
         if (agreeTerm()) {
             if (isMissingInput()) {
@@ -66,7 +73,7 @@ public class CreateAccountActivity extends AppCompatActivity {
 
                 if (isValidEmail(email.getText().toString())) {
                     if (isValidPassword(password.getText().toString())) {
-                        sendRequest();
+                        new SendRequests().execute();
                     } else {
                         showInvalidPassword();
                     }
@@ -126,7 +133,7 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     public boolean isValidPassword(String data) {
 
-        if (data.length() <= 8) {
+        if (data.length() < 8) {
             return false;
         } else {
             char c;
@@ -139,7 +146,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                     count++;
                 }
             }
-            if (count < 2) {
+            if (count < 1) {
                 return false;
             }
         }
@@ -202,8 +209,6 @@ public class CreateAccountActivity extends AppCompatActivity {
                     sharedPreferences.edit().putString(getString(R.string.storePreToken), accessToken).apply();
                     sharedPreferences.edit().putString(getString(R.string.storePreID), String.valueOf(userID)).apply();
 
-                    Intent intent = new Intent(CreateAccountActivity.this, PasscodeActivity.class);
-                    startActivity(intent);
 
                 } else {
 
@@ -391,14 +396,24 @@ public class CreateAccountActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... arg0) {
+            try {
+                Thread.currentThread();
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             sendRequest();
             return null;
         }
 
         protected void onPostExecute(Void v) {
-            Intent i = new Intent(CreateAccountActivity.this, PasscodeActivity.class);
-            startActivity(i);
             hideLoading();
+            Intent i = new Intent(CreateAccountActivity.this, PasscodeActivity.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(i);
+            CreateAccountActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
         }
 
 

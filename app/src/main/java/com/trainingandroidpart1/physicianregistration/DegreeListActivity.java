@@ -1,29 +1,27 @@
 package com.trainingandroidpart1.physicianregistration;
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.trainingandroidpart1.physicianregistration.Adapter.CustomSpinnerAdapter;
-import com.trainingandroidpart1.physicianregistration.Adapter.LanguageListCustomAdapter;
 import com.trainingandroidpart1.physicianregistration.Response.GetDegreeList.DegreeList;
 import com.trainingandroidpart1.physicianregistration.Response.GetDegreeList.MedDegreeList;
-import com.trainingandroidpart1.physicianregistration.Response.LanguageListResponse.LanguageList;
-import com.trainingandroidpart1.physicianregistration.Response.LanguageListResponse.MainLanguageListResponse;
 import com.trainingandroidpart1.physicianregistration.Response.StandardResponse;
 import com.trainingandroidpart1.physicianregistration.Service.ServiceAPI;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +35,8 @@ public class DegreeListActivity extends AppCompatActivity {
     private String retrieveID = null;
     private String degreeID = null;
     private Spinner materialSpinner;
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,60 +45,45 @@ public class DegreeListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         initView();
-        process();
-
+         new SendRequests().execute();
 
 
     }
-    public void initView(){
+
+    public void initView() {
         materialSpinner = (Spinner) findViewById(R.id.my_spinner);
         sharedPreferences = getSharedPreferences(getString(R.string.sharePre_string), Context.MODE_PRIVATE);
         retrieveToken = sharedPreferences.getString(getString(R.string.storePreToken), "");
         retrieveID = sharedPreferences.getString(getString(R.string.storePreID), "");
     }
 
-    public void process(){
-        ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
-        Call<DegreeList> call = serviceAPI.getDegreeList("180");
-        call.enqueue(new Callback<DegreeList>() {
-            @Override
-            public void onResponse(Call<DegreeList> call, Response<DegreeList> response) {
-                if (response.body().getSuccess()) {
-                    List<MedDegreeList> medDegreeListList = response.body().getMedDegreeList();
-                    List<String> medDegreeName = new ArrayList<>();
-                    final List<Integer> medDegreeID = new ArrayList<>();
-                    for (int i = 0; i < medDegreeListList.size(); i++) {
-                        medDegreeName.add(medDegreeListList.get(i).getName());
-                        medDegreeID.add(medDegreeListList.get(i).getMedDegreeID());
-                    }
+    public void showLoading() {
 
-                    CustomSpinnerAdapter customSpinnerAdapter = new CustomSpinnerAdapter(DegreeListActivity.this, medDegreeName);
-
-                    materialSpinner.setAdapter(customSpinnerAdapter);
-                    materialSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-                        @Override
-                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                            degreeID = medDegreeID.get(i).toString();
-                        }
-
-                        @Override
-                        public void onNothingSelected(AdapterView<?> adapterView) {
-
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DegreeList> call, Throwable t) {
-
-            }
-        });
+        progressDialog = new ProgressDialog(DegreeListActivity.this);
+        progressDialog.setMessage("Đang xử lý ...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
     }
-    public void next_to_spcialist_activity(View view) {
-        Intent intent = new Intent(DegreeListActivity.this, SpecialistActivity.class);
-        startActivity(intent);
+
+    public void hideLoading() {
+
+        progressDialog.dismiss();
+    }
+
+//
+class SendRequestsToSpecialty extends AsyncTask<Void, Void, Void> {
+
+    public SendRequestsToSpecialty() {
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        showLoading();
+    }
+
+    @Override
+    protected Void doInBackground(Void... arg0) {
          /* start processing to sever */
         ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
         Call<StandardResponse> call = serviceAPI.saveProviderProfileList(retrieveToken, Long.parseLong(retrieveID), "Degree", degreeID);
@@ -106,7 +91,6 @@ public class DegreeListActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<StandardResponse> call, Response<StandardResponse> response) {
                 if (response.body().getSuccess()) {
-                    Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_LONG).show();
 
                 }
 
@@ -115,8 +99,112 @@ public class DegreeListActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<StandardResponse> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+        return null;
     }
+
+    protected void onPostExecute(Void v) {
+        hideLoading();
+        Intent i = new Intent(DegreeListActivity.this, SpecialistActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(i);
+        DegreeListActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+    }
+
+
+}
+    public void next_to_spcialist_activity(View view) {
+        new SendRequestsToSpecialty().execute();
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this).setIcon(R.drawable.ic_error_outline_black_24dp).setTitle("Jio Doctor")
+                .setMessage("Bạn có chắc muốn thoát ứng dụng?")
+                .setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Intent intent = new Intent(Intent.ACTION_MAIN);
+                        intent.addCategory(Intent.CATEGORY_HOME);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+                }).setNegativeButton("Không", null).show();
+    }
+
+    class SendRequests extends AsyncTask<Void, Void, Void> {
+        DegreeList degreeList;
+        public SendRequests() {
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showLoading();
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            try {
+                Thread.currentThread();
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
+            Call<DegreeList> call = serviceAPI.getDegreeList("180");
+            try {
+                degreeList = call.execute().body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        protected void onPostExecute(Void v) {
+            if(degreeList.getSuccess()){
+                List<MedDegreeList> medDegreeListList = degreeList.getMedDegreeList();
+                        List<String> medDegreeName = new ArrayList<>();
+                        final List<Integer> medDegreeID = new ArrayList<>();
+                        for (int i = 0; i < medDegreeListList.size(); i++) {
+                            medDegreeName.add(medDegreeListList.get(i).getName());
+                            medDegreeID.add(medDegreeListList.get(i).getMedDegreeID());
+                        }
+
+                        CustomSpinnerAdapter customSpinnerAdapter = new CustomSpinnerAdapter(DegreeListActivity.this, medDegreeName);
+
+                        materialSpinner.setAdapter(customSpinnerAdapter);
+                        materialSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+                            @Override
+                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                degreeID = medDegreeID.get(i).toString();
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> adapterView) {
+
+                            }
+                        });
+                hideLoading();
+//                Intent i = new Intent(DegreeListActivity.this, SpecialistActivity.class);
+//                startActivity(i);
+            }
+
+
+
+        }
+
+
+    }
+
+
 }

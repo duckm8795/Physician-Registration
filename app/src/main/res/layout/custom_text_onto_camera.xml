@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:paddingTop="33dp"
+
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_marginBottom="5dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:textSize="15sp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/rounded_textview"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:id="@+id/mark" />
+        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đặt tấm thẻ lên mặt phẳng"
+
+
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2"
+            android:textSize="15sp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/rounded_textview"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:id="@+id/mark" />
+        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đưa tấm thẻ vừa khít đường viền màu xanh"
+
+
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+</LinearLayout>

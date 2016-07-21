@@ -10,7 +10,7 @@
     tools:context="com.trainingandroidpart1.physicianregistration.CreateAccountActivity"
     tools:showIn="@layout/activity_create_account"
     android:weightSum="1"
-    android:background="#f3eeee">
+    android:background="#FAFAFA">
 
     <TextView
         android:layout_width="wrap_content"
@@ -19,12 +19,13 @@
         android:layout_margin="20dp"
         android:id="@+id/create_account_string"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Tạo tài khoản mới" />
+        android:text="@string/create_account_string"
+        android:textColor="#01579B" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@android:color/darker_gray" />
+        android:background="#E0E0E0" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -48,7 +49,7 @@
                 android:background="@null"
                 android:singleLine="true"
                 android:nextFocusDown="@+id/surName_textView"
-                >
+                android:textColor="#01579B">
                 <requestFocus />
             </EditText>
 
@@ -57,7 +58,7 @@
 
             android:layout_width="1dip"
             android:layout_height="500dip"
-            android:background="@android:color/darker_gray"
+            android:background="#E0E0E0"
             />
         <LinearLayout
             android:layout_width="wrap_content"
@@ -76,7 +77,7 @@
                 android:layout_height="30dp"
                 android:background="@null"
                 android:singleLine="true"
-                />
+                android:textColor="#01579B" />
         </LinearLayout>
 
 
@@ -84,8 +85,8 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@android:color/darker_gray" />
+        android:layout_height="1dp"
+        android:background="#E0E0E0" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -126,8 +127,8 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@android:color/darker_gray" />
+        android:layout_height="1dp"
+        android:background="#E0E0E0" />
 
 
     <LinearLayout
@@ -147,13 +148,13 @@
             android:background="@null"
             android:singleLine="true"
             android:inputType="textEmailAddress"
-            />
+            android:textColor="#01579B" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@android:color/darker_gray" />
+        android:layout_height="1dp"
+        android:background="#E0E0E0" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -177,7 +178,7 @@
                 android:background="@null"
                 android:singleLine="true"
                 android:inputType="textPassword"
-                />
+                android:textColor="#01579B" />
             <!--<ImageButton-->
                 <!--android:layout_width="20dp"-->
                 <!--android:layout_height="20dp"-->
@@ -197,8 +198,8 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@android:color/darker_gray" />
+        android:layout_height="1dp"
+        android:background="#E0E0E0" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="37dp"
@@ -217,7 +218,7 @@
             android:scrollHorizontally="true"
             android:id="@+id/requirement_password_string"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text=" Mật khẩu mới phải dài ít nhất 8 ký tự và chứa  ít nhất 1 chữ số."
+            android:text="@string/password_term_string"
             android:textSize="11dp" />
     </LinearLayout>
 
@@ -253,11 +254,12 @@
             android:layout_gravity="center"
             android:id="@+id/term_string"
             android:textSize="13dp"
-            android:text="Tôi đồng ý với Jio Health về điều khoản sử dụng và Chính sách bảo mật." />
+            android:text="@string/term_string"
+            android:textColor="#01579B" />
     </LinearLayout>
 
     <Button
-        android:layout_width="116dp"
+        android:layout_width="159dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="20dp"
@@ -265,7 +267,7 @@
         android:background="@drawable/custom_btn"
         android:id="@+id/create_account_btn"
         android:onClick="create_new_provider_account"
-        android:backgroundTint="#5d6ace"
+
         android:textColor="#ffffff"
         android:layout_weight="0.08"
         android:textAllCaps="false"

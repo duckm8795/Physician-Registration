@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:id="@+id/camera_preview_layout"
+        android:background="@color/black">
+
+
+
+        <RelativeLayout
+            android:id="@+id/top_view"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_alignParentTop="true"
+            android:background="#80000000">
+
+            <ImageButton
+                android:id="@+id/ic_flash"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:onClick="switch_flash"
+                android:scaleType="centerInside"
+                android:background="@mipmap/ic_flash"/>
+            <ImageButton
+                android:id="@+id/ic_switch_camera"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:onClick="switch_camera"
+                android:background="@mipmap/ic_switch_camera"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+
+
+        <FrameLayout
+            android:id="@+id/center_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:scaleType="fitXY"
+
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/top_view"
+            android:layout_alignParentBottom="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đặt tấm thẻ lên mặt phẳng"
+                android:textAlignment="center"
+                android:layout_marginTop="10dp"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center_horizontal|top" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:layout_marginTop="25dp"
+                android:text="Đưa tấm thẻ vừa khít đường màu xanh"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center_horizontal|top" />
+        </FrameLayout>
+
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@android:color/black"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" >
+
+            <LinearLayout
+                android:id="@+id/btn_gallery"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="left" >
+
+                <TextView
+
+                    android:id="@+id/gallery_image"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@null"
+                    android:text="Hủy"
+                    android:onClick="finish_camera"
+                    android:textColor="@android:color/white"
+
+                    android:gravity="center" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/btn_capture_photo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:layout_weight="1" >
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:id="@+id/capture_image"
+                android:layout_centerInParent="true"
+                android:background="@mipmap/ic_capture"
+                android:duplicateParentState="true" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+
+            android:layout_weight="1" >
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+
+                android:id="@+id/imageHoder"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

@@ -10,15 +10,11 @@ import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,13 +39,15 @@ import retrofit2.Response;
 
 public class AvatarPhysicalActivity extends AppCompatActivity {
     private int REQUEST_CAMERA = 0, SELECT_FILE = 1;
-    CircleImageView circleImageView;
-    SharedPreferences sharedPreferences= null;
-    String retrieveToken = null;
-    String retrieveID = null;
-    File file;
-    Map<String, RequestBody> requestBodyMap = new HashMap<>();
-    FileOutputStream fo;
+    private CircleImageView circleImageView;
+    private SharedPreferences sharedPreferences = null;
+    private String retrieveToken = null;
+    private String retrieveID = null;
+    private File file;
+    private Map<String, RequestBody> requestBodyMap = new HashMap<>();
+    private Map<String, RequestBody> requestBodyMap_ChooseGallery = new HashMap<>();
+    private FileOutputStream fo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,22 +57,22 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
         initView();
     }
 
-    public void initView(){
+    public void initView() {
 
         TextView textView = (TextView) findViewById(R.id.textView_intro_avatar_string);
         circleImageView = (CircleImageView) findViewById(R.id.profile_image);
         Typeface font_medium = Typeface.createFromAsset(getAssets(), "Ubuntu-Regular.ttf");
         textView.setTypeface(font_medium);
 
-        sharedPreferences= getSharedPreferences(getString(R.string.sharePre_string), Context.MODE_PRIVATE);
-        retrieveToken = sharedPreferences.getString(getString(R.string.storePreToken),"");
-        retrieveID = sharedPreferences.getString(getString(R.string.storePreID),"");
+        sharedPreferences = getSharedPreferences(getString(R.string.sharePre_string), Context.MODE_PRIVATE);
+        retrieveToken = sharedPreferences.getString(getString(R.string.storePreToken), "");
+        retrieveID = sharedPreferences.getString(getString(R.string.storePreID), "");
 
     }
 
 
     public void choose_avatar(View view) {
-        final CharSequence[] items = { "Chụp ảnh mới", "Chọn ảnh" };
+        final CharSequence[] items = {"Chụp ảnh mới", "Chọn ảnh"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(AvatarPhysicalActivity.this);
         builder.setTitle("Jio Doctor");
@@ -87,7 +85,7 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
                     cameraIntent();
 
                 } else if (items[item].equals("Chọn ảnh")) {
-                    circleImageView.setImageDrawable(null);
+                    circleImageView.setImageResource(R.drawable.download);
                     Crop.pickImage(AvatarPhysicalActivity.this);
                 }
             }
@@ -95,11 +93,11 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
         builder.show();
     }
 
-    private void cameraIntent()
-    {
+    private void cameraIntent() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, REQUEST_CAMERA);
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -109,8 +107,7 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
                 beginCrop(data.getData());
             } else if (requestCode == Crop.REQUEST_CROP) {
                 handleCrop(resultCode, data);
-            }
-            else if (requestCode == REQUEST_CAMERA)
+            } else if (requestCode == REQUEST_CAMERA)
                 onCaptureImageResult(data);
         }
     }
@@ -120,7 +117,7 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         thumbnail.compress(Bitmap.CompressFormat.PNG, 90, bytes);
 
-        file = new File(getApplicationContext().getCacheDir(),"my_avatar_");
+        file = new File(getApplicationContext().getCacheDir(), "my_avatar_");
 
         try {
             file.createNewFile();
@@ -135,8 +132,8 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
         circleImageView.setImageBitmap(thumbnail);
 
         /* processing for sever */
-        generateParams();
-        process();
+        generateParams_chooseGallery();
+        process_chooseGallery();
     }
 
     private void beginCrop(Uri source) {
@@ -146,47 +143,105 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
 
     private void handleCrop(int resultCode, Intent result) {
         if (resultCode == RESULT_OK) {
-            if(Crop.getOutput(result).equals(null)){
-                //Toast.makeText(AvatarPhysicalActivity.this,"qqqqqq",Toast.LENGTH_LONG).show();
+            if (Crop.getOutput(result).equals(Uri.EMPTY)) {
+                circleImageView.setImageResource(R.drawable.download);
+                //circleImageView.setImageDrawable(getResources().getDrawable(R.drawable.download));
+                Toast.makeText(AvatarPhysicalActivity.this, "qqqqqq", Toast.LENGTH_LONG).show();
             }
             circleImageView.setImageURI(Crop.getOutput(result));
-            file = new File (Crop.getOutput(result).getPath());
+            file = new File(Crop.getOutput(result).getPath());
             generateParams();
             process();
         } else if (resultCode == Crop.RESULT_ERROR) {
             Toast.makeText(this, Crop.getError(result).getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-    public void generateParams(){
+
+    public void generateParams() {
         String fileName = "file\"; filename=\"" + file.getName();
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         RequestBody id = RequestBody.create(MediaType.parse("multipart/form-data"), retrieveID);
         RequestBody token = RequestBody.create(MediaType.parse("multipart/form-data"), retrieveToken);
 
-        requestBodyMap.put("token",token);
+        requestBodyMap.put("token", token);
         requestBodyMap.put("userID", id);
         requestBodyMap.put(fileName, requestBody);
     }
-    public  void process (){
+
+    public void generateParams_chooseGallery() {
+        String fileName = "file\"; filename=\"" + file.getName();
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        RequestBody id = RequestBody.create(MediaType.parse("multipart/form-data"), retrieveID);
+        RequestBody token = RequestBody.create(MediaType.parse("multipart/form-data"), retrieveToken);
+
+        requestBodyMap_ChooseGallery.put("token", token);
+        requestBodyMap_ChooseGallery.put("userID", id);
+        requestBodyMap_ChooseGallery.put(fileName, requestBody);
+    }
+
+    public void process() {
         ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
         Call<AvatarResponse> call = serviceAPI.uploadAvatar(requestBodyMap);
         call.enqueue(new Callback<AvatarResponse>() {
             @Override
             public void onResponse(Call<AvatarResponse> call, Response<AvatarResponse> response) {
-                if ( response.body().getSuccess()){
-                    Toast.makeText(AvatarPhysicalActivity.this,response.body().getMessage(),Toast.LENGTH_LONG).show();
+                if (response.body().getSuccess()) {
+                    Toast.makeText(AvatarPhysicalActivity.this, response.body().getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<AvatarResponse> call, Throwable t) {
-                Toast.makeText(AvatarPhysicalActivity.this,t.getMessage(),Toast.LENGTH_LONG).show();
+                Toast.makeText(AvatarPhysicalActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
-    public void next_to_degree_activity(View view){
-        Intent intent = new Intent(AvatarPhysicalActivity.this,DegreeListActivity.class);
-        startActivity(intent);
+
+    public void process_chooseGallery() {
+        ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
+        Call<AvatarResponse> call = serviceAPI.uploadAvatar(requestBodyMap_ChooseGallery);
+        call.enqueue(new Callback<AvatarResponse>() {
+            @Override
+            public void onResponse(Call<AvatarResponse> call, Response<AvatarResponse> response) {
+                if (response.body().getSuccess()) {
+                    Log.d("AAA", response.body().getMessage());
+                    //Toast.makeText(AvatarPhysicalActivity.this,response.body().getMessage(),Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AvatarResponse> call, Throwable t) {
+                Toast.makeText(AvatarPhysicalActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
+
+
+    public void next_to_degree_activity(View view) {
+        Intent intent = new Intent(AvatarPhysicalActivity.this, DegreeListActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        AvatarPhysicalActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+
+    @Override
+    public void onBackPressed() {
+        new android.support.v7.app.AlertDialog.Builder(this).setIcon(R.drawable.ic_error_outline_black_24dp).setTitle("Jio Doctor")
+                .setMessage("Bạn có chắc muốn thoát ứng dụng?")
+                .setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Intent intent = new Intent(Intent.ACTION_MAIN);
+                        intent.addCategory(Intent.CATEGORY_HOME);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+                }).setNegativeButton("Không", null).show();
+    }
+
 }

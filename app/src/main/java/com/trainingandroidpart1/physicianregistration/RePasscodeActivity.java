@@ -15,6 +15,8 @@ import com.ngocbeo1121.iospasscode.IOSPasscodeViewCallback;
 import com.trainingandroidpart1.physicianregistration.Response.SetSecurityPin.SetSecurityPinResponse;
 import com.trainingandroidpart1.physicianregistration.Service.ServiceAPI;
 
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -28,6 +30,7 @@ public class RePasscodeActivity extends AppCompatActivity {
     private String retrievePasscode = null;
     private IOSPasscodeView passcodeView;
     private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,13 +41,14 @@ public class RePasscodeActivity extends AppCompatActivity {
 
 
     }
-    public void callbackFromIOSPasscode(){
+
+    public void callbackFromIOSPasscode() {
         passcodeView.setCallback(new IOSPasscodeViewCallback() {
             @Override
             public boolean onCompleted(IOSPasscodeView passcodeView) {
 
                 if (passcodeView.getPasscode().equals(retrievePasscode)) {
-                    process();
+                    new SendRequests().execute();
                     return true;
                 } else {
                     Toast.makeText(RePasscodeActivity.this, "Failed", Toast.LENGTH_LONG).show();
@@ -70,33 +74,7 @@ public class RePasscodeActivity extends AppCompatActivity {
             }
         });
     }
-    class SendRequests extends AsyncTask<Void, Void, Void> {
 
-        public SendRequests() {
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            showLoading();
-        }
-
-        @Override
-        protected Void doInBackground(Void... arg0) {
-            process();
-            return null;
-        }
-
-        protected void onPostExecute(Void v) {
-
-            Intent i = new Intent(RePasscodeActivity.this, PhysicalVertificationActivity.class);
-            startActivity(i);
-            hideLoading();
-
-        }
-
-
-    }
     public void showLoading() {
 
         progressDialog = new ProgressDialog(RePasscodeActivity.this);
@@ -109,16 +87,15 @@ public class RePasscodeActivity extends AppCompatActivity {
 
         progressDialog.dismiss();
     }
-    public void process(){
+
+    public void process() {
         ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
         Call<SetSecurityPinResponse> call = serviceAPI.setSecurityPin(Long.parseLong(retrieveID), retrieveToken, retrievePasscode);
         call.enqueue(new Callback<SetSecurityPinResponse>() {
             @Override
             public void onResponse(Call<SetSecurityPinResponse> call, Response<SetSecurityPinResponse> response) {
                 if (response.body().getSuccess()) {
-
                     nextToVerficationActivity();
-
                 }
 
             }
@@ -129,26 +106,94 @@ public class RePasscodeActivity extends AppCompatActivity {
             }
         });
     }
-    public void initView(){
+
+
+    public void initView() {
         passcodeView = (IOSPasscodeView) findViewById(R.id.re_passcodeView);
 
         /* retrieve id and token from Share Pre */
-        sharedPreferences= getSharedPreferences(getString(R.string.sharePre_string), Context.MODE_PRIVATE);
-        retrieveToken = sharedPreferences.getString(getString(R.string.storePreToken),"");
-        retrieveID = sharedPreferences.getString(getString(R.string.storePreID),"");
-        retrievePasscode = sharedPreferences.getString(getString(R.string.store_passcode_string),"");
+        sharedPreferences = getSharedPreferences(getString(R.string.sharePre_string), Context.MODE_PRIVATE);
+        retrieveToken = sharedPreferences.getString(getString(R.string.storePreToken), "");
+        retrieveID = sharedPreferences.getString(getString(R.string.storePreID), "");
+        retrievePasscode = sharedPreferences.getString(getString(R.string.store_passcode_string), "");
 
 
     }
+
     public void back_to_parent_activity(View view) {
         Intent intent = new Intent(RePasscodeActivity.this, PasscodeActivity.class);
 
         startActivity(intent);
 
     }
-    public void nextToVerficationActivity(){
+
+    public void nextToVerficationActivity() {
         Intent intent = new Intent(RePasscodeActivity.this, PhysicalVertificationActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        RePasscodeActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
+    class SendRequests extends AsyncTask<Void, Void, Void> {
+        SetSecurityPinResponse setSecurityPinResponse;
+        public SendRequests() {
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showLoading();
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            try {
+                Thread.currentThread();
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
+            Call<SetSecurityPinResponse> call = serviceAPI.setSecurityPin(Long.parseLong(retrieveID), retrieveToken, retrievePasscode);
+            try {
+                setSecurityPinResponse =  call.execute().body();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Void v) {
+            if(setSecurityPinResponse.getSuccess()){
+                hideLoading();
+                Intent i = new Intent(RePasscodeActivity.this, PhysicalVertificationActivity.class);
+                startActivity(i);
+            }
+
+
+
+        }
+
+
+    }
+
+//    @Override
+//    public void onBackPressed() {
+//        new AlertDialog.Builder(this).setIcon(R.drawable.ic_error_outline_black_24dp).setTitle("Jio Doctor")
+//                .setMessage("Bạn có chắc muốn thoát ứng dụng?")
+//                .setPositiveButton("Có", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//
+//                        Intent intent = new Intent(Intent.ACTION_MAIN);
+//                        intent.addCategory(Intent.CATEGORY_HOME);
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                        startActivity(intent);
+//                        finish();
+//                    }
+//                }).setNegativeButton("Không", null).show();
+//    }
 }

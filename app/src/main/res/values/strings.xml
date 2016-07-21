@@ -24,4 +24,8 @@
     <string name="title_activity_main_profile"></string>
     <string name="sharePre_string">MyPrefer</string>
     <string name="store_passcode_string">passcodeSharePre</string>
+    <string name="create_account_string">Tạo tài khoản mới</string>
+    <string name="password_term_string">Mật khẩu mới phải dài ít nhất 8 ký tự và chứa ít nhất 1 chữ số.</string>
+    <string name="term_string">Tôi đồng ý với Jio Health về điều khoản sử dụng và Chính sách bảo mật.</string>
+    <string name="sharePre_Language">storeLanguageSelected</string>
 </resources>

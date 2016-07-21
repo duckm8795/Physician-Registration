@@ -5,4 +5,9 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorDarkGrey">#cff3f3</color>
     <color name="color_language_text">#9C27B0</color>
+    <color name="white">#ffffff</color>
+    <color name="transparent">#00000000</color>
+    <color name="black">#ff000000</color>
+    <color name="divider">#E0E0E0</color>
+    <color name="gray">#666666</color>
 </resources>

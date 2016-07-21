@@ -40,8 +40,10 @@
     <ListView
         android:id="@+id/languageListView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:scrollbarSize="@dimen/activity_horizontal_margin"
+        android:divider="@color/divider"
+        android:dividerHeight="0.5dp"
         android:background="@android:color/white"
         android:layout_weight="1" />
 

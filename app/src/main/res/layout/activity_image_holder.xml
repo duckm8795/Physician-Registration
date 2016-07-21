@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/image_holder_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:layout_marginBottom="80dp"
+
+        android:id="@+id/imageHolderLayout">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:scaleType="centerCrop"
+            android:id="@+id/imageHolder22"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/card_icon_black"
+            android:visibility="invisible"
+            android:id="@+id/imageHolder_contain_background"/>
+    </FrameLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Chụp lại"
+        android:id="@+id/textView"
+        android:textSize="15sp"
+        android:textColor="@android:color/white"
+        android:onClick="retake_camera"
+        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp"
+
+        android:layout_alignTop="@+id/textView2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Sử dụng ảnh"
+        android:textSize="15sp"
+        android:layout_marginRight="22dp"
+        android:id="@+id/textView2"
+        android:onClick="use_photo"
+
+        android:textColor="@android:color/white"
+        android:layout_marginEnd="22dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="56dp" />
+    <com.dinuscxj.progressbar.CircleProgressBar
+        android:id="@+id/upload_progress"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:style="solid_line"
+
+        android:layout_below="@+id/textView"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
