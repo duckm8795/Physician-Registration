@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -21,8 +22,15 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.trainingandroidpart1.physicianregistration.Adapter.CustomSpinnerAdapter;
 import com.trainingandroidpart1.physicianregistration.Response.CreateProviderAccount.CreateProviderAccountResponse;
+import com.trainingandroidpart1.physicianregistration.Response.GetDegreeList.DegreeList;
+import com.trainingandroidpart1.physicianregistration.Response.GetDegreeList.MedDegreeList;
 import com.trainingandroidpart1.physicianregistration.Service.ServiceAPI;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -225,11 +233,73 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     }
 
+    class SendRequests extends AsyncTask<Void, Void, Void> {
+        CreateProviderAccountResponse createProviderAccountResponse;
+        String email1 = email.getText().toString();
+        String firstName1 = firstName.getText().toString();
+        String surName1 = surName.getText().toString();
+        String password1 = password.getText().toString();
+        public SendRequests() {
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showLoading();
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            try {
+                Thread.currentThread();
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
+            Call<CreateProviderAccountResponse> call =
+                    serviceAPI.createProviderAccount("M", email1,firstName1 ,
+                            "vi",surName1 ,password1 , "VN", genderCheck(), "Asia/Saigon");
+            try {
+                createProviderAccountResponse= call.execute().body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        protected void onPostExecute(Void v) {
+            if(createProviderAccountResponse.getSuccess()){
+
+                userID = createProviderAccountResponse.getUserID();
+                accessToken = createProviderAccountResponse.getAccessToken();
+
+                sharedPreferences = getSharedPreferences(getString(R.string.sharePre_string), Context.MODE_PRIVATE);
+                sharedPreferences.edit().putString(getString(R.string.storePreToken), accessToken).apply();
+                sharedPreferences.edit().putString(getString(R.string.storePreID), String.valueOf(userID)).apply();
+
+                hideLoading();
+                Intent i = new Intent(CreateAccountActivity.this, PasscodeActivity.class);
+                startActivity(i);
+            }else {
+                hideLoading();
+                showAlertCreateAccountResponse(createProviderAccountResponse.getMessage());
+            }
+
+
+
+        }
+
+
+    }
     public void showLoading() {
         progressDialog = new ProgressDialog(CreateAccountActivity.this);
         progressDialog.setMessage("Đang xử lý ...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.show();
+        progressDialog.setCanceledOnTouchOutside(false);
     }
 
     public void hideLoading() {
@@ -383,40 +453,6 @@ public class CreateAccountActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    class SendRequests extends AsyncTask<Void, Void, Void> {
 
-        public SendRequests() {
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            showLoading();
-        }
-
-        @Override
-        protected Void doInBackground(Void... arg0) {
-            try {
-                Thread.currentThread();
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            sendRequest();
-            return null;
-        }
-
-        protected void onPostExecute(Void v) {
-            hideLoading();
-            Intent i = new Intent(CreateAccountActivity.this, PasscodeActivity.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(i);
-            CreateAccountActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
-        }
-
-
-    }
 
 }

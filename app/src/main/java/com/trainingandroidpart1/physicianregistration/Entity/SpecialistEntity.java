@@ -8,12 +8,19 @@ import me.yokeyword.indexablelistview.IndexEntity;
 public class SpecialistEntity extends IndexEntity {
     private String name;
     private int id;
+    private boolean selected = false;
 
-    public SpecialistEntity(String name, int id) {
+    public SpecialistEntity(String name, int id, Boolean aBoolean) {
         this.name = name;
         this.id = id;
     }
+    public boolean isSelected() {
+        return selected;
+    }
 
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
     public int getId() {
         return id;
     }

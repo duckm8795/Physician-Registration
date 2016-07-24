@@ -21,8 +21,10 @@ import com.trainingandroidpart1.physicianregistration.Response.LanguageListRespo
 import com.trainingandroidpart1.physicianregistration.Response.LanguageListResponse.MainLanguageListResponse;
 import com.trainingandroidpart1.physicianregistration.Response.SpecialistReponse.MainSpecialList;
 import com.trainingandroidpart1.physicianregistration.Response.SpecialistReponse.SpecialtyList;
+import com.trainingandroidpart1.physicianregistration.Response.StandardResponse;
 import com.trainingandroidpart1.physicianregistration.Service.ServiceAPI;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +42,8 @@ public class SpecialistActivity extends AppCompatActivity {
     private String retrieveID = null;
     private String specialtyIDs = null;
     private SpecialistAdapter mAdapter;
+    SpecialistEntity specialityEntity;
+    List<SpecialtyList> specialtyList;
     private List<SpecialistEntity> specialityName = new ArrayList<>();
     private ProgressDialog progressDialog;
     @Override
@@ -49,62 +53,38 @@ public class SpecialistActivity extends AppCompatActivity {
 
         initView();
         new SendRequests().execute();
-
-    }
-
-    public void process() {
-        ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
-
-        Call<MainSpecialList> call = serviceAPI.getSpecialtyList("vi", "VN", retrieveToken, Long.parseLong(retrieveID));
-        call.enqueue(new Callback<MainSpecialList>() {
+        mIndexableStickyListView.setOnItemContentClickListener(new IndexableStickyListView.OnItemContentClickListener() {
             @Override
-            public void onResponse(Call<MainSpecialList> call, Response<MainSpecialList> response) {
-                if (response.body().getSuccess()) {
+            public void onItemClick(View v, IndexEntity indexEntity) {
+                specialityEntity = (SpecialistEntity) indexEntity;
+                //Toast.makeText(getApplicationContext(),String.valueOf(specialityEntity.getId()),Toast.LENGTH_LONG).show();
+                CheckBox box = (CheckBox)v.findViewById(R.id.check_speciality_togg);
 
-                    List<SpecialtyList> specialtyList = response.body().getSpecialtyList();
-
-                    for (int i = 0; i < specialtyList.size(); i++) {
-                        SpecialistEntity specialityEntity = new SpecialistEntity(specialtyList.get(i).getDescription(),
-                                specialtyList.get(i).getSpecialtyID());
-                        specialityName.add(specialityEntity);
-
-                    }
-
-                    mIndexableStickyListView.bindDatas(specialityName);
-                    mIndexableStickyListView.setOnItemContentClickListener(new IndexableStickyListView.OnItemContentClickListener() {
-                        @Override
-                        public void onItemClick(View v, IndexEntity indexEntity) {
-                            CheckBox a = (CheckBox) v;
-
-                        }
-                    });
-                    mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                        @Override
-                        public boolean onQueryTextSubmit(String query) {
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onQueryTextChange(String newText) {
-                            // 委托处理搜索
-                            mIndexableStickyListView.searchTextChange(newText);
-                            return true;
-                        }
-                    });
-
-
+                specialityEntity.setSelected(true);
+                if (box.isChecked()){
+                    box.setChecked(false);
+                    specialityEntity.setSelected(false);
+                }else{
+                    box.setChecked(true);
                 }
-
-
-            }
-
-            @Override
-            public void onFailure(Call<MainSpecialList> call, Throwable t) {
-
             }
         });
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
 
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // 委托处理搜索
+                mIndexableStickyListView.searchTextChange(newText);
+                return true;
+            }
+        });
     }
+
+
 
     public void initView() {
         setTitle("Bằng cấp");
@@ -112,7 +92,7 @@ public class SpecialistActivity extends AppCompatActivity {
         mIndexableStickyListView = (IndexableStickyListView) findViewById(R.id.indexListView);
         mSearchView = (SearchView) findViewById(R.id.searchview);
 
-        mAdapter = new SpecialistAdapter(getApplicationContext());
+        mAdapter = new SpecialistAdapter(SpecialistActivity.this);
         mIndexableStickyListView.setAdapter(mAdapter);
 
 
@@ -122,34 +102,11 @@ public class SpecialistActivity extends AppCompatActivity {
     }
 
     public void next_to_language_activity(View view) {
+        new SendRequests2().execute();
 
-        Intent intent = new Intent(SpecialistActivity.this, LanguageListActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-
-        SpecialistActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-//         /* start processing to sever */
-//        ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
-//        Call<StandardResponse> call = serviceAPI.updateSpecialityList(specialtyIDs,retrieveToken, Long.parseLong(retrieveID));
-//        call.enqueue(new Callback<StandardResponse>() {
-//            @Override
-//            public void onResponse(Call<StandardResponse> call, Response<StandardResponse> response) {
-//                if (response.body().getSuccess()) {
-//                    Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_LONG).show();
-//
-//                }
-//
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<StandardResponse> call, Throwable t) {
-//                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-//            }
-//        });
     }
     class SendRequests extends AsyncTask<Void, Void, Void> {
-
+        MainSpecialList mainSpecialList;
         public SendRequests() {
 
         }
@@ -169,12 +126,98 @@ public class SpecialistActivity extends AppCompatActivity {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-         process();
+            ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
+
+            Call<MainSpecialList> call = serviceAPI.getSpecialtyList("vi", "VN", retrieveToken, Long.parseLong(retrieveID));
+            try {
+                mainSpecialList = call.execute().body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return null;
         }
 
         protected void onPostExecute(Void v) {
-            hideLoading();
+            if (mainSpecialList.getSuccess()) {
+                hideLoading();
+                List<Boolean> check_selected = new ArrayList<>();
+                specialtyList = mainSpecialList.getSpecialtyList();
+                for (int i = 0; i<specialtyList.size();i++){
+                    check_selected.add(false);
+                }
+                for (int i = 0; i < specialtyList.size(); i++) {
+                    specialityEntity = new SpecialistEntity(specialtyList.get(i).getDescription(),
+                            specialtyList.get(i).getSpecialtyID(),check_selected.get(i));
+                    specialityName.add(specialityEntity);
+
+                }
+
+                mIndexableStickyListView.bindDatas(specialityName);
+
+            }else{
+                hideLoading();
+                Toast.makeText(getApplicationContext(),mainSpecialList.getMessage(),Toast.LENGTH_LONG).show();
+            }
+
+
+        }
+
+
+    }
+    class SendRequests2 extends AsyncTask<Void, Void, Void> {
+        StandardResponse standardResponse;
+        String result;
+        public SendRequests2() {
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showLoading();
+            StringBuffer responseText = new StringBuffer();
+
+
+            for(int i=0;i<specialityName.size();i++){
+
+                if(specialityName.get(i).isSelected()){
+                    responseText.append(","+specialtyList.get(i).getSpecialtyID());
+                }
+            }
+            result = responseText.substring(1,responseText.length());
+            Toast.makeText(getApplicationContext(),result,Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            try {
+                Thread.currentThread();
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
+
+            Call<StandardResponse> call = serviceAPI.updateSpecialityList(result, retrieveToken, Long.parseLong(retrieveID));
+            try {
+                standardResponse = call.execute().body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Void v) {
+            if (standardResponse.getSuccess()) {
+                hideLoading();
+                startActivity(new Intent(SpecialistActivity.this,LanguageListActivity.class));
+
+            }else{
+                hideLoading();
+                Toast.makeText(getApplicationContext(),standardResponse.getMessage(),Toast.LENGTH_LONG).show();
+            }
+
 
         }
 
@@ -185,6 +228,7 @@ public class SpecialistActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(SpecialistActivity.this);
         progressDialog.setMessage("Đang xử lý ...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
     }
 

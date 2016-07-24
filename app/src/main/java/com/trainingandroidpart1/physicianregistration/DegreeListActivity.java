@@ -45,7 +45,7 @@ public class DegreeListActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         initView();
-         new SendRequests().execute();
+        new SendRequests().execute();
 
 
     }
@@ -57,65 +57,61 @@ public class DegreeListActivity extends AppCompatActivity {
         retrieveID = sharedPreferences.getString(getString(R.string.storePreID), "");
     }
 
-    public void showLoading() {
 
-        progressDialog = new ProgressDialog(DegreeListActivity.this);
-        progressDialog.setMessage("Đang xử lý ...");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.show();
-    }
 
-    public void hideLoading() {
+    //
+    class SendRequestsToSpecialty extends AsyncTask<Void, Void, Void> {
+        StandardResponse standardResponse;
 
-        progressDialog.dismiss();
-    }
+        public SendRequestsToSpecialty() {
+        }
 
-//
-class SendRequestsToSpecialty extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showLoading();
+        }
 
-    public SendRequestsToSpecialty() {
-    }
-
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
-        showLoading();
-    }
-
-    @Override
-    protected Void doInBackground(Void... arg0) {
+        @Override
+        protected Void doInBackground(Void... arg0) {
          /* start processing to sever */
-        ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
-        Call<StandardResponse> call = serviceAPI.saveProviderProfileList(retrieveToken, Long.parseLong(retrieveID), "Degree", degreeID);
-        call.enqueue(new Callback<StandardResponse>() {
-            @Override
-            public void onResponse(Call<StandardResponse> call, Response<StandardResponse> response) {
-                if (response.body().getSuccess()) {
-
-                }
-
-
+            try {
+                Thread.currentThread();
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             }
 
-            @Override
-            public void onFailure(Call<StandardResponse> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
+            Call<StandardResponse> call = serviceAPI.saveProviderProfileList(retrieveToken, Long.parseLong(retrieveID), "Degree", degreeID);
+            try {
+                standardResponse = call.execute().body();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        });
-        return null;
+
+            return null;
+        }
+
+        protected void onPostExecute(Void v) {
+            if (standardResponse.getSuccess()) {
+                hideLoading();
+                Intent i = new Intent(DegreeListActivity.this, SpecialistActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(i);
+                DegreeListActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            } else {
+                hideLoading();
+                Toast.makeText(getApplicationContext(), standardResponse.getMessage(), Toast.LENGTH_LONG).show();
+            }
+
+
+        }
+
+
     }
 
-    protected void onPostExecute(Void v) {
-        hideLoading();
-        Intent i = new Intent(DegreeListActivity.this, SpecialistActivity.class);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(i);
-        DegreeListActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
-    }
-
-
-}
     public void next_to_spcialist_activity(View view) {
         new SendRequestsToSpecialty().execute();
     }
@@ -140,6 +136,7 @@ class SendRequestsToSpecialty extends AsyncTask<Void, Void, Void> {
 
     class SendRequests extends AsyncTask<Void, Void, Void> {
         DegreeList degreeList;
+
         public SendRequests() {
         }
 
@@ -170,41 +167,56 @@ class SendRequestsToSpecialty extends AsyncTask<Void, Void, Void> {
         }
 
         protected void onPostExecute(Void v) {
-            if(degreeList.getSuccess()){
-                List<MedDegreeList> medDegreeListList = degreeList.getMedDegreeList();
-                        List<String> medDegreeName = new ArrayList<>();
-                        final List<Integer> medDegreeID = new ArrayList<>();
-                        for (int i = 0; i < medDegreeListList.size(); i++) {
-                            medDegreeName.add(medDegreeListList.get(i).getName());
-                            medDegreeID.add(medDegreeListList.get(i).getMedDegreeID());
-                        }
-
-                        CustomSpinnerAdapter customSpinnerAdapter = new CustomSpinnerAdapter(DegreeListActivity.this, medDegreeName);
-
-                        materialSpinner.setAdapter(customSpinnerAdapter);
-                        materialSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-                            @Override
-                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                                degreeID = medDegreeID.get(i).toString();
-                            }
-
-                            @Override
-                            public void onNothingSelected(AdapterView<?> adapterView) {
-
-                            }
-                        });
+            if (degreeList.getSuccess()) {
                 hideLoading();
-//                Intent i = new Intent(DegreeListActivity.this, SpecialistActivity.class);
-//                startActivity(i);
-            }
 
+                List<MedDegreeList> medDegreeListList = degreeList.getMedDegreeList();
+                List<String> medDegreeName = new ArrayList<>();
+                final List<Integer> medDegreeID = new ArrayList<>();
+                for (int i = 0; i < medDegreeListList.size(); i++) {
+                    medDegreeName.add(medDegreeListList.get(i).getName());
+                    medDegreeID.add(medDegreeListList.get(i).getMedDegreeID());
+                }
+
+                CustomSpinnerAdapter customSpinnerAdapter = new CustomSpinnerAdapter(DegreeListActivity.this, medDegreeName);
+
+                materialSpinner.setAdapter(customSpinnerAdapter);
+                materialSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        degreeID = medDegreeID.get(i).toString();
+                        //Toast.makeText(getApplicationContext(), degreeID, Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+                        degreeID = "13";
+                    }
+                });
+
+            } else {
+                hideLoading();
+                Toast.makeText(getApplicationContext(), degreeList.getMessage(), Toast.LENGTH_LONG).show();
+            }
 
 
         }
 
 
     }
+    public void showLoading() {
 
+        progressDialog = new ProgressDialog(DegreeListActivity.this);
+        progressDialog.setMessage("Đang xử lý ...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+    }
+
+    public void hideLoading() {
+
+        progressDialog.dismiss();
+    }
 
 }

@@ -65,6 +65,7 @@ public class CameraGovermentActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     mCamera.takePicture(null, null, pictureCallback);
+
                 }
             });
         }
@@ -270,6 +271,7 @@ public class CameraGovermentActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(CameraGovermentActivity.this);
         progressDialog.setMessage("Đang xử lý ...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
     }
 
@@ -285,6 +287,15 @@ public class CameraGovermentActivity extends AppCompatActivity {
     }
     public void finish_camera(View view) {
         finish();
+    }
+    public void releaseCamera() throws Exception {
+        if (mCamera != null) {
+            mCamera.release();
+            mCamera = null;
+        }
+        if (preview_layout != null) {
+            preview_layout.removeAllViewsInLayout();
+        }
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -10,6 +10,15 @@ public class LanguageList {
     private String languageCode;
     private String name;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+    boolean selected = false;
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
 
     /**
      *

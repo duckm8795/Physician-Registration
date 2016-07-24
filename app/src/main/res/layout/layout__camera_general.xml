@@ -26,6 +26,7 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:onClick="switch_flash"
+                android:visibility="visible"
                 android:scaleType="centerInside"
                 android:background="@mipmap/ic_flash"/>
             <ImageButton
@@ -43,7 +44,7 @@
         <FrameLayout
             android:id="@+id/center_view"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:scaleType="fitXY"
 
             android:layout_centerHorizontal="true"
@@ -75,8 +76,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="wrap_content"
         android:background="@android:color/black"
+
         android:orientation="horizontal" >
 
         <LinearLayout
@@ -100,7 +102,7 @@
                     android:background="@null"
                     android:text="Hủy"
                     android:onClick="finish_camera"
-                    android:textColor="@android:color/white"
+                    android:textColor="@drawable/change_state_textview"
 
                     android:gravity="center" />
             </LinearLayout>

@@ -204,6 +204,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(PhysicalVertificationActivity.this);
         progressDialog.setMessage("Đang xử lý ...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
     }
 

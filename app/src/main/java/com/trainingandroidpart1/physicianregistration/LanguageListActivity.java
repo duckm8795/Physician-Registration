@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -21,6 +22,8 @@ import com.trainingandroidpart1.physicianregistration.Response.LanguageListRespo
 import com.trainingandroidpart1.physicianregistration.Response.StandardResponse;
 import com.trainingandroidpart1.physicianregistration.Service.ServiceAPI;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -36,6 +39,8 @@ public class LanguageListActivity extends AppCompatActivity {
     private CheckBox checkBox;
     private String retrieve_language_selected = "";        // data receieved when a item's clicked.
     private ProgressDialog progressDialog;
+    private LanguageListCustomAdapter languageListCustomAdapter = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,53 +66,14 @@ public class LanguageListActivity extends AppCompatActivity {
         retrieve_language_selected = sharedPreferences.getString(getString(R.string.sharePre_Language), "");
     }
 
-    public void process() {
-        /* start processing to sever */
-        ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
-
-        Call<MainLanguageListResponse> call = serviceAPI.getLanguageList("vi", "VN", retrieveToken, Long.parseLong(retrieveID));
-        call.enqueue(new Callback<MainLanguageListResponse>() {
-            @Override
-            public void onResponse(Call<MainLanguageListResponse> call, Response<MainLanguageListResponse> response) {
-                if (response.body().getSuccess()) {
-
-                    final List<LanguageList> languageLists1 = response.body().getLanguageList();
-
-                    final LanguageListCustomAdapter languageListCustomAdapter = new LanguageListCustomAdapter(LanguageListActivity.this, languageLists1);
-
-                    listview.setAdapter(languageListCustomAdapter);
 
 
-                    /* implement search view*/
-                    mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                        @Override
-                        public boolean onQueryTextSubmit(String query) {
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onQueryTextChange(String newText) {
-
-                            //listview.setFilterText(newText);
-                            return true;
-                        }
-                    });
-                }
-
-
-            }
-
-            @Override
-            public void onFailure(Call<MainLanguageListResponse> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
     public void showLoading() {
 
         progressDialog = new ProgressDialog(LanguageListActivity.this);
         progressDialog.setMessage("Đang xử lý ...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
     }
 
@@ -115,7 +81,9 @@ public class LanguageListActivity extends AppCompatActivity {
 
         progressDialog.dismiss();
     }
+
     class SendRequests extends AsyncTask<Void, Void, Void> {
+        MainLanguageListResponse mainLanguageListResponse;
 
         public SendRequests() {
 
@@ -140,85 +108,130 @@ public class LanguageListActivity extends AppCompatActivity {
             ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
 
             Call<MainLanguageListResponse> call = serviceAPI.getLanguageList("vi", "VN", retrieveToken, Long.parseLong(retrieveID));
-            call.enqueue(new Callback<MainLanguageListResponse>() {
-                @Override
-                public void onResponse(Call<MainLanguageListResponse> call, Response<MainLanguageListResponse> response) {
-                    if (response.body().getSuccess()) {
+            try {
+                mainLanguageListResponse = call.execute().body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-                        final List<LanguageList> languageLists1 = response.body().getLanguageList();
-
-                        final LanguageListCustomAdapter languageListCustomAdapter = new LanguageListCustomAdapter(LanguageListActivity.this, languageLists1);
-
-                        listview.setAdapter(languageListCustomAdapter);
-
-
-                    /* implement search view*/
-                        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                            @Override
-                            public boolean onQueryTextSubmit(String query) {
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onQueryTextChange(String newText) {
-
-                                //listview.setFilterText(newText);
-                                return true;
-                            }
-                        });
-                    }
-
-
-                }
-
-                @Override
-                public void onFailure(Call<MainLanguageListResponse> call, Throwable t) {
-                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
             return null;
         }
 
         protected void onPostExecute(Void v) {
-            hideLoading();
+            if (mainLanguageListResponse.getSuccess()) {
+                hideLoading();
+                final List<LanguageList> languageLists1 = mainLanguageListResponse.getLanguageList();
+
+                languageListCustomAdapter = new LanguageListCustomAdapter(LanguageListActivity.this, languageLists1);
+
+                listview.setAdapter(languageListCustomAdapter);
+                    /* implement search view*/
+                listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    public void onItemClick(AdapterView<?> parent, View view,
+                                            int position, long id) {
+                        CheckBox box = (CheckBox)view.findViewById(R.id.btn_check_language);
+                        // When clicked, show a toast with the TextView text
+                        LanguageList languageList = (LanguageList) parent.getItemAtPosition(position);
+                        languageList.setSelected(true);
+                        if (box.isChecked()){
+                            box.setChecked(false);
+                            languageList.setSelected(false);
+                        }else{
+                            box.setChecked(true);
+                        }
+
+                    }
+                });
+                mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        languageListCustomAdapter.filter(newText);
+                        languageListCustomAdapter.notifyDataSetChanged();
+
+                        return true;
+                    }
+                });
+            }
+
 
         }
 
 
     }
+
     public void next_to_main_profile_activity(View view) {
-//        if (retrieve_language_selected.equals("")){
-//            alert();
-//        }else{
-        Intent intent = new Intent(LanguageListActivity.this, MainProfileActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        LanguageListActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-          /* start processing to sever */
+        new SendRequests2().execute();
+    }
+    class SendRequests2 extends AsyncTask<Void, Void, Void> {
+        StandardResponse standardResponse;
+        String result;
+        public SendRequests2() {
 
-        ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
-        Call<StandardResponse> call = serviceAPI.saveLanguage(retrieve_language_selected, retrieveToken, Long.parseLong(retrieveID));
-        call.enqueue(new Callback<StandardResponse>() {
-            @Override
-            public void onResponse(Call<StandardResponse> call, Response<StandardResponse> response) {
-                if (response.body().getSuccess()) {
-                    Toast.makeText(getApplicationContext(), retrieve_language_selected, Toast.LENGTH_SHORT).show();
+        }
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showLoading();
+
+            StringBuffer responseText = new StringBuffer();
+
+            List<LanguageList> languageLists = languageListCustomAdapter.listData;
+            for(int i=0;i<languageLists.size();i++){
+                LanguageList languageList = languageLists.get(i);
+                if(languageList.isSelected()){
+                    responseText.append("," + languageList.getLanguageCode());
                 }
+            }
+            result = responseText.substring(1,responseText.length());
+            Toast.makeText(getApplicationContext(),
+                    result, Toast.LENGTH_LONG).show();
+        }
 
-
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            try {
+                Thread.currentThread();
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+         /* start processing to sever */
+            ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
+            Call<StandardResponse> call = serviceAPI.saveLanguage(result, retrieveToken, Long.parseLong(retrieveID));
+            try {
+                standardResponse = call.execute().body();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
-            @Override
-            public void onFailure(Call<StandardResponse> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+            return null;
+        }
+
+        protected void onPostExecute(Void v) {
+            if (standardResponse.getSuccess()) {
+                hideLoading();
+                Intent intent = new Intent(LanguageListActivity.this, MainProfileActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                LanguageListActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+            }else{
+                hideLoading();
+                Toast.makeText(getApplicationContext(),standardResponse.getMessage(),Toast.LENGTH_LONG).show();
             }
-        });
-//        }
+
+
+        }
 
 
     }
-
     public void alert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 

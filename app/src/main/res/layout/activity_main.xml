@@ -42,6 +42,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_weight="4"
+
         >
 
         <RelativeLayout
@@ -93,6 +94,7 @@
             android:layout_height="50dp"
             android:onClick="sign_up"
             android:gravity="center"
+
             android:layout_weight="0.25">
 
             <TextView

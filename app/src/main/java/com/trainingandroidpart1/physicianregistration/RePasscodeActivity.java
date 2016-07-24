@@ -80,6 +80,7 @@ public class RePasscodeActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(RePasscodeActivity.this);
         progressDialog.setMessage("Đang xử lý ...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
     }
 
@@ -167,9 +168,10 @@ public class RePasscodeActivity extends AppCompatActivity {
 
         protected void onPostExecute(Void v) {
             if(setSecurityPinResponse.getSuccess()){
-                hideLoading();
                 Intent i = new Intent(RePasscodeActivity.this, PhysicalVertificationActivity.class);
                 startActivity(i);
+                hideLoading();
+
             }
 
 

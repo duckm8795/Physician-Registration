@@ -13,6 +13,8 @@ public class SpecialtyList {
     private String description;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
+
+
     /**
      *
      * @return

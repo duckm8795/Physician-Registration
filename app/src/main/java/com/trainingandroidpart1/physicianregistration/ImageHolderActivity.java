@@ -71,7 +71,7 @@ public class ImageHolderActivity extends AppCompatActivity {
         Intent intent = getIntent();
         image_path = intent.getStringExtra("ADA");
         checkIfFromGovermentActivity();
-
+        Bitmap bitmap = BitmapFactory.decodeFile(image_path);
 //        File pictureFile = new File(image_path);
 //        bitmap =Bitmap.createBitmap( 5,
 //                5, Bitmap.Config.ARGB_8888);
@@ -95,11 +95,22 @@ public class ImageHolderActivity extends AppCompatActivity {
         DisplayMetrics displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
         int width = displayMetrics.widthPixels;
         int height = displayMetrics.heightPixels;
-        Picasso.with(getApplicationContext()).load("file://"+ image_path).resize(width,height).centerCrop().into(_imv);
+
+        if (getIntent().getBooleanExtra("NeedRotate", false)) {
+            Picasso.with(getApplicationContext()).load("file://"+ image_path).resize(width,height).rotate(180).centerInside().into(_imv);
+        }else{
+            Picasso.with(getApplicationContext()).load("file://"+ image_path).resize(width,height).centerInside().into(_imv);
+        }
 
 
+//        _imv.setImageBitmap(scaleDownBitmapImage(bitmap,width,height));
+//        _imv.setRotation(270);
     }
+    private Bitmap scaleDownBitmapImage(Bitmap bitmap, int newWidth, int newHeight){
 
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, (newHeight), true);
+        return resizedBitmap;
+    }
     public void checkIfFromGovermentActivity() {
         if (getIntent().getBooleanExtra("NeedBackground", false)) {
             imv_background.setVisibility(View.VISIBLE);
@@ -117,7 +128,7 @@ public class ImageHolderActivity extends AppCompatActivity {
     }
 
     public class UploadPhoto extends AsyncTask<Void, Integer, Void> {
-
+        AvatarResponse avatarResponse;
         @Override
         protected void onPreExecute() {
             circleProgressBar.setVisibility(View.VISIBLE);
@@ -150,23 +161,28 @@ public class ImageHolderActivity extends AppCompatActivity {
             ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
 
             Call<AvatarResponse> call = serviceAPI.uploadAvatar(requestBodyMap);
-            call.enqueue(new Callback<AvatarResponse>() {
-                @Override
-                public void onResponse(Call<AvatarResponse> call, Response<AvatarResponse> response) {
-
-                    if (response.body().getSuccess()) {
-                        Log.d(TAG, response.body().getMessage());
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<AvatarResponse> call, Throwable t) {
-
-                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(ImageHolderActivity.this, PhysicalVertificationActivity.class);
-                    startActivity(intent);
-                }
-            });
+//            call.enqueue(new Callback<AvatarResponse>() {
+//                @Override
+//                public void onResponse(Call<AvatarResponse> call, Response<AvatarResponse> response) {
+//
+//                    if (response.body().getSuccess()) {
+//                        Log.d(TAG, response.body().getMessage());
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<AvatarResponse> call, Throwable t) {
+//
+//                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
+//                    Intent intent = new Intent(ImageHolderActivity.this, PhysicalVertificationActivity.class);
+//                    startActivity(intent);
+//                }
+//            });
+            try {
+                avatarResponse = call.execute().body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return null;
         }
 
@@ -181,16 +197,20 @@ public class ImageHolderActivity extends AppCompatActivity {
 
 //                Intent intent = new Intent(ImageHolderActivity.this, PhysicalVertificationActivity.class);
 //
-//                startActivity(intent);
-                Intent intent = new Intent();
-                setResult(RESULT_OK, intent);
-                finish();
+//
+
+//                setResult(RESULT_OK, intent);
+//                finish();
             }
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-
+            if(avatarResponse.getSuccess()){
+                Intent intent = new Intent(ImageHolderActivity.this, PhysicalVertificationActivity.class);
+                startActivity(intent);
+                Toast.makeText(getApplicationContext(), "Upload Successfully", Toast.LENGTH_LONG).show();
+            }
 
         }
     }

@@ -26,18 +26,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class CameraSelfieActivity extends AppCompatActivity {
 
 
-    Camera.PictureCallback pictureCallback = new Camera.PictureCallback() {
-        @Override
-        public void onPictureTaken(byte[] data, Camera camera) {
-
-            new TakePhoto(data).execute();
-
-        }
-    };
     private int cameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
     private String pathImg;
     private Camera mCamera;
@@ -52,6 +45,60 @@ public class CameraSelfieActivity extends AppCompatActivity {
     private boolean hasFlash = false;
     private boolean isLighOn = false;
     private boolean isFrontCamera;
+    private int cameraRotate = 0;
+    private boolean needRotate = true;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.layout__camera_general);
+
+        initView();
+
+
+        if (preview_layout != null) {
+            preview_layout.addView(mPreview);
+        }
+
+        if (captureButton != null) {
+            captureButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+                        mPreview.updateCameraRotate(cameraRotate);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    mCamera.takePicture(null, null, pictureCallback);
+                }
+            });
+        }
+
+
+    }
+
+    public void initView() {
+        hasFlash = this.getApplicationContext().getPackageManager()
+                .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+
+
+
+
+
+        preview_layout = (FrameLayout) findViewById(R.id.center_view);
+
+        ic_switch_camera = (ImageButton) findViewById(R.id.ic_switch_camera);
+        ic_flash = (ImageButton) findViewById(R.id.ic_flash);
+        ic_flash.setVisibility(View.GONE);
+        ic_switch_camera.setVisibility(View.GONE);
+
+        captureButton = (ImageView) findViewById(R.id.capture_image);
+
+        mCamera = getCameraFront(cameraId);
+        mPreview = new CameraPreview(CameraSelfieActivity.this, mCamera, R.drawable.selfie_icon);
+
+        create_flow_text();
+
+    }
 
     public static Camera getCameraFront(int cameraId) {
         Camera c = null;
@@ -63,15 +110,7 @@ public class CameraSelfieActivity extends AppCompatActivity {
         return c; // returns null if camera is unavailable
     }
 
-    public static Camera getCameraInstance() {
-        Camera c = null;
-        try {
-            c = Camera.open(); // attempt to get a Camera instance
-        } catch (Exception e) {
-            Log.d("TAG", e.getMessage());
-        }
-        return c; // returns null if camera is unavailable
-    }
+
 
     private static File getOutputMediaFile() {
         File mediaStorageDir = new File(
@@ -94,46 +133,7 @@ public class CameraSelfieActivity extends AppCompatActivity {
         return mediaFile;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout__camera_general);
 
-        initView();
-
-
-        if (preview_layout != null) {
-            preview_layout.addView(mPreview);
-        }
-
-        if (captureButton != null) {
-            captureButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mCamera.takePicture(null, null, pictureCallback);
-                }
-            });
-        }
-
-
-    }
-
-    public void initView() {
-        hasFlash = this.getApplicationContext().getPackageManager()
-                .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
-        preview_layout = (FrameLayout) findViewById(R.id.center_view);
-
-        ic_switch_camera = (ImageButton) findViewById(R.id.ic_switch_camera);
-        ic_flash = (ImageButton) findViewById(R.id.ic_flash);
-
-        captureButton = (ImageView) findViewById(R.id.capture_image);
-
-        mCamera = getCameraFront(cameraId);
-        mPreview = new CameraPreview(CameraSelfieActivity.this, mCamera, R.drawable.selfie_icon);
-
-        create_flow_text();
-
-    }
 
     public void create_flow_text() {
         // Create an flow text of Camera
@@ -173,24 +173,21 @@ public class CameraSelfieActivity extends AppCompatActivity {
     }
 
     public void switch_flash(View view) {
-        if (!isFrontCamera) {
-            if (mCamera != null && hasFlash) {
-                Camera.Parameters p = mCamera.getParameters();
-                if (isLighOn) {
-                    p.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
-                    mCamera.setParameters(p);
-                    mCamera.startPreview();
-                    isLighOn = false;
+        if (mCamera != null && hasFlash) {
+            Camera.Parameters p = mCamera.getParameters();
+            if (isLighOn) {
+                p.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                mCamera.setParameters(p);
+                mCamera.startPreview();
+                isLighOn = false;
 
-                } else {
-                    p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-                    mCamera.setParameters(p);
-                    mCamera.startPreview();
-                    isLighOn = true;
-                }
-            } else
-                Toast.makeText(getApplicationContext(), "Sorry, your device doesn\'t support flash light!", Toast.LENGTH_LONG).show();
-        } else {
+            } else {
+                p.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                mCamera.setParameters(p);
+                mCamera.startPreview();
+                isLighOn = true;
+            }
+        } else{
             Toast.makeText(getApplicationContext(), "Sorry, Camera trước của bạn không hỗ trợ đèn flash!", Toast.LENGTH_LONG).show();
         }
     }
@@ -226,6 +223,7 @@ public class CameraSelfieActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(CameraSelfieActivity.this);
         progressDialog.setMessage("Đang xử lý ...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
     }
 
@@ -244,6 +242,16 @@ public class CameraSelfieActivity extends AppCompatActivity {
         finish();
     }
 
+
+
+    Camera.PictureCallback pictureCallback = new Camera.PictureCallback() {
+        @Override
+        public void onPictureTaken(byte[] data, Camera camera) {
+
+            new TakePhoto(data).execute();
+
+        }
+    };
     class TakePhoto extends AsyncTask<Void, Void, Void> {
         byte[] data;
 
@@ -280,6 +288,7 @@ public class CameraSelfieActivity extends AppCompatActivity {
 
             Intent i = new Intent(CameraSelfieActivity.this, ImageHolderActivity.class);
             i.putExtra("ADA", pathImg);
+            i.putExtra("NeedRotate",needRotate);
             startActivity(i);
             hideLoading();
         }

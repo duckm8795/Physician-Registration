@@ -278,6 +278,7 @@ public class CameraCardActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(CameraCardActivity.this);
         progressDialog.setMessage("Đang xử lý ...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
     }
 

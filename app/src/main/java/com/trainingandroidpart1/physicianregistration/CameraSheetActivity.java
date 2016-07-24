@@ -259,6 +259,7 @@ public class CameraSheetActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(CameraSheetActivity.this);
         progressDialog.setMessage("Đang xử lý ...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
     }
 

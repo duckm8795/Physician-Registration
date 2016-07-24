@@ -29,27 +29,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private int drawale_resource;
 
 
-    public CameraPreview(Context context, Camera camera) {
-        super(context);
 
-        mCamera = camera;
-
-        // Install a SurfaceHolder.Callback so we get notified when the
-        // underlying surface is created and destroyed.
-        mHolder = getHolder();
-        mHolder.addCallback(this);
-
-        // deprecated setting, but required on Android versions prior to 3.0
-        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-
-        // Try to set camera picture size
-        try {
-            setCameraRotate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
     public CameraPreview(Context context, Camera camera, boolean isFrontCamera,int drawable_id) {
         super(context);
         this.isFrontCamera = isFrontCamera;
@@ -60,7 +40,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         mHolder.setKeepScreenOn(true);
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        mSupportedPreviewSizes = mCamera.getParameters().getSupportedPreviewSizes();
+
 
         // Try to set camera picture size
         try {
@@ -79,7 +59,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         mHolder.setKeepScreenOn(true);
         mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-        mSupportedPreviewSizes = mCamera.getParameters().getSupportedPreviewSizes();
+
 
         // Try to set camera picture size
         try {
@@ -167,6 +147,15 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
         }
 
+        mCamera.setParameters(parameters);
+    }
+    public void updateCameraRotate(int rotate) throws Exception{
+        Camera.Parameters parameters = mCamera.getParameters();
+        if (isFrontCamera) {
+            parameters.setRotation((270 - rotate) % 360);
+        } else {
+            parameters.setRotation((90 + rotate) % 360);
+        }
         mCamera.setParameters(parameters);
     }
 

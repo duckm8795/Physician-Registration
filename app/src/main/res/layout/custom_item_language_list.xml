@@ -20,7 +20,7 @@
             android:textColor="@android:color/black"
             android:paddingBottom="12dp"
             android:paddingTop="12dp"
-            android:background="@drawable/change_state_textview"
+
             android:textSize="16sp"
 
             android:text="Demo" />
@@ -30,7 +30,8 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:button="@null"
-
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:layout_marginRight="10dp"
             android:background="@drawable/toggle_button"
             android:layout_centerVertical="true"

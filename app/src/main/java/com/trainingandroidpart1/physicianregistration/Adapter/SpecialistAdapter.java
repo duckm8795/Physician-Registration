@@ -8,10 +8,14 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.trainingandroidpart1.physicianregistration.Entity.SpecialistEntity;
 import com.trainingandroidpart1.physicianregistration.R;
+import com.trainingandroidpart1.physicianregistration.Response.LanguageListResponse.LanguageList;
+import com.trainingandroidpart1.physicianregistration.Response.SpecialistReponse.SpecialtyList;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import me.yokeyword.indexablelistview.IndexableAdapter;
 
@@ -20,7 +24,8 @@ import me.yokeyword.indexablelistview.IndexableAdapter;
  */
 public class SpecialistAdapter  extends IndexableAdapter<SpecialistEntity>{
     private Context mContext;
-
+    private List<SpecialistEntity> specialityName = new ArrayList<>();
+    private SpecialtyList specialtyList;
     public SpecialistAdapter(Context context) {
         mContext = context;
     }
@@ -39,42 +44,38 @@ public class SpecialistAdapter  extends IndexableAdapter<SpecialistEntity>{
     }
 
     @Override
-    protected void onBindViewHolder(IndexableAdapter.ViewHolder holder, final SpecialistEntity cityEntity) {
-        final MyViewHolder cityViewHolder = (MyViewHolder) holder;
-        cityViewHolder.tvCity.setText(cityEntity.getName());
+    protected void onBindViewHolder(IndexableAdapter.ViewHolder holder,final  SpecialistEntity cityEntity) {
 
-        cityViewHolder.tvCity.setOnClickListener(new View.OnClickListener() {
+        MyViewHolder myViewHolderholder = (MyViewHolder) holder;
+        myViewHolderholder.specialtyText.setText(cityEntity.getName());
+
+        myViewHolderholder.checkSpecialty.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                if(!cityViewHolder.checkSpecialty.isChecked()){
-                    cityViewHolder.checkSpecialty.setChecked(true);
-                }else{
-                    cityViewHolder.checkSpecialty.setChecked(false);
-                }
-                //Toast.makeText(mContext,String.valueOf(cityEntity.getId()),Toast.LENGTH_LONG).show();
+            public void onClick(View v) {
+                CheckBox cb = (CheckBox) v;
+//                TextView tv = (TextView) v;
+                cityEntity.setSelected(cb.isChecked());
+                //Toast.makeText(mContext,String.valueOf(cityEntity.getId()),Toast.LENGTH_SHORT).show();
             }
         });
 
+
+        myViewHolderholder.checkSpecialty.setChecked(cityEntity.isSelected());
     }
 
 
+
     class MyViewHolder extends IndexableAdapter.ViewHolder {
-        TextView tvCity;
+        TextView specialtyText;
         CheckBox checkSpecialty;
         public MyViewHolder(final View view) {
             super(view);
             Typeface typeface = Typeface.createFromAsset(mContext.getAssets(),"Ubuntu-Regular.ttf");
-            tvCity = (TextView) view.findViewById(R.id.tv_name);
+            specialtyText = (TextView) view.findViewById(R.id.tv_name);
             checkSpecialty = (CheckBox) view.findViewById(R.id.check_speciality_togg);
-            tvCity.setTypeface(typeface);
-            tvCity.setTextColor(R.color.color_language_text);
+            specialtyText.setTypeface(typeface);
+            specialtyText.setTextColor(R.color.color_language_text);
 
-//            tvCity.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Toast.makeText(view.getContext(),"T",Toast.LENGTH_SHORT).show();
-//                }
-//            });
         }
     }
 }
