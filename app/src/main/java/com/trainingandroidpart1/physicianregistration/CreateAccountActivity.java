@@ -283,6 +283,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                 hideLoading();
                 Intent i = new Intent(CreateAccountActivity.this, PasscodeActivity.class);
                 startActivity(i);
+                CreateAccountActivity.this.overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
             }else {
                 hideLoading();
                 showAlertCreateAccountResponse(createProviderAccountResponse.getMessage());

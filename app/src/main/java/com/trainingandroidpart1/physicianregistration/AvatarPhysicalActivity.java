@@ -70,6 +70,7 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
         if (getIntent().getBooleanExtra("NeedSetAvatar",false)){
             String image_path_to_set = getIntent().getStringExtra("ImagePathForSetAvatar");
             circleImageView.setImageURI(Uri.fromFile(new File(image_path_to_set)));
+            circleImageView.setRotation(180);
         }
 
     }

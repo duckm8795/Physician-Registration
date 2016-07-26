@@ -39,6 +39,7 @@
             android:layout_alignParentEnd="true"
             android:background="@drawable/arrow_ic"
             android:visibility="visible"
+            android:layout_marginRight="7dp"
             android:layout_centerInParent="true" />
 
         <com.dinuscxj.progressbar.CircleProgressBar

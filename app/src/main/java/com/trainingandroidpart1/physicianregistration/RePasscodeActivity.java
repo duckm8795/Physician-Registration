@@ -89,24 +89,7 @@ public class RePasscodeActivity extends AppCompatActivity {
         progressDialog.dismiss();
     }
 
-    public void process() {
-        ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
-        Call<SetSecurityPinResponse> call = serviceAPI.setSecurityPin(Long.parseLong(retrieveID), retrieveToken, retrievePasscode);
-        call.enqueue(new Callback<SetSecurityPinResponse>() {
-            @Override
-            public void onResponse(Call<SetSecurityPinResponse> call, Response<SetSecurityPinResponse> response) {
-                if (response.body().getSuccess()) {
-                    nextToVerficationActivity();
-                }
 
-            }
-
-            @Override
-            public void onFailure(Call<SetSecurityPinResponse> call, Throwable t) {
-
-            }
-        });
-    }
 
 
     public void initView() {
@@ -128,12 +111,7 @@ public class RePasscodeActivity extends AppCompatActivity {
 
     }
 
-    public void nextToVerficationActivity() {
-        Intent intent = new Intent(RePasscodeActivity.this, PhysicalVertificationActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        RePasscodeActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-    }
+
 
     class SendRequests extends AsyncTask<Void, Void, Void> {
         SetSecurityPinResponse setSecurityPinResponse;
@@ -168,10 +146,8 @@ public class RePasscodeActivity extends AppCompatActivity {
 
         protected void onPostExecute(Void v) {
             if(setSecurityPinResponse.getSuccess()){
-                Intent i = new Intent(RePasscodeActivity.this, PhysicalVertificationActivity.class);
-                startActivity(i);
                 hideLoading();
-
+                nextToVerficationActivity();
             }
 
 
@@ -180,22 +156,12 @@ public class RePasscodeActivity extends AppCompatActivity {
 
 
     }
+    public void nextToVerficationActivity() {
+        Intent intent = new Intent(RePasscodeActivity.this, PhysicalVertificationActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        RePasscodeActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
-//    @Override
-//    public void onBackPressed() {
-//        new AlertDialog.Builder(this).setIcon(R.drawable.ic_error_outline_black_24dp).setTitle("Jio Doctor")
-//                .setMessage("Bạn có chắc muốn thoát ứng dụng?")
-//                .setPositiveButton("Có", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//
-//                        Intent intent = new Intent(Intent.ACTION_MAIN);
-//                        intent.addCategory(Intent.CATEGORY_HOME);
-//                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                        startActivity(intent);
-//                        finish();
-//                    }
-//                }).setNegativeButton("Không", null).show();
-//    }
+    }
+
 }

@@ -73,6 +73,8 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
 
     private String image_path;
     private String image_path_url_amazon;
+    private String image_path_url_amazon2;
+    private String image_path_url_amazon3;
     private String image_path_for_avatar;
     private String image_path_for_goverment_par1;
     private String image_path_for_goverment_par2;
@@ -118,6 +120,38 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
 
 
     }
+
+    class SendRequests extends AsyncTask<Void, Void, Void> {
+
+        public SendRequests() {
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showLoading();
+        }
+
+        @Override
+        protected Void doInBackground(Void... arg0) {
+            try {
+                Thread.currentThread();
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            process();
+            return null;
+        }
+
+        protected void onPostExecute(Void v) {
+            hideLoading();
+
+        }
+
+
+    }
     public void process() {
 
         ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
@@ -138,25 +172,25 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
                             int qd = verificationDocTypes.get(position).getDocTypeId();
                             if (qd == 1) {
                                 if(hasUpdoadSelfieImageOrNot){
-                                    next_to_taken_picture();
+                                    next_to_taken_picture_for_selfie(image_path_url_amazon);
                                 }else{
                                     next_to_selfie_camera("1");
                                 }
 
                             } else if (qd == 2) {
                                 if(hasUpdoadGovermentImageOrNot){
-                                    next_to_taken_picture();
+                                    next_to_taken_picture(image_path_url_amazon2);
                                 }else{
                                     next_to_govermentID_camera("2");
                                 }
 
                             } else {
 
-                                    if(hasUpdoadCardOrSheetImageOrNot){
-                                        next_to_taken_picture();
-                                    }else{
-                                        next_to_choose_card_camera("3");
-                                    }
+                                if(hasUpdoadCardOrSheetImageOrNot){
+                                    next_to_taken_picture(image_path_url_amazon3);
+                                }else{
+                                    next_to_choose_card_camera("3");
+                                }
 
 
                             }
@@ -190,32 +224,6 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
         });
     }
 
-    public void next_to_selfie_camera(String id) {
-        Intent intent = new Intent(PhysicalVertificationActivity.this, CameraSelfieActivity.class);
-        intent.putExtra("IdOfCamera",id);
-        startActivityForResult(intent,69);
-        PhysicalVertificationActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-    }
-    public void next_to_taken_picture() {
-        Intent intent = new Intent(PhysicalVertificationActivity.this, TempHoldPictureActivity.class);
-        intent.putExtra("ImagePathByAmazon",image_path_url_amazon);
-        startActivity(intent);
-
-    }
-
-    public void next_to_govermentID_camera(String id) {
-        Intent intent = new Intent(PhysicalVertificationActivity.this, CameraGovermentActivity.class);
-        intent.putExtra("IdOfCamera",id);
-        startActivityForResult(intent, 70);
-        PhysicalVertificationActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-    }
-
-    public void next_to_choose_card_camera(String id) {
-        Intent intent = new Intent(PhysicalVertificationActivity.this, CameraChooseOptionCardActivity.class);
-        intent.putExtra("IdOfCamera",id);
-        startActivityForResult(intent, 71);
-        PhysicalVertificationActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -476,13 +484,16 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             if(avatarResponse.getSuccess()){
                 Log.d("ALPOPOPO",avatarResponse.getMessage());
-                image_path_url_amazon =avatarResponse.getMessage();
+                //image_path_url_amazon =avatarResponse.getMessage();
                 if(id_to_update == 0){
                     hasUpdoadSelfieImageOrNot =true;
+                    image_path_url_amazon =avatarResponse.getMessage();
                 }else if (id_to_update == 1){
                     hasUpdoadGovermentImageOrNot = true;
+                    image_path_url_amazon2 =avatarResponse.getMessage();
                 }else if(id_to_update == 2){
                     hasUpdoadCardOrSheetImageOrNot =true;
+                    image_path_url_amazon3 =avatarResponse.getMessage();
                 }
 
                 //hasUpdoadSelfieImageOrNot =true;
@@ -520,6 +531,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(PhysicalVertificationActivity.this,CameraGovermentActivity.class);
                         startActivityForResult(intent,702);
+                        PhysicalVertificationActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     }
                 });
         AlertDialog dialog = builder.create();
@@ -621,36 +633,42 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
         Intent intent = new Intent (PhysicalVertificationActivity.this,DoneVerificationActivity.class);
         intent.putExtra("ImagePathForAvatar",image_path_for_avatar);
         startActivity(intent);
+        PhysicalVertificationActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
-    class SendRequests extends AsyncTask<Void, Void, Void> {
 
-        public SendRequests() {
-        }
+    public void next_to_selfie_camera(String id) {
+        Intent intent = new Intent(PhysicalVertificationActivity.this, CameraSelfieActivity.class);
+        intent.putExtra("IdOfCamera",id);
+        startActivityForResult(intent,69);
+        PhysicalVertificationActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
+    public void next_to_taken_picture(String image_path_url_amazon) {
+        Intent intent = new Intent(PhysicalVertificationActivity.this, TempHoldPictureActivity.class);
+        intent.putExtra("ImagePathByAmazon",image_path_url_amazon);
+        startActivity(intent);
+        PhysicalVertificationActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            showLoading();
-        }
+    }
+    public void next_to_taken_picture_for_selfie(String image_path_url_amazon) {
+        Intent intent = new Intent(PhysicalVertificationActivity.this, TempHoldPictureActivity.class);
+        intent.putExtra("ImagePathByAmazonForSelfie",image_path_url_amazon);
+        intent.putExtra("NeedRotateURL",true);
+        startActivity(intent);
+        PhysicalVertificationActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
-        @Override
-        protected Void doInBackground(Void... arg0) {
-            try {
-                Thread.currentThread();
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            process();
-            return null;
-        }
+    }
 
-        protected void onPostExecute(Void v) {
-            hideLoading();
+    public void next_to_govermentID_camera(String id) {
+        Intent intent = new Intent(PhysicalVertificationActivity.this, CameraGovermentActivity.class);
+        intent.putExtra("IdOfCamera",id);
+        startActivityForResult(intent, 70);
+        PhysicalVertificationActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
 
-        }
-
-
+    public void next_to_choose_card_camera(String id) {
+        Intent intent = new Intent(PhysicalVertificationActivity.this, CameraChooseOptionCardActivity.class);
+        intent.putExtra("IdOfCamera",id);
+        startActivityForResult(intent, 71);
+        PhysicalVertificationActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 }
