@@ -67,6 +67,10 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(getString(R.string.sharePre_string), Context.MODE_PRIVATE);
         retrieveToken = sharedPreferences.getString(getString(R.string.storePreToken), "");
         retrieveID = sharedPreferences.getString(getString(R.string.storePreID), "");
+        if (getIntent().getBooleanExtra("NeedSetAvatar",false)){
+            String image_path_to_set = getIntent().getStringExtra("ImagePathForSetAvatar");
+            circleImageView.setImageURI(Uri.fromFile(new File(image_path_to_set)));
+        }
 
     }
 

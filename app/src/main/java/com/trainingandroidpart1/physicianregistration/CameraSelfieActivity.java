@@ -285,12 +285,15 @@ public class CameraSelfieActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Void v) {
+            hideLoading();
 
             Intent i = new Intent(CameraSelfieActivity.this, ImageHolderActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
             i.putExtra("ADA", pathImg);
             i.putExtra("NeedRotate",needRotate);
             startActivity(i);
-            hideLoading();
+
+            finish();
         }
 
 

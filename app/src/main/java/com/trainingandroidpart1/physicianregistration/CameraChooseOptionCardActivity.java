@@ -23,11 +23,15 @@ public class CameraChooseOptionCardActivity extends AppCompatActivity {
 
     public void next_to_card() {
         Intent intent = new Intent(CameraChooseOptionCardActivity.this, CameraCardActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
+        finish();
     }
 
     public void next_to_sheet() {
         Intent intent = new Intent(CameraChooseOptionCardActivity.this, CameraSheetActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
+        finish();
     }
 }

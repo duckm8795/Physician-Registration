@@ -40,7 +40,7 @@ public class LanguageListActivity extends AppCompatActivity {
     private String retrieve_language_selected = "";        // data receieved when a item's clicked.
     private ProgressDialog progressDialog;
     private LanguageListCustomAdapter languageListCustomAdapter = null;
-
+    private String main_string;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,13 +165,30 @@ public class LanguageListActivity extends AppCompatActivity {
     }
 
     public void next_to_main_profile_activity(View view) {
-        new SendRequests2().execute();
+        StringBuffer responseText = new StringBuffer();
+
+        List<LanguageList> languageLists = languageListCustomAdapter.listData;
+        for(int i=0;i<languageLists.size();i++){
+            LanguageList languageList = languageLists.get(i);
+            if(languageList.isSelected()){
+                responseText.append("," + languageList.getLanguageCode());
+            }
+        }
+        main_string = String.valueOf(responseText);
+        if (!main_string.equals("")) {
+            main_string = responseText.substring(1, responseText.length());
+            new SendRequests2(main_string).execute();
+        }else{
+            alert();
+        }
+
+
     }
     class SendRequests2 extends AsyncTask<Void, Void, Void> {
         StandardResponse standardResponse;
-        String result;
-        public SendRequests2() {
-
+        String result ;
+        public SendRequests2(String main_string) {
+            result = main_string;
         }
 
         @Override
@@ -179,18 +196,9 @@ public class LanguageListActivity extends AppCompatActivity {
             super.onPreExecute();
             showLoading();
 
-            StringBuffer responseText = new StringBuffer();
 
-            List<LanguageList> languageLists = languageListCustomAdapter.listData;
-            for(int i=0;i<languageLists.size();i++){
-                LanguageList languageList = languageLists.get(i);
-                if(languageList.isSelected()){
-                    responseText.append("," + languageList.getLanguageCode());
-                }
-            }
-            result = responseText.substring(1,responseText.length());
-            Toast.makeText(getApplicationContext(),
-                    result, Toast.LENGTH_LONG).show();
+//            Toast.makeText(getApplicationContext(),
+//                    result, Toast.LENGTH_LONG).show();
         }
 
         @Override

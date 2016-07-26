@@ -14,11 +14,8 @@ import android.widget.CheckBox;
 import android.widget.SearchView;
 import android.widget.Toast;
 
-import com.trainingandroidpart1.physicianregistration.Adapter.LanguageListCustomAdapter;
 import com.trainingandroidpart1.physicianregistration.Adapter.SpecialistAdapter;
 import com.trainingandroidpart1.physicianregistration.Entity.SpecialistEntity;
-import com.trainingandroidpart1.physicianregistration.Response.LanguageListResponse.LanguageList;
-import com.trainingandroidpart1.physicianregistration.Response.LanguageListResponse.MainLanguageListResponse;
 import com.trainingandroidpart1.physicianregistration.Response.SpecialistReponse.MainSpecialList;
 import com.trainingandroidpart1.physicianregistration.Response.SpecialistReponse.SpecialtyList;
 import com.trainingandroidpart1.physicianregistration.Response.StandardResponse;
@@ -31,10 +28,11 @@ import java.util.List;
 import me.yokeyword.indexablelistview.IndexEntity;
 import me.yokeyword.indexablelistview.IndexableStickyListView;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class SpecialistActivity extends AppCompatActivity {
+    SpecialistEntity specialityEntity;
+    List<SpecialtyList> specialtyList;
+    String result_main;
     private IndexableStickyListView mIndexableStickyListView;
     private SearchView mSearchView;
     private SharedPreferences sharedPreferences = null;
@@ -42,10 +40,9 @@ public class SpecialistActivity extends AppCompatActivity {
     private String retrieveID = null;
     private String specialtyIDs = null;
     private SpecialistAdapter mAdapter;
-    SpecialistEntity specialityEntity;
-    List<SpecialtyList> specialtyList;
     private List<SpecialistEntity> specialityName = new ArrayList<>();
     private ProgressDialog progressDialog;
+    String main_string;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,13 +55,13 @@ public class SpecialistActivity extends AppCompatActivity {
             public void onItemClick(View v, IndexEntity indexEntity) {
                 specialityEntity = (SpecialistEntity) indexEntity;
                 //Toast.makeText(getApplicationContext(),String.valueOf(specialityEntity.getId()),Toast.LENGTH_LONG).show();
-                CheckBox box = (CheckBox)v.findViewById(R.id.check_speciality_togg);
+                CheckBox box = (CheckBox) v.findViewById(R.id.check_speciality_togg);
 
                 specialityEntity.setSelected(true);
-                if (box.isChecked()){
+                if (box.isChecked()) {
                     box.setChecked(false);
                     specialityEntity.setSelected(false);
-                }else{
+                } else {
                     box.setChecked(true);
                 }
             }
@@ -85,7 +82,6 @@ public class SpecialistActivity extends AppCompatActivity {
     }
 
 
-
     public void initView() {
         setTitle("Bằng cấp");
 
@@ -101,12 +97,57 @@ public class SpecialistActivity extends AppCompatActivity {
         retrieveID = sharedPreferences.getString(getString(R.string.storePreID), "");
     }
 
-    public void next_to_language_activity(View view) {
-        new SendRequests2().execute();
 
+    public void showLoading() {
+
+        progressDialog = new ProgressDialog(SpecialistActivity.this);
+        progressDialog.setMessage("Đang xử lý ...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
     }
+
+    public void hideLoading() {
+
+        progressDialog.dismiss();
+    }
+
+    public void alert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage("Vui lòng chọn ít nhất một chuyên môn.")
+                .setTitle("Jio Doctor")
+                .setPositiveButton("Đóng", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this).setIcon(R.drawable.ic_error_outline_black_24dp).setTitle("Jio Doctor")
+                .setMessage("Bạn có chắc muốn thoát ứng dụng?")
+                .setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        Intent intent = new Intent(Intent.ACTION_MAIN);
+                        intent.addCategory(Intent.CATEGORY_HOME);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+                }).setNegativeButton("Không", null).show();
+    }
+
     class SendRequests extends AsyncTask<Void, Void, Void> {
         MainSpecialList mainSpecialList;
+
         public SendRequests() {
 
         }
@@ -142,21 +183,21 @@ public class SpecialistActivity extends AppCompatActivity {
                 hideLoading();
                 List<Boolean> check_selected = new ArrayList<>();
                 specialtyList = mainSpecialList.getSpecialtyList();
-                for (int i = 0; i<specialtyList.size();i++){
+                for (int i = 0; i < specialtyList.size(); i++) {
                     check_selected.add(false);
                 }
                 for (int i = 0; i < specialtyList.size(); i++) {
                     specialityEntity = new SpecialistEntity(specialtyList.get(i).getDescription(),
-                            specialtyList.get(i).getSpecialtyID(),check_selected.get(i));
+                            specialtyList.get(i).getSpecialtyID(), check_selected.get(i));
                     specialityName.add(specialityEntity);
 
                 }
 
                 mIndexableStickyListView.bindDatas(specialityName);
 
-            }else{
+            } else {
                 hideLoading();
-                Toast.makeText(getApplicationContext(),mainSpecialList.getMessage(),Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), mainSpecialList.getMessage(), Toast.LENGTH_LONG).show();
             }
 
 
@@ -164,32 +205,49 @@ public class SpecialistActivity extends AppCompatActivity {
 
 
     }
+    public void next_to_language_activity(View view) {
+        StringBuffer responseText = new StringBuffer();
+
+
+        for (int i = 0; i < specialityName.size(); i++) {
+
+            if (specialityName.get(i).isSelected()) {
+                responseText.append("," + specialtyList.get(i).getSpecialtyID());
+            }
+        }
+        main_string = String.valueOf(responseText);
+        if (!main_string.equals("")) {
+            main_string = responseText.substring(1, responseText.length());
+            new SendRequests2(main_string).execute();
+        }else{
+            alert();
+        }
+
+
+
+
+    }
+
     class SendRequests2 extends AsyncTask<Void, Void, Void> {
         StandardResponse standardResponse;
-        String result;
-        public SendRequests2() {
-
+        String result ;
+        public SendRequests2(String main_string) {
+            result = main_string;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             showLoading();
-            StringBuffer responseText = new StringBuffer();
 
 
-            for(int i=0;i<specialityName.size();i++){
 
-                if(specialityName.get(i).isSelected()){
-                    responseText.append(","+specialtyList.get(i).getSpecialtyID());
-                }
-            }
-            result = responseText.substring(1,responseText.length());
-            Toast.makeText(getApplicationContext(),result,Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(),result,Toast.LENGTH_SHORT).show();
         }
 
         @Override
         protected Void doInBackground(Void... arg0) {
+
             try {
                 Thread.currentThread();
                 Thread.sleep(2000);
@@ -197,6 +255,7 @@ public class SpecialistActivity extends AppCompatActivity {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
+
             ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
 
             Call<StandardResponse> call = serviceAPI.updateSpecialityList(result, retrieveToken, Long.parseLong(retrieveID));
@@ -205,13 +264,23 @@ public class SpecialistActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
+
             return null;
         }
 
         protected void onPostExecute(Void v) {
             if (standardResponse.getSuccess()) {
                 hideLoading();
-                startActivity(new Intent(SpecialistActivity.this,LanguageListActivity.class));
+//                if (result.equals("")){
+//                    alert();
+//                }else{
+//                    startActivity(new Intent(SpecialistActivity.this,LanguageListActivity.class));
+//                }
+                Intent intent = new Intent(SpecialistActivity.this, LanguageListActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                SpecialistActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
             }else{
                 hideLoading();
@@ -223,34 +292,6 @@ public class SpecialistActivity extends AppCompatActivity {
 
 
     }
-    public void showLoading() {
-
-        progressDialog = new ProgressDialog(SpecialistActivity.this);
-        progressDialog.setMessage("Đang xử lý ...");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.show();
-    }
-
-    public void hideLoading() {
-
-        progressDialog.dismiss();
-    }
-    @Override
-    public void onBackPressed() {
-        new AlertDialog.Builder(this).setIcon(R.drawable.ic_error_outline_black_24dp).setTitle("Jio Doctor")
-                .setMessage("Bạn có chắc muốn thoát ứng dụng?")
-                .setPositiveButton("Có", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                        Intent intent = new Intent(Intent.ACTION_MAIN);
-                        intent.addCategory(Intent.CATEGORY_HOME);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        finish();
-                    }
-                }).setNegativeButton("Không", null).show();
-    }
 }
+
+

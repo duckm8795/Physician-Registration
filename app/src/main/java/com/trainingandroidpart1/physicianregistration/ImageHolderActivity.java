@@ -70,6 +70,7 @@ public class ImageHolderActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         image_path = intent.getStringExtra("ADA");
+
         checkIfFromGovermentActivity();
         Bitmap bitmap = BitmapFactory.decodeFile(image_path);
 //        File pictureFile = new File(image_path);
@@ -106,11 +107,7 @@ public class ImageHolderActivity extends AppCompatActivity {
 //        _imv.setImageBitmap(scaleDownBitmapImage(bitmap,width,height));
 //        _imv.setRotation(270);
     }
-    private Bitmap scaleDownBitmapImage(Bitmap bitmap, int newWidth, int newHeight){
 
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, (newHeight), true);
-        return resizedBitmap;
-    }
     public void checkIfFromGovermentActivity() {
         if (getIntent().getBooleanExtra("NeedBackground", false)) {
             imv_background.setVisibility(View.VISIBLE);
@@ -122,97 +119,14 @@ public class ImageHolderActivity extends AppCompatActivity {
     }
 
     public void use_photo(View view) {
-        new UploadPhoto().execute();
+        Intent intent = new Intent();
+        intent.putExtra(getString(R.string.image_path_string),image_path);
+        setResult(RESULT_OK, intent);
+        finish();
 
 
     }
 
-    public class UploadPhoto extends AsyncTask<Void, Integer, Void> {
-        AvatarResponse avatarResponse;
-        @Override
-        protected void onPreExecute() {
-            circleProgressBar.setVisibility(View.VISIBLE);
-        }
 
-        @Override
-        protected Void doInBackground(Void... params) {
-            file = new File(image_path);
-            totalSize = file.length();
-
-            String fileName = "file\"; filename=\"" + file.getName();
-
-
-            RequestBody requestBody1 = new CountingFileRequestBody(file, "multipart/form-data", new CountingFileRequestBody.ProgressListener() {
-                @Override
-                public void transferred(long num) {
-                    int progressValue = (int) ((num / (float) totalSize) * 100);
-                    Log.i("uploadedProgressPercent", " progress is : " + progressValue + " %");
-                    publishProgress(progressValue);
-                }
-            });
-            RequestBody id = RequestBody.create(MediaType.parse("multipart/form-data"), retrieveID);
-            RequestBody token = RequestBody.create(MediaType.parse("multipart/form-data"), retrieveToken);
-
-            Map<String, RequestBody> requestBodyMap = new HashMap<>();
-            requestBodyMap.put("token", token);
-            requestBodyMap.put("userID", id);
-            requestBodyMap.put(fileName, requestBody1);
-
-            ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
-
-            Call<AvatarResponse> call = serviceAPI.uploadAvatar(requestBodyMap);
-//            call.enqueue(new Callback<AvatarResponse>() {
-//                @Override
-//                public void onResponse(Call<AvatarResponse> call, Response<AvatarResponse> response) {
-//
-//                    if (response.body().getSuccess()) {
-//                        Log.d(TAG, response.body().getMessage());
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(Call<AvatarResponse> call, Throwable t) {
-//
-//                    Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_LONG).show();
-//                    Intent intent = new Intent(ImageHolderActivity.this, PhysicalVertificationActivity.class);
-//                    startActivity(intent);
-//                }
-//            });
-            try {
-                avatarResponse = call.execute().body();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            Log.d("SADSAD", String.valueOf(totalSize));
-            int circle_value = values[0];
-            circleProgressBar.setProgress(circle_value);
-            if (circle_value == 100) {
-                ;
-                //data.putExtra("Hello","SADSADSADSAD");
-
-//                Intent intent = new Intent(ImageHolderActivity.this, PhysicalVertificationActivity.class);
-//
-//
-
-//                setResult(RESULT_OK, intent);
-//                finish();
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            if(avatarResponse.getSuccess()){
-                Intent intent = new Intent(ImageHolderActivity.this, PhysicalVertificationActivity.class);
-                startActivity(intent);
-                Toast.makeText(getApplicationContext(), "Upload Successfully", Toast.LENGTH_LONG).show();
-            }
-
-        }
-    }
 
 }

@@ -226,11 +226,12 @@ public class CameraSheetActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Void v) {
-
+            hideLoading();
             Intent i = new Intent(CameraSheetActivity.this, ImageHolderActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
             i.putExtra("ADA", pathImg);
             startActivity(i);
-            hideLoading();
+            finish();
         }
 
 

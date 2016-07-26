@@ -130,8 +130,15 @@
         <activity
             android:name=".CameraCardActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
-        <activity android:name=".CameraSheetActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen"></activity>
+        <activity
+            android:name=".CameraSheetActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
+        <activity
+            android:name=".TempHoldPictureActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
+        <activity android:name=".DoneVerificationActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label=""/>
     </application>
 
 </manifest>

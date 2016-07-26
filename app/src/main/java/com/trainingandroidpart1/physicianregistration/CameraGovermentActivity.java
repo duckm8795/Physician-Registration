@@ -237,12 +237,13 @@ public class CameraGovermentActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Void v) {
-
+            hideLoading();
             Intent i = new Intent(CameraGovermentActivity.this, ImageHolderActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
             i.putExtra("ADA", pathImg);
             i.putExtra("NeedBackground",needBackground);
             startActivity(i);
-            hideLoading();
+            finish();
         }
 
 
@@ -297,16 +298,5 @@ public class CameraGovermentActivity extends AppCompatActivity {
             preview_layout.removeAllViewsInLayout();
         }
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Check which request we're responding to
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST && resultCode == RESULT_OK) {
-            // Make sure the request was successful
-            Log.d("QKDQWOEIQWOE", "aaaaaâghghggh");
-//                Toast.makeText(getApplicationContext(), "ÁDASASASA",
-//                        Toast.LENGTH_SHORT).show();
 
-        }
-    }
 }

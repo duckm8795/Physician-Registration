@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Title"
-
+            android:layout_marginRight="3dp"
             android:id="@+id/title" />
 
         <TextView
@@ -25,14 +25,15 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Description"
             android:id="@+id/description"
-            android:layout_below="@+id/title"
+
+            android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 
         <ImageButton
             android:layout_width="9dp"
             android:layout_height="18dp"
-            android:id="@+id/imageButton"
+            android:id="@+id/imageButton_arrow"
             android:layout_above="@+id/description"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
@@ -42,14 +43,24 @@
 
         <com.dinuscxj.progressbar.CircleProgressBar
             android:id="@+id/upload_progress"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="50dp"
+            android:layout_height="60dp"
             app:style="solid_line"
             android:visibility="invisible"
-            android:layout_above="@+id/description"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:layout_centerInParent="true" />
+            android:layout_centerHorizontal="true"
+            android:layout_alignBottom="@+id/description" />
+
+        <ImageButton
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/pending_status"
+            android:background="@drawable/ic_verification_error"
+            android:visibility="invisible"
+            android:layout_alignTop="@+id/title"
+            android:layout_toRightOf="@+id/title"
+            android:layout_toEndOf="@+id/title" />
     </RelativeLayout>
 
 </LinearLayout>
