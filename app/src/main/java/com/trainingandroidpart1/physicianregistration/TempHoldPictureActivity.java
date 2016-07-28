@@ -4,12 +4,16 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.view.ActionMode;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class TempHoldPictureActivity extends AppCompatActivity {
     private ImageView tempImage;
@@ -17,7 +21,7 @@ public class TempHoldPictureActivity extends AppCompatActivity {
     private String imageURL;
     private String imageURLForSelfie;
     private ProgressDialog progressDialog;
-
+    private PhotoViewAttacher mAttacher;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,11 +59,19 @@ public class TempHoldPictureActivity extends AppCompatActivity {
         DisplayMetrics displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
         int width = displayMetrics.widthPixels;
         int height = displayMetrics.heightPixels;
-        tempImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        //tempImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+
+
         Picasso.with(TempHoldPictureActivity.this).load(imageURL).into(tempImage, new com.squareup.picasso.Callback() {
             @Override
             public void onSuccess() {
                 hideLoading();
+                if(mAttacher!=null){
+                    mAttacher.update();
+                }else{
+                    mAttacher = new PhotoViewAttacher(tempImage);
+                }
             }
 
             @Override
@@ -76,6 +88,11 @@ public class TempHoldPictureActivity extends AppCompatActivity {
             @Override
             public void onSuccess() {
                 hideLoading();
+                if(mAttacher!=null){
+                    mAttacher.update();
+                }else{
+                    mAttacher = new PhotoViewAttacher(tempImage);
+                }
             }
 
             @Override
@@ -102,16 +119,4 @@ public class TempHoldPictureActivity extends AppCompatActivity {
         finish();
     }
 
-    //    public void setImageURL(){
-//        DisplayMetrics displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
-//        int width = displayMetrics.widthPixels;
-//        int height = displayMetrics.heightPixels;
-//
-////        if (getIntent().getBooleanExtra("NeedRotate", false)) {
-////            Picasso.with(getApplicationContext()).load("file://"+ image_path).resize(width,height).rotate(180).centerInside().into(_imv);
-////        }else{
-////            Picasso.with(getApplicationContext()).load("file://"+ image_path).resize(width,height).centerInside().into(_imv);
-////        }
-//        Picasso.with(getApplicationContext()).load(getImageFromURL()).into(tempImage);
-//    }
 }

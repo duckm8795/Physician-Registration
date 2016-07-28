@@ -289,14 +289,16 @@ public class CameraSelfieActivity extends AppCompatActivity {
 
             Intent i = new Intent(CameraSelfieActivity.this, ImageHolderActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+            i.putExtra("IDCamera",1);
             i.putExtra("ADA", pathImg);
             i.putExtra("NeedRotate",needRotate);
             startActivity(i);
-
+            CameraSelfieActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             finish();
         }
 
 
     }
+
 
 }

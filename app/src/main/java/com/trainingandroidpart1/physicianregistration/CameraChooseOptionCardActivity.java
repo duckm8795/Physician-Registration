@@ -26,6 +26,7 @@ public class CameraChooseOptionCardActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
         finish();
+        CameraChooseOptionCardActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     public void next_to_sheet() {
@@ -33,5 +34,6 @@ public class CameraChooseOptionCardActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
         startActivity(intent);
         finish();
+        CameraChooseOptionCardActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 }

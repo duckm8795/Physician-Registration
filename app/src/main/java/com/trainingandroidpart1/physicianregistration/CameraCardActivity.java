@@ -248,8 +248,10 @@ public class CameraCardActivity extends AppCompatActivity {
             hideLoading();
             Intent i = new Intent(CameraCardActivity.this, ImageHolderActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+            i.putExtra("IDCamera",3);
             i.putExtra("ADA", pathImg);
             startActivity(i);
+            CameraCardActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             finish();
         }
 

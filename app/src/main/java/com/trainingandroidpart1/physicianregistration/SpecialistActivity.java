@@ -98,34 +98,7 @@ public class SpecialistActivity extends AppCompatActivity {
     }
 
 
-    public void showLoading() {
 
-        progressDialog = new ProgressDialog(SpecialistActivity.this);
-        progressDialog.setMessage("Đang xử lý ...");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.show();
-    }
-
-    public void hideLoading() {
-
-        progressDialog.dismiss();
-    }
-
-    public void alert() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        builder.setMessage("Vui lòng chọn ít nhất một chuyên môn.")
-                .setTitle("Jio Doctor")
-                .setPositiveButton("Đóng", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
 
     @Override
     public void onBackPressed() {
@@ -291,6 +264,37 @@ public class SpecialistActivity extends AppCompatActivity {
         }
 
 
+    }
+
+
+
+    public void showLoading() {
+
+        progressDialog = new ProgressDialog(SpecialistActivity.this);
+        progressDialog.setMessage("Đang xử lý ...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+    }
+
+    public void hideLoading() {
+
+        progressDialog.dismiss();
+    }
+
+    public void alert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage("Vui lòng chọn ít nhất một chuyên môn.")
+                .setTitle("Jio Doctor")
+                .setPositiveButton("Đóng", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
 

@@ -240,9 +240,11 @@ public class CameraGovermentActivity extends AppCompatActivity {
             hideLoading();
             Intent i = new Intent(CameraGovermentActivity.this, ImageHolderActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+            i.putExtra("IDCamera",2);
             i.putExtra("ADA", pathImg);
             i.putExtra("NeedBackground",needBackground);
             startActivity(i);
+            CameraGovermentActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             finish();
         }
 

@@ -41,6 +41,7 @@
                 android:layout_height="20dp"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Tên"
+                android:textStyle="bold"
                 android:textSize="13dp" />
             <EditText
                 android:id="@+id/firstName_textView"
@@ -70,6 +71,7 @@
                 android:layout_height="20dp"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="  Họ"
+                android:textStyle="bold"
                 android:textSize="13dp" />
             <EditText
                 android:id="@+id/surName_textView"
@@ -103,6 +105,7 @@
                 android:layout_marginRight="80dp"
                 android:layout_gravity="end"
                 android:text="Giới tính"
+                android:textStyle="bold"
                 android:textSize="13dp" />
             <RadioButton
                 android:id="@+id/male_radio_button"
@@ -140,6 +143,7 @@
             android:layout_height="20dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Email"
+            android:textStyle="bold"
             android:textSize="13dp" />
         <EditText
             android:id="@+id/email_textView"
@@ -169,7 +173,7 @@
                 android:layout_height="20dp"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:text="Password"
-
+                android:textStyle="bold"
                 android:textSize="13dp" />
             <EditText
                 android:id="@+id/password_textView"

@@ -229,8 +229,10 @@ public class CameraSheetActivity extends AppCompatActivity {
             hideLoading();
             Intent i = new Intent(CameraSheetActivity.this, ImageHolderActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+            i.putExtra("IDCamera",4);
             i.putExtra("ADA", pathImg);
             startActivity(i);
+            CameraSheetActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             finish();
         }
 

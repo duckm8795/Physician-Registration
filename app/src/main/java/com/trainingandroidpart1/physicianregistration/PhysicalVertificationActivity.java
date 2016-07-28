@@ -190,7 +190,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
                             } else {
 
                                 if(hasUpdoadCardOrSheetImageOrNot){
-                                    next_to_taken_picture(image_path_url_amazon_full_part);
+                                    next_to_taken_picture(image_path_url_amazon3);
                                 }else{
                                     next_to_choose_card_camera("3");
                                 }
@@ -498,7 +498,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
             if(avatarResponse != null){
                 if(avatarResponse.getSuccess()) {
                     showOverflowMenu(true);
-                    //Log.d("ALPOPOPO", avatarResponse.getMessage());
+                    Log.d("ALPOPOPO", avatarResponse.getMessage());
                     //image_path_url_amazon =avatarResponse.getMessage();
                     if (id_to_update == 0) {
                         hasUpdoadSelfieImageOrNot = true;

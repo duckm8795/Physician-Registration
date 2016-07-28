@@ -1,29 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+
+    android:id="@+id/image_holder_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
-    tools:context="com.trainingandroidpart1.physicianregistration.TempHoldPictureActivity">
-
+    android:background="@android:color/black">
     <ImageButton
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:id="@+id/exit_ic"
         android:onClick="exit"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
         android:background="@drawable/ic_close_image"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_marginTop="19dp"
 
-    <ImageView
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp" />
+
+
+    <FrameLayout
+        android:id="@+id/imageHolderLayout"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
-        android:id="@+id/imageTempHolder"
-        android:layout_below="@+id/exit_ic"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="80dp"
+
+        android:layout_marginTop="80dp">
+
+        <ImageView
+            android:id="@+id/imageTempHolder"
+            android:layout_width="match_parent"
+            android:scaleType="fitXY"
+            android:layout_height="match_parent"
+             />
+
+        <ImageView
+            android:id="@+id/imageHolder_contain_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/card_icon_black"
+            android:visibility="invisible" />
+    </FrameLayout>
+
+
 </RelativeLayout>

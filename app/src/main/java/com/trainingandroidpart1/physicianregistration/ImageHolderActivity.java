@@ -66,7 +66,7 @@ public class ImageHolderActivity extends AppCompatActivity {
         retrieveToken = sharedPreferences.getString(getString(R.string.storePreToken), "");
         retrieveID = sharedPreferences.getString(getString(R.string.storePreID), "");
 
-        circleProgressBar.setVisibility(View.INVISIBLE);
+
 
         Intent intent = getIntent();
         image_path = intent.getStringExtra("ADA");
@@ -115,6 +115,27 @@ public class ImageHolderActivity extends AppCompatActivity {
     }
 
     public void retake_camera(View view) {
+//        int id = getIntent().getIntExtra("IDCamera",1);
+//        if(id == 1){
+//            Intent intent = new Intent(ImageHolderActivity.this,CameraSelfieActivity.class);
+//            //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//            startActivity(intent);
+//
+//
+//        }else if ( id == 2){
+//            Intent intent = new Intent(ImageHolderActivity.this,CameraGovermentActivity.class);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//            startActivity(intent);
+//        }else if (id == 3){
+//            Intent intent = new Intent(ImageHolderActivity.this,CameraCardActivity.class);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//            startActivity(intent);
+//        }else{
+//            Intent intent = new Intent(ImageHolderActivity.this,CameraSheetActivity.class);
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//            startActivity(intent);
+//        }
+
         finish();
     }
 
