@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item
-        android:id= "@+id/action_continue"
-        android:orderInCategory="100"
-        android:title="Tiếp tục"
-        
-        app:showAsAction="always">
+    <group android:id="@+id/verfiy_group">
+        <item
+            android:id= "@+id/action_continue"
+            android:orderInCategory="100"
+            android:title="Tiếp tục"
 
-    </item>
+            app:showAsAction="always">
+
+        </item>
+    </group>
+
 </menu>

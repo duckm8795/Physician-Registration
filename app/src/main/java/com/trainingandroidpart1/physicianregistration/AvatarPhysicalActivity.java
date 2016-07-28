@@ -2,13 +2,16 @@ package com.trainingandroidpart1.physicianregistration;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.soundcloud.android.crop.Crop;
+import com.trainingandroidpart1.physicianregistration.Request.CountingFileRequestBody;
 import com.trainingandroidpart1.physicianregistration.Response.AvatarResponse.AvatarResponse;
 import com.trainingandroidpart1.physicianregistration.Service.ServiceAPI;
 
@@ -45,9 +49,9 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
     private String retrieveID = null;
     private File file;
     private Map<String, RequestBody> requestBodyMap = new HashMap<>();
-    private Map<String, RequestBody> requestBodyMap_ChooseGallery = new HashMap<>();
-    private FileOutputStream fo;
 
+    private FileOutputStream fo;
+    private ProgressDialog progressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +94,7 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
                     cameraIntent();
 
                 } else if (items[item].equals("Chọn ảnh")) {
-                    circleImageView.setImageResource(R.drawable.download);
+                    //circleImageView.setImageResource(R.drawable.download);
                     Crop.pickImage(AvatarPhysicalActivity.this);
                 }
             }
@@ -112,57 +116,47 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
                 beginCrop(data.getData());
             } else if (requestCode == Crop.REQUEST_CROP) {
                 handleCrop(resultCode, data);
-            } else if (requestCode == REQUEST_CAMERA)
-                onCaptureImageResult(data);
+            } else if (requestCode == REQUEST_CAMERA){
+                //onCaptureImageResult(data);
+                beginCrop2(data.getData());
+            }
+
         }
     }
 
-    private void onCaptureImageResult(Intent data) {
-        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        thumbnail.compress(Bitmap.CompressFormat.PNG, 90, bytes);
 
-        file = new File(getApplicationContext().getCacheDir(), "my_avatar_");
-
-        try {
-            file.createNewFile();
-            fo = new FileOutputStream(file);
-            fo.write(bytes.toByteArray());
-            fo.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        circleImageView.setImageBitmap(thumbnail);
-
-        /* processing for sever */
-        generateParams_chooseGallery();
-        process_chooseGallery();
-    }
 
     private void beginCrop(Uri source) {
         Uri destination = Uri.fromFile(new File(getCacheDir(), "cropped"));
-        Crop.of(source, destination).asSquare().start(this);
+        Crop.of(source, destination).start(this);
+    }
+    private void beginCrop2(Uri source) {
+        Uri destination = Uri.fromFile(new File(getCacheDir(), "cropped1"));
+        Crop.of(source, destination).start(this);
     }
 
     private void handleCrop(int resultCode, Intent result) {
         if (resultCode == RESULT_OK) {
-            if (Crop.getOutput(result).equals(Uri.EMPTY)) {
-                circleImageView.setImageResource(R.drawable.download);
-                //circleImageView.setImageDrawable(getResources().getDrawable(R.drawable.download));
-                Toast.makeText(AvatarPhysicalActivity.this, "qqqqqq", Toast.LENGTH_LONG).show();
-            }
-            circleImageView.setImageURI(Crop.getOutput(result));
+//            if (Crop.getOutput(result).equals(Uri.EMPTY)) {
+//                circleImageView.setImageResource(R.drawable.download);
+//                //circleImageView.setImageDrawable(getResources().getDrawable(R.drawable.download));
+//
+//            }
+            Uri uri = Crop.getOutput(result);
+            circleImageView.setImageURI(uri);
+            //circleImageView.setRotation(90);
             file = new File(Crop.getOutput(result).getPath());
-            generateParams();
-            process();
+           new UploadPhoto().execute();
+
+
         } else if (resultCode == Crop.RESULT_ERROR) {
             Toast.makeText(this, Crop.getError(result).getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void generateParams() {
+
+    // asyns request //
+    public void process() {
         String fileName = "file\"; filename=\"" + file.getName();
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
@@ -172,28 +166,13 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
         requestBodyMap.put("token", token);
         requestBodyMap.put("userID", id);
         requestBodyMap.put(fileName, requestBody);
-    }
-
-    public void generateParams_chooseGallery() {
-        String fileName = "file\"; filename=\"" + file.getName();
-
-        RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        RequestBody id = RequestBody.create(MediaType.parse("multipart/form-data"), retrieveID);
-        RequestBody token = RequestBody.create(MediaType.parse("multipart/form-data"), retrieveToken);
-
-        requestBodyMap_ChooseGallery.put("token", token);
-        requestBodyMap_ChooseGallery.put("userID", id);
-        requestBodyMap_ChooseGallery.put(fileName, requestBody);
-    }
-
-    public void process() {
         ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
         Call<AvatarResponse> call = serviceAPI.uploadAvatar(requestBodyMap);
         call.enqueue(new Callback<AvatarResponse>() {
             @Override
             public void onResponse(Call<AvatarResponse> call, Response<AvatarResponse> response) {
                 if (response.body().getSuccess()) {
-                    Toast.makeText(AvatarPhysicalActivity.this, response.body().getMessage(), Toast.LENGTH_LONG).show();
+                    Log.d("AAA", response.body().getMessage());
                 }
             }
 
@@ -204,23 +183,57 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
         });
     }
 
-    public void process_chooseGallery() {
-        ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
-        Call<AvatarResponse> call = serviceAPI.uploadAvatar(requestBodyMap_ChooseGallery);
-        call.enqueue(new Callback<AvatarResponse>() {
-            @Override
-            public void onResponse(Call<AvatarResponse> call, Response<AvatarResponse> response) {
-                if (response.body().getSuccess()) {
-                    Log.d("AAA", response.body().getMessage());
-                    //Toast.makeText(AvatarPhysicalActivity.this,response.body().getMessage(),Toast.LENGTH_LONG).show();
-                }
+    public class UploadPhoto extends AsyncTask<Void, Void, Void> {
+        AvatarResponse avatarResponse;
+
+
+        @Override
+        protected void onPreExecute() {
+          showLoading();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+
+
+            String fileName = "file\"; filename=\"" + file.getName();
+
+            RequestBody id = RequestBody.create(MediaType.parse("multipart/form-data"), retrieveID);
+            RequestBody token = RequestBody.create(MediaType.parse("multipart/form-data"), retrieveToken);
+            RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+
+            Map<String, RequestBody> requestBodyMap = new HashMap<>();
+            requestBodyMap.put("token", token);
+            requestBodyMap.put("userID", id);
+            requestBodyMap.put(fileName, requestBody);
+
+            ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
+
+            Call<AvatarResponse> call = serviceAPI.uploadAvatar(requestBodyMap);
+
+            try {
+                avatarResponse = call.execute().body();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(avatarResponse.getSuccess()){
+                hideLoading();
+                Log.d("ImageURL",avatarResponse.getMessage());
+            }else{
+                hideLoading();
+                Toast.makeText(getApplicationContext(),avatarResponse.getMessage(),Toast.LENGTH_SHORT).show();
             }
 
-            @Override
-            public void onFailure(Call<AvatarResponse> call, Throwable t) {
-                Toast.makeText(AvatarPhysicalActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+        }
     }
 
 
@@ -248,5 +261,44 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
                     }
                 }).setNegativeButton("Không", null).show();
     }
+    public void showLoading() {
 
+        progressDialog = new ProgressDialog(AvatarPhysicalActivity.this);
+        progressDialog.setMessage("Đang xử lý ...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.show();
+    }
+
+    public void hideLoading() {
+
+        progressDialog.dismiss();
+    }
+    //    private void onCaptureImageResult(Intent data) {
+//        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+//        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+//        thumbnail.compress(Bitmap.CompressFormat.PNG, 90, bytes);
+//
+//        file = new File(getApplicationContext().getCacheDir(), "my_avatar_");
+//
+//        try {
+//            file.createNewFile();
+//            fo = new FileOutputStream(file);
+//            fo.write(bytes.toByteArray());
+//            fo.close();
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        circleImageView.setImageBitmap(thumbnail);
+//        circleImageView.setRotation(90);
+////        Uri destination = Uri.fromFile(new File(getCacheDir(), "cropped"));
+////        Crop.of(data.getData(), destination).start(this);
+//
+//        /* processing for sever */
+//        generateParams_chooseGallery();
+//        process_chooseGallery();
+//    }
 }

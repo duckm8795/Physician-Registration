@@ -48,6 +48,8 @@
             android:layout_height="60dp"
             app:style="solid_line"
             android:visibility="invisible"
+
+            app:progress_stroke_width="4dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_centerHorizontal="true"

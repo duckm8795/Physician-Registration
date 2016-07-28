@@ -9,20 +9,25 @@ import android.view.View;
 
 public class DoneVerificationActivity extends AppCompatActivity {
     private String image_path;
+    private boolean hasUploadAvatarOrNot;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_done_verification);
 
-        Intent intent = getIntent();
-        image_path = intent.getStringExtra("ImagePathForAvatar");
+        //Intent intent = getIntent();
+
     }
 
     public void next_to_set_avatar(View view) {
-
+        image_path = getIntent().getStringExtra("ImagePathForAvatar");
         Intent intent = new Intent(DoneVerificationActivity.this,AvatarPhysicalActivity.class);
-        intent.putExtra("ImagePathForSetAvatar",image_path);
-        intent.putExtra("NeedSetAvatar",true);
+
+        if(getIntent().getBooleanExtra("HasUploadAvatarOrNot",false)){
+            intent.putExtra("ImagePathForSetAvatar",image_path);
+            intent.putExtra("NeedSetAvatar",true);
+
+        }
         startActivity(intent);
     }
     @Override

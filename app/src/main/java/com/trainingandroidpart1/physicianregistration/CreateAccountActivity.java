@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.AdapterView;
@@ -32,6 +33,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -93,6 +95,7 @@ public class CreateAccountActivity extends AppCompatActivity {
             }
 
         } else {
+
             showAlertTerm();
         }
 
@@ -198,40 +201,6 @@ public class CreateAccountActivity extends AppCompatActivity {
 
     }
 
-    public void sendRequest() {
-
-        ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
-        Call<CreateProviderAccountResponse> call =
-                serviceAPI.createProviderAccount("M", email.getText().toString(), firstName.getText().toString(),
-                        "vi", surName.getText().toString(), password.getText().toString(), "VN", genderCheck(), "Asia/Saigon");
-        call.enqueue(new Callback<CreateProviderAccountResponse>() {
-            @Override
-            public void onResponse(Call<CreateProviderAccountResponse> call, Response<CreateProviderAccountResponse> response) {
-
-                if (response.body().getMessage().equals("")) {
-
-                    userID = response.body().getUserID();
-                    accessToken = response.body().getAccessToken();
-
-                    sharedPreferences = getSharedPreferences(getString(R.string.sharePre_string), Context.MODE_PRIVATE);
-                    sharedPreferences.edit().putString(getString(R.string.storePreToken), accessToken).apply();
-                    sharedPreferences.edit().putString(getString(R.string.storePreID), String.valueOf(userID)).apply();
-
-
-                } else {
-
-                    showAlertCreateAccountResponse(response.body().getMessage());
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<CreateProviderAccountResponse> call, Throwable t) {
-
-            }
-        });
-
-    }
 
     class SendRequests extends AsyncTask<Void, Void, Void> {
         CreateProviderAccountResponse createProviderAccountResponse;
@@ -262,7 +231,12 @@ public class CreateAccountActivity extends AppCompatActivity {
                     serviceAPI.createProviderAccount("M", email1,firstName1 ,
                             "vi",surName1 ,password1 , "VN", genderCheck(), "Asia/Saigon");
             try {
-                createProviderAccountResponse= call.execute().body();
+
+                    createProviderAccountResponse= call.execute().body();
+
+
+
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -271,23 +245,28 @@ public class CreateAccountActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Void v) {
-            if(createProviderAccountResponse.getSuccess()){
 
-                userID = createProviderAccountResponse.getUserID();
-                accessToken = createProviderAccountResponse.getAccessToken();
+                if(createProviderAccountResponse.getSuccess()){
 
-                sharedPreferences = getSharedPreferences(getString(R.string.sharePre_string), Context.MODE_PRIVATE);
-                sharedPreferences.edit().putString(getString(R.string.storePreToken), accessToken).apply();
-                sharedPreferences.edit().putString(getString(R.string.storePreID), String.valueOf(userID)).apply();
+                    userID = createProviderAccountResponse.getUserID();
+                    accessToken = createProviderAccountResponse.getAccessToken();
 
-                hideLoading();
-                Intent i = new Intent(CreateAccountActivity.this, PasscodeActivity.class);
-                startActivity(i);
-                CreateAccountActivity.this.overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
-            }else {
-                hideLoading();
-                showAlertCreateAccountResponse(createProviderAccountResponse.getMessage());
-            }
+                    sharedPreferences = getSharedPreferences(getString(R.string.sharePre_string), Context.MODE_PRIVATE);
+                    sharedPreferences.edit().putString(getString(R.string.storePreToken), accessToken).apply();
+                    sharedPreferences.edit().putString(getString(R.string.storePreID), String.valueOf(userID)).apply();
+
+                    hideLoading();
+                    Intent i = new Intent(CreateAccountActivity.this, PasscodeActivity.class);
+                    startActivity(i);
+                    CreateAccountActivity.this.overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+                }else {
+                    hideLoading();
+                    showAlertCreateAccountResponse(createProviderAccountResponse.getMessage());
+                }
+
+
+
+
 
 
 
@@ -341,7 +320,21 @@ public class CreateAccountActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+    public void showAlert504() {
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage("505 Sever Out.")
+                .setTitle("Jio Doctor")
+                .setPositiveButton("Đóng", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
     public void showAlertName() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Vui lòng nhập tên.")

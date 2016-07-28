@@ -54,7 +54,7 @@ import retrofit2.Response;
 
 public class PhysicalVertificationActivity extends AppCompatActivity {
 
-    private static final int REQUEST = 1;
+
     private SharedPreferences sharedPreferences;
     private String retrieveToken = null;
     private String retrieveID = null;
@@ -75,16 +75,19 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
     private String image_path_url_amazon;
     private String image_path_url_amazon2;
     private String image_path_url_amazon3;
+    private String image_path_url_amazon_full_part;
     private String image_path_for_avatar;
     private String image_path_for_goverment_par1;
     private String image_path_for_goverment_par2;
     private String image_path_for_cardOrSheet;
+    private String finalImagePathForGov;
 
     private boolean hasUpdoadSelfieImageOrNot = false;
     private boolean hasUpdoadGovermentImageOrNot = false;
     private boolean hasUpdoadCardOrSheetImageOrNot = false;
-    private boolean flag_check = false;
-    View view;
+    private boolean hasTakeTwoSideOrNot = false;
+    private  View view;
+    private  Menu menu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -187,7 +190,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
                             } else {
 
                                 if(hasUpdoadCardOrSheetImageOrNot){
-                                    next_to_taken_picture(image_path_url_amazon3);
+                                    next_to_taken_picture(image_path_url_amazon_full_part);
                                 }else{
                                     next_to_choose_card_camera("3");
                                 }
@@ -253,12 +256,15 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
                 case 702:
                     image_path = data.getExtras().getString(getString(R.string.image_path_string));
                     image_path_for_goverment_par2 =image_path;
+                    hasTakeTwoSideOrNot = true;
+                    finalImagePathForGov = finalImagePath();
                     new UploadPhoto(1, finalImagePath()).execute();
                     break;
             }
 
         }
     }
+
     public String finalImagePath(){
         Bitmap bitmap = combineImages(convertToBitMap(image_path_for_goverment_par1),convertToBitMap(image_path_for_goverment_par2));
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -313,6 +319,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
 
         return cs;
     }
+
     private static File getOutputMediaFile() {
         File mediaStorageDir = new File(
                 Environment
@@ -400,6 +407,10 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
 
         return dest;
     }
+
+
+
+
     private void updateView(int index){
          view = listview.getChildAt(index -
                 listview.getFirstVisiblePosition());
@@ -434,6 +445,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
             imageButton_arrow.setVisibility(View.GONE);
             circleProgressBar.setVisibility(View.VISIBLE);
             description_textview.setText("Đang tải lên");
+            showOverflowMenu(false);
         }
 
         @Override
@@ -466,6 +478,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
 
             try {
                 avatarResponse = call.execute().body();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -482,37 +495,55 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if(avatarResponse.getSuccess()){
-                Log.d("ALPOPOPO",avatarResponse.getMessage());
-                //image_path_url_amazon =avatarResponse.getMessage();
-                if(id_to_update == 0){
-                    hasUpdoadSelfieImageOrNot =true;
-                    image_path_url_amazon =avatarResponse.getMessage();
-                }else if (id_to_update == 1){
-                    hasUpdoadGovermentImageOrNot = true;
-                    image_path_url_amazon2 =avatarResponse.getMessage();
-                }else if(id_to_update == 2){
-                    hasUpdoadCardOrSheetImageOrNot =true;
-                    image_path_url_amazon3 =avatarResponse.getMessage();
+            if(avatarResponse != null){
+                if(avatarResponse.getSuccess()) {
+                    showOverflowMenu(true);
+                    //Log.d("ALPOPOPO", avatarResponse.getMessage());
+                    //image_path_url_amazon =avatarResponse.getMessage();
+                    if (id_to_update == 0) {
+                        hasUpdoadSelfieImageOrNot = true;
+                        image_path_url_amazon = avatarResponse.getMessage();
+                    } else if (id_to_update == 1) {
+                        hasUpdoadGovermentImageOrNot = true;
+                        if(hasTakeTwoSideOrNot){
+                            image_path_url_amazon2 = avatarResponse.getMessage();
+                            Log.d("FullPart",image_path_url_amazon2);
+                        }
+
+                    } else if (id_to_update == 2) {
+                        hasUpdoadCardOrSheetImageOrNot = true;
+
+                            image_path_url_amazon3 = avatarResponse.getMessage();
+
+
+                    }
+
+                    //hasUpdoadSelfieImageOrNot =true;
+                    Typeface font_medium = Typeface.createFromAsset(getAssets(), "Ubuntu-Regular.ttf");
+
+                    description_textview.setText("Đạng đợi xác nhận...");
+                    circleProgressBar.setVisibility(View.GONE);
+                    imageButton_arrow.setVisibility(View.VISIBLE);
+                    pending_status.setVisibility(View.VISIBLE);
+                    description_textview.setTextColor(Color.parseColor("#FFEBEE"));
+                    pending_status.setBackground(getDrawable(R.drawable.ic_verification_pending));
+                    logo_of_pending.setBackground(getDrawable(R.drawable.ic_verification_pending_illustration));
+                    hello_texview.setText("Đang chờ xác nhận.");
+                    name_texview.setText("");
+                    other_texview.setText("Chúng tôi đang xem xét hồ sơ của bạn.Vui lòng xem trạng thái ở phía dưới.");
+                    hello_texview.setTypeface(font_medium);
+                    other_texview.setTypeface(font_medium);
+                }else{
+                    showAlertError(avatarResponse.getMessage());
+                    circleProgressBar.setVisibility(View.GONE);
+                    imageButton_arrow.setVisibility(View.VISIBLE);
+                    description_textview.setText("Có lỗi. Vui lòng thử lại");
+                    description_textview.setTextColor(Color.parseColor("#D32F2F"));
+                    pending_status.setVisibility(View.VISIBLE);
                 }
 
-                //hasUpdoadSelfieImageOrNot =true;
-                Typeface font_medium = Typeface.createFromAsset(getAssets(), "Ubuntu-Regular.ttf");
-
-                description_textview.setText("Đạng đợi xác nhận...");
-                circleProgressBar.setVisibility(View.GONE);
-                imageButton_arrow.setVisibility(View.VISIBLE);
-                pending_status.setVisibility(View.VISIBLE);
-                description_textview.setTextColor(Color.parseColor("#FFEBEE"));
-                pending_status.setBackground(getDrawable(R.drawable.ic_verification_pending));
-                logo_of_pending.setBackground(getDrawable(R.drawable.ic_verification_pending_illustration));
-                hello_texview.setText("Đang chờ xác nhận.");
-                name_texview.setText("");
-                other_texview.setText("Chúng tôi đang xem xét hồ sơ của bạn.Vui lòng xem trạng thái ở phía dưới.");
-                hello_texview.setTypeface(font_medium);
-                other_texview.setTypeface(font_medium);
             }else{
-                showAlertError(avatarResponse.getMessage());
+                showAlertError("Sever out");
                 circleProgressBar.setVisibility(View.GONE);
                 imageButton_arrow.setVisibility(View.VISIBLE);
                 description_textview.setText("Có lỗi. Vui lòng thử lại");
@@ -554,14 +585,20 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
         getMenuInflater().inflate(R.menu.verify_physician_main, menu);
         return true;
     }
+    public void showOverflowMenu(boolean showMenu){
+        if(menu == null)
+            return;
+        menu.setGroupVisible(R.id.verfiy_group, showMenu);
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
         if (id == R.id.action_continue) {
             if ( hasUpdoadSelfieImageOrNot || hasUpdoadGovermentImageOrNot || hasUpdoadCardOrSheetImageOrNot){
                 next_to_done_verfication();
@@ -632,6 +669,8 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
     public void next_to_done_verfication(){
         Intent intent = new Intent (PhysicalVertificationActivity.this,DoneVerificationActivity.class);
         intent.putExtra("ImagePathForAvatar",image_path_for_avatar);
+//        intent.putExtra("ImagePathByAmazonForSelfie",image_path_url_amazon);
+        intent.putExtra("HasUploadAvatarOrNot",hasUpdoadSelfieImageOrNot);
         startActivity(intent);
         PhysicalVertificationActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
