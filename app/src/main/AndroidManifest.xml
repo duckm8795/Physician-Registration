@@ -15,6 +15,7 @@
         android:icon="@drawable/ic_logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
+
         android:theme="@style/AppTheme">
         <activity android:name="com.soundcloud.android.crop.CropImageActivity"
             />
@@ -27,6 +28,7 @@
         <activity
             android:name=".CreateAccountActivity"
             android:label="@string/title_activity_create_account"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateVisible">
@@ -37,6 +39,7 @@
         <activity
             android:name=".PasscodeActivity"
             android:label="@string/title_activity_passcode"
+            android:screenOrientation="portrait"
             android:parentActivityName=".CreateAccountActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -46,6 +49,7 @@
         <activity
             android:name=".RePasscodeActivity"
             android:label="@string/title_activity_re_passcode"
+            android:screenOrientation="portrait"
             android:parentActivityName=".PasscodeActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -55,6 +59,7 @@
         <activity
             android:name=".PhysicalVertificationActivity"
             android:label="@string/title_activity_physical_vertification"
+            android:screenOrientation="portrait"
             android:parentActivityName=".RePasscodeActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -64,6 +69,7 @@
         <activity
             android:name=".CameraSelfieActivity"
             android:label="@string/title_activity_camera_selfie"
+            android:screenOrientation="portrait"
             android:parentActivityName=".PhysicalVertificationActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
             <meta-data
@@ -73,6 +79,7 @@
         <activity
             android:name=".AvatarPhysicalActivity"
             android:label="@string/title_activity_avatar_physical"
+            android:screenOrientation="portrait"
             android:parentActivityName=".PhysicalVertificationActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -82,6 +89,7 @@
         <activity
             android:name=".DegreeListActivity"
             android:label="@string/title_activity_degree_list"
+            android:screenOrientation="portrait"
             android:parentActivityName=".AvatarPhysicalActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -91,6 +99,7 @@
         <activity
             android:name=".SpecialistActivity"
             android:label="@string/title_activity_specialist"
+            android:screenOrientation="portrait"
             android:parentActivityName=".DegreeListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -100,6 +109,7 @@
         <activity
             android:name=".LanguageListActivity"
             android:label="@string/title_activity_language_list"
+            android:screenOrientation="portrait"
             android:parentActivityName=".SpecialistActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -109,6 +119,7 @@
         <activity
             android:name=".MainProfileActivity"
             android:label="@string/title_activity_main_profile"
+            android:screenOrientation="portrait"
             android:parentActivityName=".LanguageListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -117,27 +128,35 @@
         </activity>
         <activity
             android:name=".ImageHolderActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
             android:name=".CameraGovermentActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
             android:name=".CameraChooseOptionCardActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
             android:name=".CameraCardActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
             android:name=".CameraSheetActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
             android:name=".TempHoldPictureActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" />
         <activity
             android:name=".DoneVerificationActivity"
             android:label=""
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".SplashScreenActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

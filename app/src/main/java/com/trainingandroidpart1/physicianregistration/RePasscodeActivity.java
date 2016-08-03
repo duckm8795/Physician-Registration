@@ -2,10 +2,12 @@ package com.trainingandroidpart1.physicianregistration;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
@@ -145,16 +147,40 @@ public class RePasscodeActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Void v) {
-            if(setSecurityPinResponse.getSuccess()){
+            if( setSecurityPinResponse != null){
+                if(setSecurityPinResponse.getSuccess()){
+                    hideLoading();
+                    nextToVerficationActivity();
+                }else{
+                    hideLoading();
+                    Toast.makeText(getApplicationContext(),setSecurityPinResponse.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            }else{
                 hideLoading();
-                nextToVerficationActivity();
+                showAlertError("Sever out");
             }
+
 
 
 
         }
 
 
+    }
+    public void showAlertError(String error) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage(error)
+                .setTitle("Jio Doctor")
+                .setPositiveButton("Đóng", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
     public void nextToVerficationActivity() {
         Intent intent = new Intent(RePasscodeActivity.this, PhysicalVertificationActivity.class);

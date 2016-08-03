@@ -117,6 +117,7 @@ public class TempHoldPictureActivity extends AppCompatActivity {
 
     public void exit(View view) {
         finish();
+        TempHoldPictureActivity.this.overridePendingTransition(R.anim.slide_up,R.anim.slide_down);
     }
 
 }

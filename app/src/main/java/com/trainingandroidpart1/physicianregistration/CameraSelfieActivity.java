@@ -1,13 +1,20 @@
 package com.trainingandroidpart1.physicianregistration;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,11 +32,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CameraSelfieActivity extends AppCompatActivity {
 
+
+    final private int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
 
     private int cameraId = Camera.CameraInfo.CAMERA_FACING_FRONT;
     private String pathImg;
@@ -47,14 +59,141 @@ public class CameraSelfieActivity extends AppCompatActivity {
     private boolean isFrontCamera;
     private int cameraRotate = 0;
     private boolean needRotate = true;
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout__camera_general);
 
+
+        List<String> permissionsNeeded = new ArrayList<>();
+        final List<String> permissionsList = new ArrayList<>();
+        if (!addPermission(permissionsList, Manifest.permission.CAMERA))
+            permissionsNeeded.add("CAMERA");
+        if (!addPermission(permissionsList, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+            permissionsNeeded.add("WRITE_EXTERNAL_STORAGE");
+
+        if (permissionsList.size() > 0) {
+            if (permissionsNeeded.size() > 0) {
+                // Need Rationale
+                String message = "You need to grant access to " + permissionsNeeded.get(0) ;
+                for (int i = 1; i < permissionsNeeded.size(); i++)
+                    message = message + ", " + permissionsNeeded.get(i) + " to continue using app.";
+                showMessageOKCancel(message,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ActivityCompat.requestPermissions(CameraSelfieActivity.this, permissionsList.toArray(new String[permissionsList.size()]),
+                                        REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
+                            }
+                        }, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                finish();
+                                Toast.makeText(getApplicationContext(), "Some permission is Denied.App can't work properly", Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+                        });
+                return;
+            }
+            ActivityCompat.requestPermissions(CameraSelfieActivity.this,permissionsList.toArray(new String[permissionsList.size()]),
+                    REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
+            return;
+        }
         initView();
 
 
+
+
+
+
+    }
+    @TargetApi(Build.VERSION_CODES.M)
+    private boolean addPermission(List<String> permissionsList, String permission) {
+        if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(CameraSelfieActivity.this,permission)) {
+            permissionsList.add(permission);
+            // Check for Rationale Option
+            if (ActivityCompat.shouldShowRequestPermissionRationale(CameraSelfieActivity.this,permission)) {
+                Toast.makeText(getApplicationContext(), "sdasdsdasdasa", Toast.LENGTH_SHORT)
+                        .show();
+                return false;
+            }
+        }
+        return true;
+    }
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener,DialogInterface.OnClickListener cancelListener) {
+        new AlertDialog.Builder(CameraSelfieActivity.this)
+                .setMessage(message)
+                .setPositiveButton("OK", okListener)
+                .setNegativeButton("Cancel", cancelListener)
+                .create()
+                .show();
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS:
+                Map<String, Integer> perms = new HashMap<>();
+                // Initial
+                perms.put(Manifest.permission.CAMERA, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+                // Fill with results
+                for (int i = 0; i < permissions.length; i++)
+                    perms.put(permissions[i], grantResults[i]);
+
+                if (perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+                        perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                        ) {
+                    // All Permissions Granted
+                    initView();
+                } else {
+                    // Permission Denied
+                    if(perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED &&
+                            perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED ){
+                        initView();
+                        Toast.makeText(getApplicationContext(), "App won't save taken picture due to storage permission is denied", Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                    else if(perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED &&
+                            perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED ){
+                        finish();
+                        Toast.makeText(getApplicationContext(), "Can't take picture .Camera permission is denied", Toast.LENGTH_LONG)
+                                .show();
+                    }
+                    else if (perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED &&
+                            perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED){
+                        finish();
+                        Toast.makeText(getApplicationContext(), "Can't use this function .All permissions is denied", Toast.LENGTH_LONG)
+                                .show();
+                    }
+
+
+
+
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+    @TargetApi(Build.VERSION_CODES.M)
+    public void initView() {
+        hasFlash = this.getApplicationContext().getPackageManager()
+                .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+
+        preview_layout = (FrameLayout) findViewById(R.id.center_view);
+
+        ic_switch_camera = (ImageButton) findViewById(R.id.ic_switch_camera);
+        ic_flash = (ImageButton) findViewById(R.id.ic_flash);
+        ic_flash.setVisibility(View.GONE);
+        ic_switch_camera.setVisibility(View.GONE);
+
+        captureButton = (ImageView) findViewById(R.id.capture_image);
+
+        mCamera = getCameraFront(cameraId);
+        mPreview = new CameraPreview(CameraSelfieActivity.this, mCamera, R.drawable.selfie_icon);
+
+        create_flow_text();
         if (preview_layout != null) {
             preview_layout.addView(mPreview);
         }
@@ -72,31 +211,6 @@ public class CameraSelfieActivity extends AppCompatActivity {
                 }
             });
         }
-
-
-    }
-
-    public void initView() {
-        hasFlash = this.getApplicationContext().getPackageManager()
-                .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
-
-
-
-
-
-        preview_layout = (FrameLayout) findViewById(R.id.center_view);
-
-        ic_switch_camera = (ImageButton) findViewById(R.id.ic_switch_camera);
-        ic_flash = (ImageButton) findViewById(R.id.ic_flash);
-        ic_flash.setVisibility(View.GONE);
-        ic_switch_camera.setVisibility(View.GONE);
-
-        captureButton = (ImageView) findViewById(R.id.capture_image);
-
-        mCamera = getCameraFront(cameraId);
-        mPreview = new CameraPreview(CameraSelfieActivity.this, mCamera, R.drawable.selfie_icon);
-
-        create_flow_text();
 
     }
 

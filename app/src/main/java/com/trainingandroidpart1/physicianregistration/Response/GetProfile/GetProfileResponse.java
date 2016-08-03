@@ -7,6 +7,15 @@ public class GetProfileResponse {
     private String firstName;
     private String lastName;
     private Boolean success;
+    private String message;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     public Boolean getSuccess() {
         return success;

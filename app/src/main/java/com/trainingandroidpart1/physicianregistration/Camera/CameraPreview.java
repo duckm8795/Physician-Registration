@@ -1,9 +1,12 @@
 package com.trainingandroidpart1.physicianregistration.Camera;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.util.Log;
@@ -119,8 +122,22 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     }
 
     public void onDraw(Canvas canvas) {
-
+        Paint myPaint = new Paint();
+//
+        myPaint.setStrokeWidth(5);
+        myPaint.setColor(Color.CYAN);
+        //canvas.drawRect(75, 510, 1365, (canvas.getHeight()-400), myPaint);
+        float deviceHeight = getScreenHeight();
+        float deviceWidth = getScreenWidth();
         canvas.drawBitmap(scaled, 0,  0, null ); // draw the background
+        //canvas.drawRect(0, deviceWidth/3,  deviceWidth, (float) (deviceHeight/1.75),myPaint);
+    }
+    public static int getScreenWidth() {
+        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    }
+
+    public static int getScreenHeight() {
+        return Resources.getSystem().getDisplayMetrics().heightPixels;
     }
     public Bitmap set_background (int drawable_id){
         Bitmap background = BitmapFactory.decodeResource(getResources(), drawable_id);

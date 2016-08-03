@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ListView;
@@ -41,6 +42,7 @@ public class LanguageListActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private LanguageListCustomAdapter languageListCustomAdapter = null;
     private String main_string;
+    private AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.8F);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,53 +120,74 @@ public class LanguageListActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Void v) {
-            if (mainLanguageListResponse.getSuccess()) {
-                hideLoading();
-                final List<LanguageList> languageLists1 = mainLanguageListResponse.getLanguageList();
+            if(mainLanguageListResponse != null){
+                if (mainLanguageListResponse.getSuccess()) {
+                    hideLoading();
+                    final List<LanguageList> languageLists1 = mainLanguageListResponse.getLanguageList();
 
-                languageListCustomAdapter = new LanguageListCustomAdapter(LanguageListActivity.this, languageLists1);
+                    languageListCustomAdapter = new LanguageListCustomAdapter(LanguageListActivity.this, languageLists1);
 
-                listview.setAdapter(languageListCustomAdapter);
+                    listview.setAdapter(languageListCustomAdapter);
                     /* implement search view*/
-                listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    public void onItemClick(AdapterView<?> parent, View view,
-                                            int position, long id) {
-                        CheckBox box = (CheckBox)view.findViewById(R.id.btn_check_language);
-                        // When clicked, show a toast with the TextView text
-                        LanguageList languageList = (LanguageList) parent.getItemAtPosition(position);
-                        languageList.setSelected(true);
-                        if (box.isChecked()){
-                            box.setChecked(false);
-                            languageList.setSelected(false);
-                        }else{
-                            box.setChecked(true);
+                    listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        public void onItemClick(AdapterView<?> parent, View view,
+                                                int position, long id) {
+                            CheckBox box = (CheckBox)view.findViewById(R.id.btn_check_language);
+                            // When clicked, show a toast with the TextView text
+                            LanguageList languageList = (LanguageList) parent.getItemAtPosition(position);
+                            languageList.setSelected(true);
+                            if (box.isChecked()){
+                                box.setChecked(false);
+                                languageList.setSelected(false);
+                            }else{
+                                box.setChecked(true);
+                            }
+
+                        }
+                    });
+                    mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                        @Override
+                        public boolean onQueryTextSubmit(String query) {
+                            return false;
                         }
 
-                    }
-                });
-                mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                    @Override
-                    public boolean onQueryTextSubmit(String query) {
-                        return false;
-                    }
+                        @Override
+                        public boolean onQueryTextChange(String newText) {
+                            languageListCustomAdapter.filter(newText);
+                            languageListCustomAdapter.notifyDataSetChanged();
 
-                    @Override
-                    public boolean onQueryTextChange(String newText) {
-                        languageListCustomAdapter.filter(newText);
-                        languageListCustomAdapter.notifyDataSetChanged();
-
-                        return true;
-                    }
-                });
+                            return true;
+                        }
+                    });
+                }
+            }else{
+                hideLoading();
+                showAlert("Sever out");
             }
+
 
 
         }
 
 
     }
+    public void showAlert(String error) {
 
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+
+        builder.setMessage(error)
+                .setTitle("Jio Doctor")
+                .setPositiveButton("Đóng", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        android.support.v7.app.AlertDialog dialog = builder.create();
+        dialog.show();
+    }
     public void next_to_main_profile_activity(View view) {
+        view.startAnimation(buttonClick);
         StringBuffer responseText = new StringBuffer();
 
         List<LanguageList> languageLists = languageListCustomAdapter.listData;
@@ -196,9 +219,6 @@ public class LanguageListActivity extends AppCompatActivity {
             super.onPreExecute();
             showLoading();
 
-
-//            Toast.makeText(getApplicationContext(),
-//                    result, Toast.LENGTH_LONG).show();
         }
 
         @Override
@@ -223,23 +243,30 @@ public class LanguageListActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Void v) {
-            if (standardResponse.getSuccess()) {
-                hideLoading();
-                Intent intent = new Intent(LanguageListActivity.this, MainProfileActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                LanguageListActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            if(standardResponse != null){
+                if (standardResponse.getSuccess()) {
+                    hideLoading();
+                    Intent intent = new Intent(LanguageListActivity.this, MainProfileActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    LanguageListActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
+                }else{
+                    hideLoading();
+                    Toast.makeText(getApplicationContext(),standardResponse.getMessage(),Toast.LENGTH_LONG).show();
+                }
             }else{
                 hideLoading();
-                Toast.makeText(getApplicationContext(),standardResponse.getMessage(),Toast.LENGTH_LONG).show();
+                showAlert("Sever out");
             }
+
 
 
         }
 
 
     }
+
     public void alert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 

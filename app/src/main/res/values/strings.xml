@@ -29,4 +29,5 @@
     <string name="term_string">Tôi đồng ý với Jio Health về điều khoản sử dụng và Chính sách bảo mật.</string>
     <string name="sharePre_Language">storeLanguageSelected</string>
     <string name="image_path_string">ImagePath</string>
+    <string name="image_path_cropped_string">ImagePathCropped</string>
 </resources>

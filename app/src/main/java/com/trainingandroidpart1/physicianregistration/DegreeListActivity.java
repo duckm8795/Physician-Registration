@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -36,7 +37,7 @@ public class DegreeListActivity extends AppCompatActivity {
     private String degreeID = null;
     private Spinner materialSpinner;
     private ProgressDialog progressDialog;
-
+    private AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.8F);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,16 +96,22 @@ public class DegreeListActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Void v) {
-            if (standardResponse.getSuccess()) {
+            if(standardResponse != null){
+                if (standardResponse.getSuccess()) {
+                    hideLoading();
+                    Intent i = new Intent(DegreeListActivity.this, SpecialistActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(i);
+                    DegreeListActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                } else {
+                    hideLoading();
+                    Toast.makeText(getApplicationContext(), standardResponse.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }else{
                 hideLoading();
-                Intent i = new Intent(DegreeListActivity.this, SpecialistActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(i);
-                DegreeListActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            } else {
-                hideLoading();
-                Toast.makeText(getApplicationContext(), standardResponse.getMessage(), Toast.LENGTH_LONG).show();
+                showAlertError("Sever out");
             }
+
 
 
         }
@@ -113,6 +120,7 @@ public class DegreeListActivity extends AppCompatActivity {
     }
 
     public void next_to_spcialist_activity(View view) {
+        view.startAnimation(buttonClick);
         new SendRequestsToSpecialty().execute();
     }
 
@@ -167,43 +175,64 @@ public class DegreeListActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Void v) {
-            if (degreeList.getSuccess()) {
-                hideLoading();
+            if(degreeList != null){
+                if (degreeList.getSuccess()) {
+                    hideLoading();
 
-                List<MedDegreeList> medDegreeListList = degreeList.getMedDegreeList();
-                List<String> medDegreeName = new ArrayList<>();
-                final List<Integer> medDegreeID = new ArrayList<>();
-                for (int i = 0; i < medDegreeListList.size(); i++) {
-                    medDegreeName.add(medDegreeListList.get(i).getName());
-                    medDegreeID.add(medDegreeListList.get(i).getMedDegreeID());
+                    List<MedDegreeList> medDegreeListList = degreeList.getMedDegreeList();
+                    List<String> medDegreeName = new ArrayList<>();
+                    final List<Integer> medDegreeID = new ArrayList<>();
+                    for (int i = 0; i < medDegreeListList.size(); i++) {
+                        medDegreeName.add(medDegreeListList.get(i).getName());
+                        medDegreeID.add(medDegreeListList.get(i).getMedDegreeID());
+                    }
+
+                    CustomSpinnerAdapter customSpinnerAdapter = new CustomSpinnerAdapter(DegreeListActivity.this, medDegreeName);
+
+                    materialSpinner.setAdapter(customSpinnerAdapter);
+                    materialSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            degreeID = medDegreeID.get(i).toString();
+                            //Toast.makeText(getApplicationContext(), degreeID, Toast.LENGTH_LONG).show();
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                            degreeID = "13";
+                        }
+                    });
+
+                } else {
+                    hideLoading();
+                    Toast.makeText(getApplicationContext(), degreeList.getMessage(), Toast.LENGTH_LONG).show();
                 }
-
-                CustomSpinnerAdapter customSpinnerAdapter = new CustomSpinnerAdapter(DegreeListActivity.this, medDegreeName);
-
-                materialSpinner.setAdapter(customSpinnerAdapter);
-                materialSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-                    @Override
-                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                        degreeID = medDegreeID.get(i).toString();
-                        //Toast.makeText(getApplicationContext(), degreeID, Toast.LENGTH_LONG).show();
-                    }
-
-                    @Override
-                    public void onNothingSelected(AdapterView<?> adapterView) {
-                        degreeID = "13";
-                    }
-                });
-
-            } else {
+            }else{
                 hideLoading();
-                Toast.makeText(getApplicationContext(), degreeList.getMessage(), Toast.LENGTH_LONG).show();
+                showAlertError("Sever out");
             }
+
 
 
         }
 
 
+    }
+    public void showAlertError(String error) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage(error)
+                .setTitle("Jio Doctor")
+                .setPositiveButton("Đóng", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
     public void showLoading() {
 

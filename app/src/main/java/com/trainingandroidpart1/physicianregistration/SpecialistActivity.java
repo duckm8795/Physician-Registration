@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.CheckBox;
 import android.widget.SearchView;
 import android.widget.Toast;
@@ -42,6 +43,7 @@ public class SpecialistActivity extends AppCompatActivity {
     private SpecialistAdapter mAdapter;
     private List<SpecialistEntity> specialityName = new ArrayList<>();
     private ProgressDialog progressDialog;
+    private AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.8F);
     String main_string;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,35 +52,7 @@ public class SpecialistActivity extends AppCompatActivity {
 
         initView();
         new SendRequests().execute();
-        mIndexableStickyListView.setOnItemContentClickListener(new IndexableStickyListView.OnItemContentClickListener() {
-            @Override
-            public void onItemClick(View v, IndexEntity indexEntity) {
-                specialityEntity = (SpecialistEntity) indexEntity;
-                //Toast.makeText(getApplicationContext(),String.valueOf(specialityEntity.getId()),Toast.LENGTH_LONG).show();
-                CheckBox box = (CheckBox) v.findViewById(R.id.check_speciality_togg);
 
-                specialityEntity.setSelected(true);
-                if (box.isChecked()) {
-                    box.setChecked(false);
-                    specialityEntity.setSelected(false);
-                } else {
-                    box.setChecked(true);
-                }
-            }
-        });
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                // 委托处理搜索
-                mIndexableStickyListView.searchTextChange(newText);
-                return true;
-            }
-        });
     }
 
 
@@ -152,25 +126,58 @@ public class SpecialistActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Void v) {
-            if (mainSpecialList.getSuccess()) {
-                hideLoading();
-                List<Boolean> check_selected = new ArrayList<>();
-                specialtyList = mainSpecialList.getSpecialtyList();
-                for (int i = 0; i < specialtyList.size(); i++) {
-                    check_selected.add(false);
+            if (mainSpecialList != null) {
+                if (mainSpecialList.getSuccess()) {
+                    hideLoading();
+                    List<Boolean> check_selected = new ArrayList<>();
+                    specialtyList = mainSpecialList.getSpecialtyList();
+                    for (int i = 0; i < specialtyList.size(); i++) {
+                        check_selected.add(false);
+                    }
+                    for (int i = 0; i < specialtyList.size(); i++) {
+                        specialityEntity = new SpecialistEntity(specialtyList.get(i).getDescription(),
+                                specialtyList.get(i).getSpecialtyID(), check_selected.get(i));
+                        specialityName.add(specialityEntity);
+
+                    }
+
+                    mIndexableStickyListView.bindDatas(specialityName);
+                    mIndexableStickyListView.setOnItemContentClickListener(new IndexableStickyListView.OnItemContentClickListener() {
+                        @Override
+                        public void onItemClick(View v, IndexEntity indexEntity) {
+                            specialityEntity = (SpecialistEntity) indexEntity;
+                            //Toast.makeText(getApplicationContext(),String.valueOf(specialityEntity.getId()),Toast.LENGTH_LONG).show();
+                            CheckBox box = (CheckBox) v.findViewById(R.id.check_speciality_togg);
+
+                            specialityEntity.setSelected(true);
+                            if (box.isChecked()) {
+                                box.setChecked(false);
+                                specialityEntity.setSelected(false);
+                            } else {
+                                box.setChecked(true);
+                            }
+                        }
+                    });
+                    mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                        @Override
+                        public boolean onQueryTextSubmit(String query) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onQueryTextChange(String newText) {
+                            // 委托处理搜索
+                            mIndexableStickyListView.searchTextChange(newText);
+                            return true;
+                        }
+                    });
+                } else {
+                    hideLoading();
+                    Toast.makeText(getApplicationContext(), mainSpecialList.getMessage(), Toast.LENGTH_LONG).show();
                 }
-                for (int i = 0; i < specialtyList.size(); i++) {
-                    specialityEntity = new SpecialistEntity(specialtyList.get(i).getDescription(),
-                            specialtyList.get(i).getSpecialtyID(), check_selected.get(i));
-                    specialityName.add(specialityEntity);
-
-                }
-
-                mIndexableStickyListView.bindDatas(specialityName);
-
             } else {
                 hideLoading();
-                Toast.makeText(getApplicationContext(), mainSpecialList.getMessage(), Toast.LENGTH_LONG).show();
+                showAlertError("Sever out");
             }
 
 
@@ -179,6 +186,7 @@ public class SpecialistActivity extends AppCompatActivity {
 
     }
     public void next_to_language_activity(View view) {
+        view.startAnimation(buttonClick);
         StringBuffer responseText = new StringBuffer();
 
 
@@ -243,21 +251,26 @@ public class SpecialistActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Void v) {
-            if (standardResponse.getSuccess()) {
-                hideLoading();
-//                if (result.equals("")){
-//                    alert();
-//                }else{
-//                    startActivity(new Intent(SpecialistActivity.this,LanguageListActivity.class));
-//                }
-                Intent intent = new Intent(SpecialistActivity.this, LanguageListActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                SpecialistActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            if (standardResponse != null) {
+                if (standardResponse.getSuccess()) {
+                    hideLoading();
+    //                if (result.equals("")){
+    //                    alert();
+    //                }else{
+    //                    startActivity(new Intent(SpecialistActivity.this,LanguageListActivity.class));
+    //                }
+                    Intent intent = new Intent(SpecialistActivity.this, LanguageListActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    SpecialistActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
-            }else{
+                }else{
+                    hideLoading();
+                    Toast.makeText(getApplicationContext(),standardResponse.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            } else {
                 hideLoading();
-                Toast.makeText(getApplicationContext(),standardResponse.getMessage(),Toast.LENGTH_LONG).show();
+                showAlertError("Sever out");
             }
 
 
@@ -281,7 +294,21 @@ public class SpecialistActivity extends AppCompatActivity {
 
         progressDialog.dismiss();
     }
+    public void showAlertError(String error) {
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setMessage(error)
+                .setTitle("Jio Doctor")
+                .setPositiveButton("Đóng", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
     public void alert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 

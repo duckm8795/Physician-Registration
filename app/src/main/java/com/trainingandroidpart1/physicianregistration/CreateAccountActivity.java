@@ -12,10 +12,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.method.PasswordTransformationMethod;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -23,20 +22,12 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.trainingandroidpart1.physicianregistration.Adapter.CustomSpinnerAdapter;
 import com.trainingandroidpart1.physicianregistration.Response.CreateProviderAccount.CreateProviderAccountResponse;
-import com.trainingandroidpart1.physicianregistration.Response.GetDegreeList.DegreeList;
-import com.trainingandroidpart1.physicianregistration.Response.GetDegreeList.MedDegreeList;
 import com.trainingandroidpart1.physicianregistration.Service.ServiceAPI;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class CreateAccountActivity extends AppCompatActivity {
     private TextView firstName;         // ten
@@ -51,7 +42,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     private long userID;
     private String accessToken;
     private SharedPreferences sharedPreferences = null;
-
+    private AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.8F);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +67,7 @@ public class CreateAccountActivity extends AppCompatActivity {
     }
 
     public void create_new_provider_account(View view) {
+        view.startAnimation(buttonClick);
         if (agreeTerm()) {
             if (isMissingInput()) {
 
@@ -245,24 +237,29 @@ public class CreateAccountActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Void v) {
-
-                if(createProviderAccountResponse.getSuccess()){
-
-                    userID = createProviderAccountResponse.getUserID();
-                    accessToken = createProviderAccountResponse.getAccessToken();
-
-                    sharedPreferences = getSharedPreferences(getString(R.string.sharePre_string), Context.MODE_PRIVATE);
-                    sharedPreferences.edit().putString(getString(R.string.storePreToken), accessToken).apply();
-                    sharedPreferences.edit().putString(getString(R.string.storePreID), String.valueOf(userID)).apply();
-
+                if( createProviderAccountResponse == null ){
                     hideLoading();
-                    Intent i = new Intent(CreateAccountActivity.this, PasscodeActivity.class);
-                    startActivity(i);
-                    CreateAccountActivity.this.overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
-                }else {
-                    hideLoading();
-                    showAlertCreateAccountResponse(createProviderAccountResponse.getMessage());
+                    showAlertError("Sever out");
+                }else{
+                    if(createProviderAccountResponse.getSuccess()){
+
+                        userID = createProviderAccountResponse.getUserID();
+                        accessToken = createProviderAccountResponse.getAccessToken();
+
+                        sharedPreferences = getSharedPreferences(getString(R.string.sharePre_string), Context.MODE_PRIVATE);
+                        sharedPreferences.edit().putString(getString(R.string.storePreToken), accessToken).apply();
+                        sharedPreferences.edit().putString(getString(R.string.storePreID), String.valueOf(userID)).apply();
+
+                        hideLoading();
+                        Intent i = new Intent(CreateAccountActivity.this, PasscodeActivity.class);
+                        startActivity(i);
+                        CreateAccountActivity.this.overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+                    }else {
+                        hideLoading();
+                        showAlertCreateAccountResponse(createProviderAccountResponse.getMessage());
+                    }
                 }
+
 
 
 
@@ -320,11 +317,11 @@ public class CreateAccountActivity extends AppCompatActivity {
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-    public void showAlert504() {
+    public void showAlertError(String error) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setMessage("505 Sever Out.")
+        builder.setMessage(error)
                 .setTitle("Jio Doctor")
                 .setPositiveButton("Đóng", new DialogInterface.OnClickListener() {
                     @Override

@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,7 +50,7 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
     private String retrieveID = null;
     private File file;
     private Map<String, RequestBody> requestBodyMap = new HashMap<>();
-
+    private AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.8F);
     private FileOutputStream fo;
     private ProgressDialog progressDialog;
     @Override
@@ -225,19 +226,40 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if(avatarResponse.getSuccess()){
-                hideLoading();
-                Log.d("ImageURL",avatarResponse.getMessage());
+            if(avatarResponse != null){
+                if(avatarResponse.getSuccess()){
+                    hideLoading();
+                    Log.d("ImageURL",avatarResponse.getMessage());
+                }else{
+                    hideLoading();
+                    Toast.makeText(getApplicationContext(),avatarResponse.getMessage(),Toast.LENGTH_SHORT).show();
+                }
             }else{
                 hideLoading();
-                Toast.makeText(getApplicationContext(),avatarResponse.getMessage(),Toast.LENGTH_SHORT).show();
+                showAlert("Sever out");
             }
+
 
         }
     }
 
+    public void showAlert(String error) {
 
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+
+        builder.setMessage(error)
+                .setTitle("Jio Doctor")
+                .setPositiveButton("Đóng", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        android.support.v7.app.AlertDialog dialog = builder.create();
+        dialog.show();
+    }
     public void next_to_degree_activity(View view) {
+        view.startAnimation(buttonClick);
         Intent intent = new Intent(AvatarPhysicalActivity.this, DegreeListActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

@@ -5,10 +5,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -25,6 +28,9 @@ import com.trainingandroidpart1.physicianregistration.Service.ServiceAPI;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,12 +47,13 @@ public class ImageHolderActivity extends AppCompatActivity {
     ImageView imv_background;
     File file;
     String image_path;
+    String image_path_original;
     Bitmap bitmap;
     long totalSize;
     private SharedPreferences sharedPreferences = null;
     private String retrieveToken = null;
     private String retrieveID = null;
-
+    String image_path_cropped;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,28 +77,12 @@ public class ImageHolderActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         image_path = intent.getStringExtra("ADA");
-
+        image_path_original = intent.getStringExtra("OriginalImg");
         checkIfFromGovermentActivity();
-        Bitmap bitmap = BitmapFactory.decodeFile(image_path);
-//        File pictureFile = new File(image_path);
-//        bitmap =Bitmap.createBitmap( 5,
-//                5, Bitmap.Config.ARGB_8888);
-//        try {
-//            FileOutputStream fos = new FileOutputStream(pictureFile);
-//            fos.flush();
-//            fos.close();
-//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-//        } catch (IOException e) {
-//        }
-//
-//        if (_imv != null) {
-//            _imv.setImageBitmap(bitmap);
-//        }
-//
-//        Drawable d = new BitmapDrawable(getResources(), bitmap);
-//        if (_imv != null) {
-//            _imv.setBackground(d);
-//        }
+
+
+
+
 
         DisplayMetrics displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
         int width = displayMetrics.widthPixels;
@@ -104,13 +95,13 @@ public class ImageHolderActivity extends AppCompatActivity {
         }
 
 
-//        _imv.setImageBitmap(scaleDownBitmapImage(bitmap,width,height));
-//        _imv.setRotation(270);
     }
 
     public void checkIfFromGovermentActivity() {
         if (getIntent().getBooleanExtra("NeedBackground", false)) {
             imv_background.setVisibility(View.VISIBLE);
+            image_path = image_path_original;
+
         }
     }
 
@@ -140,13 +131,17 @@ public class ImageHolderActivity extends AppCompatActivity {
     }
 
     public void use_photo(View view) {
+
+
         Intent intent = new Intent();
         intent.putExtra(getString(R.string.image_path_string),image_path);
+        intent.putExtra(getString(R.string.image_path_cropped_string),image_path_cropped);
         setResult(RESULT_OK, intent);
         finish();
 
 
     }
+
 
 
 
