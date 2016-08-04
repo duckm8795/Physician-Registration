@@ -21,6 +21,7 @@ import com.trainingandroidpart1.physicianregistration.Response.GetDegreeList.Deg
 import com.trainingandroidpart1.physicianregistration.Response.GetDegreeList.MedDegreeList;
 import com.trainingandroidpart1.physicianregistration.Response.StandardResponse;
 import com.trainingandroidpart1.physicianregistration.Service.ServiceAPI;
+import com.trainingandroidpart1.physicianregistration.Service.ServiceManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -84,8 +85,8 @@ public class DegreeListActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
-            Call<StandardResponse> call = serviceAPI.saveProviderProfileList(retrieveToken, Long.parseLong(retrieveID), "Degree", degreeID);
+
+            Call<StandardResponse> call = ServiceManager.instance().saveProviderProfileList(retrieveToken, Long.parseLong(retrieveID), "Degree", degreeID);
             try {
                 standardResponse = call.execute().body();
             } catch (IOException e) {
@@ -102,6 +103,7 @@ public class DegreeListActivity extends AppCompatActivity {
                     Intent i = new Intent(DegreeListActivity.this, SpecialistActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(i);
+                    finish();
                     DegreeListActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                 } else {
                     hideLoading();
@@ -123,7 +125,15 @@ public class DegreeListActivity extends AppCompatActivity {
         view.startAnimation(buttonClick);
         new SendRequestsToSpecialty().execute();
     }
+    @Override
+    protected void onPause() {
+        super.onPause();
 
+        SharedPreferences prefs = getSharedPreferences("X", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("lastActivity", getClass().getName());
+        editor.commit();
+    }
     @Override
     public void onBackPressed() {
         new AlertDialog.Builder(this).setIcon(R.drawable.ic_error_outline_black_24dp).setTitle("Jio Doctor")
@@ -163,8 +173,8 @@ public class DegreeListActivity extends AppCompatActivity {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
-            Call<DegreeList> call = serviceAPI.getDegreeList("180");
+
+            Call<DegreeList> call = ServiceManager.instance().getDegreeList("180");
             try {
                 degreeList = call.execute().body();
             } catch (IOException e) {

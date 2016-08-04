@@ -3,6 +3,8 @@ package com.trainingandroidpart1.physicianregistration.Service;
 import com.trainingandroidpart1.physicianregistration.Response.AvatarResponse.AvatarResponse;
 import com.trainingandroidpart1.physicianregistration.Response.CreateProviderAccount.CreateProviderAccountResponse;
 import com.trainingandroidpart1.physicianregistration.Response.GetDegreeList.DegreeList;
+import com.trainingandroidpart1.physicianregistration.Response.GetOpenDoctorDetailForProvider.MainResponse;
+import com.trainingandroidpart1.physicianregistration.Response.GetOpenDocumentUploadURL.GetOpenDocumentUploadURLResponse;
 import com.trainingandroidpart1.physicianregistration.Response.GetProfile.GetProfileResponse;
 import com.trainingandroidpart1.physicianregistration.Response.LanguageListResponse.MainLanguageListResponse;
 import com.trainingandroidpart1.physicianregistration.Response.SetSecurityPin.SetSecurityPinResponse;
@@ -10,18 +12,16 @@ import com.trainingandroidpart1.physicianregistration.Response.SpecialistReponse
 import com.trainingandroidpart1.physicianregistration.Response.StandardResponse;
 import com.trainingandroidpart1.physicianregistration.Response.VerifyPhysician.Main;
 
-import java.io.File;
 import java.util.Map;
 
-import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
-import retrofit2.http.Part;
 import retrofit2.http.PartMap;
 import retrofit2.http.Query;
 
@@ -29,9 +29,15 @@ import retrofit2.http.Query;
  * Created by Admin on 6/28/2016.
  */
 public interface ServiceAPI {
+
     /* base url */
     String BASE_URL = "http://dev.jiohealth.com:8081/";
-    /*create account*/
+
+    Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+
+            .build();
 
     /* create provider account */
     @POST(ServiceConfig.API_CREATE_PROVIDER_ACCOUNT)
@@ -105,6 +111,7 @@ public interface ServiceAPI {
     Call<AvatarResponse> uploadAvatar(
             @PartMap() Map<String, RequestBody> params
     );
+
     /* save provider profile info */
     @POST(ServiceConfig.API_SAVE_PROVIDER_PROFILE)
     Call<StandardResponse> saveProviderProfileList(
@@ -113,6 +120,7 @@ public interface ServiceAPI {
             @Query(ProviderConstants.SAVE_PROVIDER_PROFIE_INFO.ATTRIBUTE) String attribute,
             @Query(ProviderConstants.SAVE_PROVIDER_PROFIE_INFO.VALUE) String value
     );
+
     /* update Provider Specialties */
     @POST(ServiceConfig.API_UPDATE_SPECIALITY_LIST)
     Call<StandardResponse> updateSpecialityList(
@@ -121,6 +129,7 @@ public interface ServiceAPI {
             @Query(ProviderConstants.API_UPDATE_SPECIALITY_LIST.USER_ID) long userID
 
     );
+
     /* save language */
     @POST(ServiceConfig.API_SAVE_USER_LANGUAGE)
     Call<StandardResponse> saveLanguage(
@@ -130,9 +139,26 @@ public interface ServiceAPI {
 
     );
 
-    Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build();
+    /*getOpenDoctorDetailForProvider */
+    @POST(ServiceConfig.API_GET_OPEN_DOCTOR_DETAIL_FOR_PROVIDER)
+    Call<MainResponse> getOpenDoctorDetailForProvider(
+            @Query(ProviderConstants.API_STANDARD.TOKEN) String token,
+            @Query(ProviderConstants.API_STANDARD.USER_ID) long userID
+    );
 
+    /* getOpenDocumentUploadURL */
+    @POST(ServiceConfig.API_GET_OPEN_DOCUMENT_UPLOAD_URL)
+    Call<GetOpenDocumentUploadURLResponse> getOpenDocumentUploadURL(
+            @Query(ProviderConstants.API_STANDARD.TOKEN) String token,
+            @Query(ProviderConstants.API_STANDARD.USER_ID) long userID
+    );
+
+    /*saveOpenDoctorDocument GUID */
+    @POST(ServiceConfig.API_SAVE_OPEN_DOCTOR_DOCUMENT_GUID)
+    Call<StandardResponse> saveOpenDoctorDocument(
+            @Query(ProviderConstants.API_SAVE_DOCTOR_DOCUMENT.GUID) String GUID,
+            @Query(ProviderConstants.API_SAVE_DOCTOR_DOCUMENT.COUNTRY_VERIFICATION_DOCTYPE_ID) int doctypeId,
+            @Query(ProviderConstants.API_SAVE_DOCTOR_DOCUMENT.TOKEN) String token,
+            @Query(ProviderConstants.API_SAVE_DOCTOR_DOCUMENT.USER_ID) long userID
+    );
 }

@@ -69,6 +69,7 @@ public class PasscodeActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), RePasscodeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        finish();
         PasscodeActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 

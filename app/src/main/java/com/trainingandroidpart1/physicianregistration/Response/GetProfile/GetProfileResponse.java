@@ -8,6 +8,24 @@ public class GetProfileResponse {
     private String lastName;
     private Boolean success;
     private String message;
+    private String imageURL;
+    private String image ;
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
 
     public String getMessage() {
         return message;

@@ -21,6 +21,7 @@ import com.trainingandroidpart1.physicianregistration.Response.SpecialistReponse
 import com.trainingandroidpart1.physicianregistration.Response.SpecialistReponse.SpecialtyList;
 import com.trainingandroidpart1.physicianregistration.Response.StandardResponse;
 import com.trainingandroidpart1.physicianregistration.Service.ServiceAPI;
+import com.trainingandroidpart1.physicianregistration.Service.ServiceManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -114,9 +115,9 @@ public class SpecialistActivity extends AppCompatActivity {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
 
-            Call<MainSpecialList> call = serviceAPI.getSpecialtyList("vi", "VN", retrieveToken, Long.parseLong(retrieveID));
+
+            Call<MainSpecialList> call = ServiceManager.instance().getSpecialtyList("vi", "VN", retrieveToken, Long.parseLong(retrieveID));
             try {
                 mainSpecialList = call.execute().body();
             } catch (IOException e) {
@@ -237,9 +238,9 @@ public class SpecialistActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
 
-            Call<StandardResponse> call = serviceAPI.updateSpecialityList(result, retrieveToken, Long.parseLong(retrieveID));
+
+            Call<StandardResponse> call = ServiceManager.instance().updateSpecialityList(result, retrieveToken, Long.parseLong(retrieveID));
             try {
                 standardResponse = call.execute().body();
             } catch (IOException e) {
@@ -262,6 +263,7 @@ public class SpecialistActivity extends AppCompatActivity {
                     Intent intent = new Intent(SpecialistActivity.this, LanguageListActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
+                    finish();
                     SpecialistActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
                 }else{
@@ -279,7 +281,15 @@ public class SpecialistActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
 
+        SharedPreferences prefs = getSharedPreferences("X", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("lastActivity", getClass().getName());
+        editor.apply();
+    }
 
     public void showLoading() {
 

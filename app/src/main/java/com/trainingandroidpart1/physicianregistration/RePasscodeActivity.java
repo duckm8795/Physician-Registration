@@ -16,6 +16,7 @@ import com.ngocbeo1121.iospasscode.IOSPasscodeView;
 import com.ngocbeo1121.iospasscode.IOSPasscodeViewCallback;
 import com.trainingandroidpart1.physicianregistration.Response.SetSecurityPin.SetSecurityPinResponse;
 import com.trainingandroidpart1.physicianregistration.Service.ServiceAPI;
+import com.trainingandroidpart1.physicianregistration.Service.ServiceManager;
 
 import java.io.IOException;
 
@@ -135,8 +136,8 @@ public class RePasscodeActivity extends AppCompatActivity {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
-            Call<SetSecurityPinResponse> call = serviceAPI.setSecurityPin(Long.parseLong(retrieveID), retrieveToken, retrievePasscode);
+
+            Call<SetSecurityPinResponse> call = ServiceManager.instance().setSecurityPin(Long.parseLong(retrieveID), retrieveToken, retrievePasscode);
             try {
                 setSecurityPinResponse =  call.execute().body();
 
@@ -186,6 +187,7 @@ public class RePasscodeActivity extends AppCompatActivity {
         Intent intent = new Intent(RePasscodeActivity.this, PhysicalVertificationActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        finish();
         RePasscodeActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
     }

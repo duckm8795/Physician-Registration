@@ -33,5 +33,6 @@ dependencies {
     compile 'com.soundcloud.android:android-crop:1.0.1@aar'
     compile 'com.github.chrisbanes:PhotoView:1.2.7'
     compile 'com.dinuscxj:circleprogressbar:1.1.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
     compile 'junit:junit:4.12'
 }

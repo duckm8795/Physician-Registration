@@ -74,5 +74,14 @@ public interface ProviderConstants  {
         String TOKEN = "token";
         String USER_ID = "userID";
     }
-
+    interface API_STANDARD{
+        String TOKEN = "token";
+        String USER_ID = "userID";
+    }
+    interface API_SAVE_DOCTOR_DOCUMENT{
+        String TOKEN = "token";
+        String USER_ID = "userID";
+        String GUID = "GUID";
+        String COUNTRY_VERIFICATION_DOCTYPE_ID ="countryVerificationDoctypeID";
+    }
 }

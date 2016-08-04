@@ -26,6 +26,7 @@ import com.soundcloud.android.crop.Crop;
 import com.trainingandroidpart1.physicianregistration.Request.CountingFileRequestBody;
 import com.trainingandroidpart1.physicianregistration.Response.AvatarResponse.AvatarResponse;
 import com.trainingandroidpart1.physicianregistration.Service.ServiceAPI;
+import com.trainingandroidpart1.physicianregistration.Service.ServiceManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -70,10 +71,12 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
         textView.setTypeface(font_medium);
 
         sharedPreferences = getSharedPreferences(getString(R.string.sharePre_string), Context.MODE_PRIVATE);
+
         retrieveToken = sharedPreferences.getString(getString(R.string.storePreToken), "");
         retrieveID = sharedPreferences.getString(getString(R.string.storePreID), "");
         if (getIntent().getBooleanExtra("NeedSetAvatar",false)){
             String image_path_to_set = getIntent().getStringExtra("ImagePathForSetAvatar");
+            sharedPreferences.edit().putString("ProfileSelfie",image_path_to_set).apply();
             circleImageView.setImageURI(Uri.fromFile(new File(image_path_to_set)));
             circleImageView.setRotation(180);
         }
@@ -156,34 +159,6 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
     }
 
 
-    // asyns request //
-    public void process() {
-        String fileName = "file\"; filename=\"" + file.getName();
-
-        RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-        RequestBody id = RequestBody.create(MediaType.parse("multipart/form-data"), retrieveID);
-        RequestBody token = RequestBody.create(MediaType.parse("multipart/form-data"), retrieveToken);
-
-        requestBodyMap.put("token", token);
-        requestBodyMap.put("userID", id);
-        requestBodyMap.put(fileName, requestBody);
-        ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
-        Call<AvatarResponse> call = serviceAPI.uploadAvatar(requestBodyMap);
-        call.enqueue(new Callback<AvatarResponse>() {
-            @Override
-            public void onResponse(Call<AvatarResponse> call, Response<AvatarResponse> response) {
-                if (response.body().getSuccess()) {
-                    Log.d("AAA", response.body().getMessage());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<AvatarResponse> call, Throwable t) {
-                Toast.makeText(AvatarPhysicalActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
     public class UploadPhoto extends AsyncTask<Void, Void, Void> {
         AvatarResponse avatarResponse;
 
@@ -209,9 +184,9 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
             requestBodyMap.put("userID", id);
             requestBodyMap.put(fileName, requestBody);
 
-            ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
 
-            Call<AvatarResponse> call = serviceAPI.uploadAvatar(requestBodyMap);
+
+            Call<AvatarResponse> call = ServiceManager.instance().uploadAvatar(requestBodyMap);
 
             try {
                 avatarResponse = call.execute().body();
@@ -263,6 +238,7 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
         Intent intent = new Intent(AvatarPhysicalActivity.this, DegreeListActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        finish();
         AvatarPhysicalActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
@@ -296,31 +272,5 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
 
         progressDialog.dismiss();
     }
-    //    private void onCaptureImageResult(Intent data) {
-//        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-//        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-//        thumbnail.compress(Bitmap.CompressFormat.PNG, 90, bytes);
-//
-//        file = new File(getApplicationContext().getCacheDir(), "my_avatar_");
-//
-//        try {
-//            file.createNewFile();
-//            fo = new FileOutputStream(file);
-//            fo.write(bytes.toByteArray());
-//            fo.close();
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        circleImageView.setImageBitmap(thumbnail);
-//        circleImageView.setRotation(90);
-////        Uri destination = Uri.fromFile(new File(getCacheDir(), "cropped"));
-////        Crop.of(data.getData(), destination).start(this);
-//
-//        /* processing for sever */
-//        generateParams_chooseGallery();
-//        process_chooseGallery();
-//    }
+
 }

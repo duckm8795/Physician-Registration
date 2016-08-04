@@ -22,6 +22,7 @@ import com.trainingandroidpart1.physicianregistration.Response.LanguageListRespo
 import com.trainingandroidpart1.physicianregistration.Response.LanguageListResponse.MainLanguageListResponse;
 import com.trainingandroidpart1.physicianregistration.Response.StandardResponse;
 import com.trainingandroidpart1.physicianregistration.Service.ServiceAPI;
+import com.trainingandroidpart1.physicianregistration.Service.ServiceManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -83,7 +84,15 @@ public class LanguageListActivity extends AppCompatActivity {
 
         progressDialog.dismiss();
     }
+    @Override
+    protected void onPause() {
+        super.onPause();
 
+        SharedPreferences prefs = getSharedPreferences("X", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("lastActivity", getClass().getName());
+        editor.apply();
+    }
     class SendRequests extends AsyncTask<Void, Void, Void> {
         MainLanguageListResponse mainLanguageListResponse;
 
@@ -107,9 +116,9 @@ public class LanguageListActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
          /* start processing to sever */
-            ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
 
-            Call<MainLanguageListResponse> call = serviceAPI.getLanguageList("vi", "VN", retrieveToken, Long.parseLong(retrieveID));
+
+            Call<MainLanguageListResponse> call = ServiceManager.instance().getLanguageList("vi", "VN", retrieveToken, Long.parseLong(retrieveID));
             try {
                 mainLanguageListResponse = call.execute().body();
             } catch (IOException e) {
@@ -163,6 +172,7 @@ public class LanguageListActivity extends AppCompatActivity {
             }else{
                 hideLoading();
                 showAlert("Sever out");
+                finish();
             }
 
 
@@ -201,6 +211,7 @@ public class LanguageListActivity extends AppCompatActivity {
         if (!main_string.equals("")) {
             main_string = responseText.substring(1, responseText.length());
             new SendRequests2(main_string).execute();
+
         }else{
             alert();
         }
@@ -231,8 +242,8 @@ public class LanguageListActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
          /* start processing to sever */
-            ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
-            Call<StandardResponse> call = serviceAPI.saveLanguage(result, retrieveToken, Long.parseLong(retrieveID));
+
+            Call<StandardResponse> call = ServiceManager.instance().saveLanguage(result, retrieveToken, Long.parseLong(retrieveID));
             try {
                 standardResponse = call.execute().body();
             } catch (IOException e) {
@@ -250,7 +261,7 @@ public class LanguageListActivity extends AppCompatActivity {
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     LanguageListActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
+                    finish();
                 }else{
                     hideLoading();
                     Toast.makeText(getApplicationContext(),standardResponse.getMessage(),Toast.LENGTH_LONG).show();
@@ -258,6 +269,7 @@ public class LanguageListActivity extends AppCompatActivity {
             }else{
                 hideLoading();
                 showAlert("Sever out");
+                finish();
             }
 
 

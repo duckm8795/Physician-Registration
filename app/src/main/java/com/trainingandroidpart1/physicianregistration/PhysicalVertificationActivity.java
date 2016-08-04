@@ -35,10 +35,14 @@ import com.dinuscxj.progressbar.CircleProgressBar;
 import com.trainingandroidpart1.physicianregistration.Adapter.VerifyPhysicianCustomAdapter;
 import com.trainingandroidpart1.physicianregistration.Request.CountingFileRequestBody;
 import com.trainingandroidpart1.physicianregistration.Response.AvatarResponse.AvatarResponse;
+import com.trainingandroidpart1.physicianregistration.Response.GetOpenDoctorDetailForProvider.MainResponse;
+import com.trainingandroidpart1.physicianregistration.Response.GetOpenDocumentUploadURL.GetOpenDocumentUploadURLResponse;
 import com.trainingandroidpart1.physicianregistration.Response.GetProfile.GetProfileResponse;
+import com.trainingandroidpart1.physicianregistration.Response.StandardResponse;
 import com.trainingandroidpart1.physicianregistration.Response.VerifyPhysician.Main;
 import com.trainingandroidpart1.physicianregistration.Response.VerifyPhysician.VerificationDocType;
 import com.trainingandroidpart1.physicianregistration.Service.ServiceAPI;
+import com.trainingandroidpart1.physicianregistration.Service.ServiceManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -67,6 +71,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
     private ListView listview;
     private TextView textView;
     private ProgressDialog progressDialog;
+
 
     private CircleProgressBar circleProgressBar;
     private TextView description_textview;
@@ -152,6 +157,44 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
 
     }
 
+//    public void sendRequestGetOpenUploadURL(){
+//        GetOpenDocumentUploadURLResponse uploadURLResponse;
+//        ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
+//
+//        Call<GetOpenDocumentUploadURLResponse> call = serviceAPI.getOpenDocumentUploadURL(retrieveToken,Long.parseLong(retrieveID));
+//
+//        try {
+//            uploadURLResponse = call.execute().body();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
+//    public void sendRequestSaveOpenDoctorDocument(){
+//        StandardResponse standardResponse;
+//        ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
+//
+//        Call<StandardResponse> call = serviceAPI.saveOpenDoctorDocument(,,retrieveToken,Long.parseLong(retrieveID));
+//
+//        try {
+//            standardResponse = call.execute().body();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        SharedPreferences prefs = getSharedPreferences("X", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("lastActivity", getClass().getName());
+        editor.apply();
+    }
 
 
 
@@ -164,6 +207,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
                 case 69:
                     image_path = data.getExtras().getString(getString(R.string.image_path_string));
                     image_path_for_avatar = image_path;
+
                     new UploadPhoto(0, image_path_for_avatar).execute();
                     break;
                 case 70:
@@ -342,6 +386,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(PhysicalVertificationActivity.this, AvatarPhysicalActivity.class);
                         startActivity(intent);
+                        finish();
                         PhysicalVertificationActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     }
                 });
@@ -389,6 +434,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
 //        intent.putExtra("ImagePathByAmazonForSelfie",image_path_url_amazon);
         intent.putExtra("HasUploadAvatarOrNot", hasUpdoadSelfieImageOrNot);
         startActivity(intent);
+        finish();
         PhysicalVertificationActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
@@ -396,6 +442,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
         Intent intent = new Intent(PhysicalVertificationActivity.this, CameraSelfieActivity.class);
         intent.putExtra("IdOfCamera", id);
         startActivityForResult(intent, 69);
+
         PhysicalVertificationActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
@@ -403,6 +450,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
         Intent intent = new Intent(PhysicalVertificationActivity.this, TempHoldPictureActivity.class);
         intent.putExtra("ImagePathByAmazon", image_path_url_amazon);
         startActivity(intent);
+
         PhysicalVertificationActivity.this.overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
 
     }
@@ -412,6 +460,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
         intent.putExtra("ImagePathByAmazonForSelfie", image_path_url_amazon);
         intent.putExtra("NeedRotateURL", true);
         startActivity(intent);
+
         PhysicalVertificationActivity.this.overridePendingTransition(R.anim.slide_up, R.anim.slide_down);
 
     }
@@ -420,6 +469,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
         Intent intent = new Intent(PhysicalVertificationActivity.this, CameraGovermentActivity.class);
         intent.putExtra("IdOfCamera", id);
         startActivityForResult(intent, 70);
+
         PhysicalVertificationActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
@@ -432,6 +482,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
 
     class SendRequests extends AsyncTask<Void, Void, Void> {
         Main main;
+        MainResponse responseForGetOpenDoctorDetail;
         GetProfileResponse getProfileResponse;
         public SendRequests() {
         }
@@ -451,12 +502,14 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
-            Call<GetProfileResponse> callProfile = serviceAPI.getProfile(retrieveToken, Long.parseLong(retrieveID));
-            Call<Main> callDocument = serviceAPI.verify(180, "vi", "VN", retrieveToken, Long.parseLong(retrieveID));
+
+            Call<GetProfileResponse> callProfile = ServiceManager.instance().getProfile(retrieveToken, Long.parseLong(retrieveID));
+            Call<Main> callDocument = ServiceManager.instance().verify(180, "vi", "VN", retrieveToken, Long.parseLong(retrieveID));
+            Call<MainResponse> callGetOpenDoctorDetail  = ServiceManager.instance().getOpenDoctorDetailForProvider(retrieveToken,Long.parseLong(retrieveID));
             try {
                 getProfileResponse = callProfile.execute().body();
                 main = callDocument.execute().body();
+                //responseForGetOpenDoctorDetail= callGetOpenDoctorDetail.execute().body();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -526,6 +579,20 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
 
             }
 
+            /* for get open doctor detail */
+//            if( responseForGetOpenDoctorDetail == null ){
+//                hideLoading();
+//                showAlertError("Sever out");
+//
+//            }else{
+//                if(responseForGetOpenDoctorDetail.getSuccess()){
+//                    hideLoading();
+//
+//                }else{
+//                    hideLoading();
+//                    Toast.makeText(getApplicationContext(),responseForGetOpenDoctorDetail.getMessage(),Toast.LENGTH_LONG).show();
+//                }
+//            }
 
         }
 
@@ -577,9 +644,9 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
             requestBodyMap.put("userID", id);
             requestBodyMap.put(fileName, requestBody1);
 
-            ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
 
-            Call<AvatarResponse> call = serviceAPI.uploadAvatar(requestBodyMap);
+
+            Call<AvatarResponse> call = ServiceManager.instance().uploadAvatar(requestBodyMap);
 
             try {
                 avatarResponse = call.execute().body();

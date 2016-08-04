@@ -3,6 +3,7 @@ package com.trainingandroidpart1.physicianregistration;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -62,7 +63,16 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, CreateAccountActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        finish();
         MainActivity.this.overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SharedPreferences prefs = getSharedPreferences("X", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("lastActivity", getClass().getName());
+        editor.apply();
     }
     @Override
     public void onBackPressed() {

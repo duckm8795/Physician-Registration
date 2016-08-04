@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -24,9 +25,12 @@ import android.widget.ToggleButton;
 
 import com.trainingandroidpart1.physicianregistration.Response.CreateProviderAccount.CreateProviderAccountResponse;
 import com.trainingandroidpart1.physicianregistration.Service.ServiceAPI;
+import com.trainingandroidpart1.physicianregistration.Service.ServiceManager;
 
 import java.io.IOException;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 
 public class CreateAccountActivity extends AppCompatActivity {
@@ -207,6 +211,7 @@ public class CreateAccountActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             showLoading();
+
         }
 
         @Override
@@ -218,14 +223,14 @@ public class CreateAccountActivity extends AppCompatActivity {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
+            //ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
+
             Call<CreateProviderAccountResponse> call =
-                    serviceAPI.createProviderAccount("M", email1,firstName1 ,
+                    ServiceManager.instance().createProviderAccount("M", email1,firstName1 ,
                             "vi",surName1 ,password1 , "VN", genderCheck(), "Asia/Saigon");
             try {
 
                     createProviderAccountResponse= call.execute().body();
-
 
 
 
@@ -245,7 +250,8 @@ public class CreateAccountActivity extends AppCompatActivity {
 
                         userID = createProviderAccountResponse.getUserID();
                         accessToken = createProviderAccountResponse.getAccessToken();
-
+                        Log.d("Token",accessToken);
+                        Log.d("ID", String.valueOf(userID));
                         sharedPreferences = getSharedPreferences(getString(R.string.sharePre_string), Context.MODE_PRIVATE);
                         sharedPreferences.edit().putString(getString(R.string.storePreToken), accessToken).apply();
                         sharedPreferences.edit().putString(getString(R.string.storePreID), String.valueOf(userID)).apply();
@@ -253,6 +259,7 @@ public class CreateAccountActivity extends AppCompatActivity {
                         hideLoading();
                         Intent i = new Intent(CreateAccountActivity.this, PasscodeActivity.class);
                         startActivity(i);
+                        finish();
                         CreateAccountActivity.this.overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
                     }else {
                         hideLoading();
