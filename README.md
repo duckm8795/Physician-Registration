@@ -1,14 +1,14 @@
 # Physician-Registration - a part of project Jio Health for Doctor.
 
-![1](http://imgur.com/xTgxfXi)
-![2](http://imgur.com/DDwOqut)
-![3](http://imgur.com/3Q3D5pt)
-![4](http://imgur.com/oOPEubB)
-![5](http://imgur.com/JuCxo4M)
-![6](http://imgur.com/XHmzMoE)
-![7](http://imgur.com/lHPDOEg)
-![8](http://imgur.com/vRYGOc1)
-![9](http://imgur.com/KDMv3AW)
+![1](http://i.imgur.com/xTgxfXi.png)
+![2](http://i.imgur.com/DDwOqut.png)
+![3](http://i.imgur.com/3Q3D5pt.png)
+![4](http://i.imgur.com/JuCxo4M.png)
+![5](http://i.imgur.com/oOPEubB.png)
+![6](http://i.imgur.com/lHPDOEg.png)
+![7](http://i.imgur.com/XHmzMoE.png)
+![8](http://i.imgur.com/vRYGOc1.png)
+![9](http://i.imgur.com/KDMv3AW.png)
 
 
 
