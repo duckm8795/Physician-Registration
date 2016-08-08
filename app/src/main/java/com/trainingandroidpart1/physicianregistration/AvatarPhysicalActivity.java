@@ -138,7 +138,6 @@ public class AvatarPhysicalActivity extends AppCompatActivity {
         Uri destination = Uri.fromFile(new File(getCacheDir(), "cropped1"));
         Crop.of(source, destination).start(this);
     }
-
     private void handleCrop(int resultCode, Intent result) {
         if (resultCode == RESULT_OK) {
 //            if (Crop.getOutput(result).equals(Uri.EMPTY)) {

@@ -20,6 +20,8 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PartMap;
@@ -154,11 +156,12 @@ public interface ServiceAPI {
     );
 
     /*saveOpenDoctorDocument GUID */
+    @FormUrlEncoded
     @POST(ServiceConfig.API_SAVE_OPEN_DOCTOR_DOCUMENT_GUID)
     Call<StandardResponse> saveOpenDoctorDocument(
-            @Query(ProviderConstants.API_SAVE_DOCTOR_DOCUMENT.GUID) String GUID,
-            @Query(ProviderConstants.API_SAVE_DOCTOR_DOCUMENT.COUNTRY_VERIFICATION_DOCTYPE_ID) int doctypeId,
-            @Query(ProviderConstants.API_SAVE_DOCTOR_DOCUMENT.TOKEN) String token,
-            @Query(ProviderConstants.API_SAVE_DOCTOR_DOCUMENT.USER_ID) long userID
+            @Field(ProviderConstants.API_SAVE_DOCTOR_DOCUMENT.GUID) String GUID,
+            @Field(ProviderConstants.API_SAVE_DOCTOR_DOCUMENT.COUNTRY_VERIFICATION_DOCTYPE_ID) int doctypeId,
+            @Field(ProviderConstants.API_SAVE_DOCTOR_DOCUMENT.TOKEN) String token,
+            @Field(ProviderConstants.API_SAVE_DOCTOR_DOCUMENT.USER_ID) long userID
     );
 }

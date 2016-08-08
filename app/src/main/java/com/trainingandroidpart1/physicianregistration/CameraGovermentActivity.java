@@ -357,21 +357,21 @@ public class CameraGovermentActivity extends AppCompatActivity {
 
         protected void onPostExecute(Void v) {
             hideLoading();
-            File pictureOriginal= getOutputMediaFile();
-            if(pictureOriginal != null){
-                try {
-                    FileOutputStream fos2 = new FileOutputStream(pictureOriginal);
-                    pathImgOriginal = pictureOriginal.getPath();
-                    fos2.write(cloneData);
-                    fos2.close();
-                } catch (IOException e) {
-                }
-            }
+//            File pictureOriginal= getOutputMediaFile();
+//            if(pictureOriginal != null){
+//                try {
+//                    FileOutputStream fos2 = new FileOutputStream(pictureOriginal);
+//                    pathImgOriginal = pictureOriginal.getPath();
+//                    fos2.write(cloneData);
+//                    fos2.close();
+//                } catch (IOException e) {
+//                }
+//            }
             Intent i = new Intent(CameraGovermentActivity.this, ImageHolderActivity.class);
             i.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
             i.putExtra("IDCamera",2);
             i.putExtra("ADA", pathImg);
-            i.putExtra("OriginalImg",pathImgOriginal);
+            //i.putExtra("OriginalImg",pathImgOriginal);
             i.putExtra("NeedBackground",needBackground);
             startActivity(i);
             CameraGovermentActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);

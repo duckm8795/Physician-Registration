@@ -242,30 +242,36 @@ public class CreateAccountActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(Void v) {
-                if( createProviderAccountResponse == null ){
-                    hideLoading();
-                    showAlertError("Sever out");
-                }else{
-                    if(createProviderAccountResponse.getSuccess()){
+//                if( createProviderAccountResponse == null ){
+//                    hideLoading();
+//                    showAlertError("Sever out");
+//                }else{
+                    try {
+                        if(createProviderAccountResponse.getSuccess()){
 
-                        userID = createProviderAccountResponse.getUserID();
-                        accessToken = createProviderAccountResponse.getAccessToken();
-                        Log.d("Token",accessToken);
-                        Log.d("ID", String.valueOf(userID));
-                        sharedPreferences = getSharedPreferences(getString(R.string.sharePre_string), Context.MODE_PRIVATE);
-                        sharedPreferences.edit().putString(getString(R.string.storePreToken), accessToken).apply();
-                        sharedPreferences.edit().putString(getString(R.string.storePreID), String.valueOf(userID)).apply();
+                            userID = createProviderAccountResponse.getUserID();
+                            accessToken = createProviderAccountResponse.getAccessToken();
+                            Log.d("Token",accessToken);
+                            Log.d("ID", String.valueOf(userID));
+                            sharedPreferences = getSharedPreferences(getString(R.string.sharePre_string), Context.MODE_PRIVATE);
+                            sharedPreferences.edit().putString(getString(R.string.storePreToken), accessToken).apply();
+                            sharedPreferences.edit().putString(getString(R.string.storePreID), String.valueOf(userID)).apply();
 
+                            hideLoading();
+                            Intent i = new Intent(CreateAccountActivity.this, PasscodeActivity.class);
+                            startActivity(i);
+                            finish();
+                            CreateAccountActivity.this.overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
+                        }else {
+                            hideLoading();
+                            showAlertCreateAccountResponse(createProviderAccountResponse.getMessage());
+                        }
+                    } catch (Exception e) {
+                       // e.printStackTrace();
                         hideLoading();
-                        Intent i = new Intent(CreateAccountActivity.this, PasscodeActivity.class);
-                        startActivity(i);
-                        finish();
-                        CreateAccountActivity.this.overridePendingTransition(R.anim.slide_in_right,R.anim.slide_out_left);
-                    }else {
-                        hideLoading();
-                        showAlertCreateAccountResponse(createProviderAccountResponse.getMessage());
+                        showAlertError(e.toString());
                     }
-                }
+//                }
 
 
 

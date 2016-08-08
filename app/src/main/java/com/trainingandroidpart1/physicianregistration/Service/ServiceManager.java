@@ -21,7 +21,7 @@ public class ServiceManager {
 
 
     private static Retrofit getRetrofit(String BASE_URL){
-
+        /* create logging request */
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
 
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);

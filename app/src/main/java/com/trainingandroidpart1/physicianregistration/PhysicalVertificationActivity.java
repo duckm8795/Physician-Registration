@@ -5,13 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -35,19 +32,16 @@ import com.dinuscxj.progressbar.CircleProgressBar;
 import com.trainingandroidpart1.physicianregistration.Adapter.VerifyPhysicianCustomAdapter;
 import com.trainingandroidpart1.physicianregistration.Request.CountingFileRequestBody;
 import com.trainingandroidpart1.physicianregistration.Response.AvatarResponse.AvatarResponse;
+import com.trainingandroidpart1.physicianregistration.Response.GetOpenDoctorDetailForProvider.DocumentList;
 import com.trainingandroidpart1.physicianregistration.Response.GetOpenDoctorDetailForProvider.MainResponse;
-import com.trainingandroidpart1.physicianregistration.Response.GetOpenDocumentUploadURL.GetOpenDocumentUploadURLResponse;
 import com.trainingandroidpart1.physicianregistration.Response.GetProfile.GetProfileResponse;
 import com.trainingandroidpart1.physicianregistration.Response.StandardResponse;
 import com.trainingandroidpart1.physicianregistration.Response.VerifyPhysician.Main;
 import com.trainingandroidpart1.physicianregistration.Response.VerifyPhysician.VerificationDocType;
-import com.trainingandroidpart1.physicianregistration.Service.ServiceAPI;
 import com.trainingandroidpart1.physicianregistration.Service.ServiceManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -60,7 +54,6 @@ import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 
 public class PhysicalVertificationActivity extends AppCompatActivity {
 
@@ -92,6 +85,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
     private String image_path_for_goverment_par2;
     private String image_path_for_cardOrSheet;
     private String finalImagePathForGov;
+    private String retrieve_guid;
 
     private boolean hasUpdoadSelfieImageOrNot = false;
     private boolean hasUpdoadGovermentImageOrNot = false;
@@ -100,6 +94,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
     private View view;
     private Menu menu;
     private AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.8F);
+
     private static File getOutputMediaFile() {
         File mediaStorageDir = new File(
                 Environment
@@ -157,35 +152,6 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
 
     }
 
-//    public void sendRequestGetOpenUploadURL(){
-//        GetOpenDocumentUploadURLResponse uploadURLResponse;
-//        ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
-//
-//        Call<GetOpenDocumentUploadURLResponse> call = serviceAPI.getOpenDocumentUploadURL(retrieveToken,Long.parseLong(retrieveID));
-//
-//        try {
-//            uploadURLResponse = call.execute().body();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
-//    public void sendRequestSaveOpenDoctorDocument(){
-//        StandardResponse standardResponse;
-//        ServiceAPI serviceAPI = ServiceAPI.retrofit.create(ServiceAPI.class);
-//
-//        Call<StandardResponse> call = serviceAPI.saveOpenDoctorDocument(,,retrieveToken,Long.parseLong(retrieveID));
-//
-//        try {
-//            standardResponse = call.execute().body();
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -195,7 +161,6 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
         editor.putString("lastActivity", getClass().getName());
         editor.apply();
     }
-
 
 
     @Override
@@ -208,7 +173,8 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
                     image_path = data.getExtras().getString(getString(R.string.image_path_string));
                     image_path_for_avatar = image_path;
 
-                    new UploadPhoto(0, image_path_for_avatar).execute();
+                    retrieve_guid = data.getExtras().getString("SendGUID");
+                    new UploadPhoto(0, image_path_for_avatar, retrieve_guid).execute();
                     break;
                 case 70:
 
@@ -220,16 +186,17 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
                 case 71:
 
                     image_path = data.getExtras().getString(getString(R.string.image_path_string));
-
+                    retrieve_guid = data.getExtras().getString("SendGUID");
                     image_path_for_cardOrSheet = image_path;
-                    new UploadPhoto(2, image_path_for_cardOrSheet).execute();
+                    new UploadPhoto(2, image_path_for_cardOrSheet, retrieve_guid).execute();
                     break;
                 case 702:
+                    retrieve_guid = data.getExtras().getString("SendGUID");
                     image_path = data.getExtras().getString(getString(R.string.image_path_string));
                     image_path_for_goverment_par2 = image_path;
                     hasTakeTwoSideOrNot = true;
-                    finalImagePathForGov = finalImagePath();
-                    new UploadPhoto(1, finalImagePath()).execute();
+                    //finalImagePathForGov = finalImagePath();
+                    new UploadPhoto(1, finalImagePath(), retrieve_guid).execute();
                     break;
             }
 
@@ -272,7 +239,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
 
         int width, height = 0;
 
-        if(c.getWidth() > s.getWidth()) {
+        if (c.getWidth() > s.getWidth()) {
             width = c.getWidth();
 
         } else {
@@ -294,6 +261,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
     private void updateView(int index) {
         view = listview.getChildAt(index -
                 listview.getFirstVisiblePosition());
+
         circleProgressBar = (CircleProgressBar) view.findViewById(R.id.upload_progress);
         description_textview = (TextView) view.findViewById(R.id.description);
         pending_status = (ImageButton) view.findViewById(R.id.pending_status);
@@ -306,6 +274,52 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
         if (view == null) {
             return;
         }
+
+    }
+
+    private void reUpdateView(final int index) {
+
+        listview.post(new Runnable() {
+            public void run() {
+                int firstVisibleElement = listview.getFirstVisiblePosition();
+                int lastVisibleElement = listview.getLastVisiblePosition();
+                if (index >= firstVisibleElement && index <= lastVisibleElement) {
+                    view = listview.getChildAt(index - firstVisibleElement);
+                }
+                Log.d("MyTag", view.toString());
+                if (view == null) {
+                    return;
+                }
+
+                circleProgressBar = (CircleProgressBar) view.findViewById(R.id.upload_progress);
+                description_textview = (TextView) view.findViewById(R.id.description);
+                pending_status = (ImageButton) view.findViewById(R.id.pending_status);
+                imageButton_arrow = (ImageButton) view.findViewById(R.id.imageButton_arrow);
+
+                logo_of_pending = (ImageView) findViewById(R.id.logo_pending);
+                hello_texview = (TextView) findViewById(R.id.intro_string_vp1);
+                name_texview = (TextView) findViewById(R.id.namePhysician);
+                other_texview = (TextView) findViewById(R.id.intro_string_vp2);
+
+
+                Typeface font_medium = Typeface.createFromAsset(getAssets(), "Ubuntu-Regular.ttf");
+
+                description_textview.setText("Đạng đợi xác nhận...");
+                circleProgressBar.setVisibility(View.GONE);
+                imageButton_arrow.setVisibility(View.VISIBLE);
+                pending_status.setVisibility(View.VISIBLE);
+                description_textview.setTextColor(Color.parseColor("#FFEBEE"));
+                pending_status.setBackground(getDrawable(R.drawable.ic_verification_pending));
+
+                logo_of_pending.setBackground(getDrawable(R.drawable.ic_verification_pending_illustration));
+                hello_texview.setText("Đang chờ xác nhận.");
+                name_texview.setText("");
+                other_texview.setText("Chúng tôi đang xem xét hồ sơ của bạn.Vui lòng xem trạng thái ở phía dưới.");
+                hello_texview.setTypeface(font_medium);
+                other_texview.setTypeface(font_medium);
+            }
+        });
+
 
     }
 
@@ -480,10 +494,11 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
         PhysicalVertificationActivity.this.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
-    class SendRequests extends AsyncTask<Void, Void, Void> {
+    public class SendRequests extends AsyncTask<Void, Void, Void> {
         Main main;
         MainResponse responseForGetOpenDoctorDetail;
         GetProfileResponse getProfileResponse;
+
         public SendRequests() {
         }
 
@@ -491,6 +506,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             showLoading();
+
         }
 
         @Override
@@ -505,11 +521,12 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
 
             Call<GetProfileResponse> callProfile = ServiceManager.instance().getProfile(retrieveToken, Long.parseLong(retrieveID));
             Call<Main> callDocument = ServiceManager.instance().verify(180, "vi", "VN", retrieveToken, Long.parseLong(retrieveID));
-            Call<MainResponse> callGetOpenDoctorDetail  = ServiceManager.instance().getOpenDoctorDetailForProvider(retrieveToken,Long.parseLong(retrieveID));
+            Call<MainResponse> callGetOpenDoctorDetail = ServiceManager.instance().getOpenDoctorDetailForProvider(retrieveToken, Long.parseLong(retrieveID));
             try {
                 getProfileResponse = callProfile.execute().body();
                 main = callDocument.execute().body();
-                //responseForGetOpenDoctorDetail= callGetOpenDoctorDetail.execute().body();
+
+                responseForGetOpenDoctorDetail = callGetOpenDoctorDetail.execute().body();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -518,30 +535,31 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
 
         protected void onPostExecute(Void v) {
              /* for profile response */
-            if( getProfileResponse == null ){
+            if (getProfileResponse == null) {
                 hideLoading();
                 showAlertError("Sever out");
 
-            }else{
-                if(getProfileResponse.getSuccess()){
+            } else {
+                if (getProfileResponse.getSuccess()) {
                     hideLoading();
                     textView.setText(getProfileResponse.toString());
-                }else{
+                } else {
                     hideLoading();
-                    Toast.makeText(getApplicationContext(),getProfileResponse.getMessage(),Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), getProfileResponse.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
 
             /* for document response */
-            if(main == null){
+            if (main == null) {
                 hideLoading();
                 showAlertError("Sever out");
-            }else{
-                if(main.getSuccess()){
+            } else {
+                if (main.getSuccess()) {
                     hideLoading();
                     final List<VerificationDocType> verificationDocTypes = main.getVerificationDocTypes();
 
                     listview.setAdapter(new VerifyPhysicianCustomAdapter(PhysicalVertificationActivity.this, verificationDocTypes));
+
                     listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -572,27 +590,50 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
                             }
                         }
                     });
-                }else{
+                } else {
                     hideLoading();
-                    Toast.makeText(getApplicationContext(),main.getMessage(),Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), main.getMessage(), Toast.LENGTH_LONG).show();
                 }
 
             }
 
             /* for get open doctor detail */
-//            if( responseForGetOpenDoctorDetail == null ){
-//                hideLoading();
-//                showAlertError("Sever out");
-//
-//            }else{
-//                if(responseForGetOpenDoctorDetail.getSuccess()){
-//                    hideLoading();
-//
-//                }else{
-//                    hideLoading();
-//                    Toast.makeText(getApplicationContext(),responseForGetOpenDoctorDetail.getMessage(),Toast.LENGTH_LONG).show();
-//                }
-//            }
+            if (responseForGetOpenDoctorDetail == null) {
+                hideLoading();
+                showAlertError("Sever out");
+
+            } else {
+                if (responseForGetOpenDoctorDetail.getSuccess()) {
+                    hideLoading();
+                    List<DocumentList> documentList = responseForGetOpenDoctorDetail.getData().getDocumentList();
+                    for (int i = 0; i < documentList.size(); i++) {
+
+                        switch (documentList.get(i).getDocTypeId()) {
+                            case 1:
+                                hasUpdoadSelfieImageOrNot = true;
+                                reUpdateView(0);
+                                image_path_url_amazon = documentList.get(i).getImageURL();
+                                break;
+                            case 2:
+                                hasUpdoadGovermentImageOrNot = true;
+                                reUpdateView(1);
+                                image_path_url_amazon2 = documentList.get(i).getImageURL();
+                                break;
+                            case 3:
+                                hasUpdoadCardOrSheetImageOrNot = true;
+                                reUpdateView(2);
+                                image_path_url_amazon3 = documentList.get(i).getImageURL();
+                                break;
+                        }
+
+                    }
+
+
+                } else {
+                    hideLoading();
+                    Toast.makeText(getApplicationContext(), responseForGetOpenDoctorDetail.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            }
 
         }
 
@@ -601,14 +642,19 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
 
     public class UploadPhoto extends AsyncTask<Void, Integer, Void> {
         AvatarResponse avatarResponse;
+        StandardResponse standardResponse;
+        GetProfileResponse getProfileResponse;
+        MainResponse mainResponse;
         File file;
         int id_to_update;
         long totalSize;
         String real_image_path;
+        String guid;
 
-        public UploadPhoto(int id, String real_image_path) {
+        public UploadPhoto(int id, String real_image_path, String guid) {
             id_to_update = id;
             this.real_image_path = real_image_path;
+            this.guid = guid;
         }
 
         @Override
@@ -632,7 +678,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
                 @Override
                 public void transferred(long num) {
                     int progressValue = (int) ((num / (float) totalSize) * 100);
-                    Log.i("uploadedProgressPercent", " progress is : " + progressValue + " %");
+                    //Log.i("uploadedProgressPercent", " progress is : " + progressValue + " %");
                     publishProgress(progressValue);
                 }
             });
@@ -645,12 +691,18 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
             requestBodyMap.put(fileName, requestBody1);
 
 
-
+            Call<StandardResponse> callSaveOpenDoctor = ServiceManager.instance().saveOpenDoctorDocument(guid, id_to_update + 1, retrieveToken, Long.parseLong(retrieveID));
             Call<AvatarResponse> call = ServiceManager.instance().uploadAvatar(requestBodyMap);
+            //Call<GetProfileResponse> callProfile = ServiceManager.instance().getProfile(retrieveToken, Long.parseLong(retrieveID));
+            Call<MainResponse> callGetOpenDoctorDetail = ServiceManager.instance().getOpenDoctorDetailForProvider(retrieveToken, Long.parseLong(retrieveID));
+
+
 
             try {
+                standardResponse = callSaveOpenDoctor.execute().body();
                 avatarResponse = call.execute().body();
-
+                //getProfileResponse = callProfile.execute().body();
+                mainResponse = callGetOpenDoctorDetail.execute().body();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -659,7 +711,7 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
 
         @Override
         protected void onProgressUpdate(Integer... values) {
-            Log.d("SADSAD", String.valueOf(totalSize));
+            //Log.d("SADSAD", String.valueOf(totalSize));
             int circle_value = values[0];
             circleProgressBar.setProgress(circle_value);
 
@@ -667,62 +719,98 @@ public class PhysicalVertificationActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if (avatarResponse != null) {
-                if (avatarResponse.getSuccess()) {
-                    showOverflowMenu(true);
-                    Log.d("ALPOPOPO", avatarResponse.getMessage());
-                    //image_path_url_amazon =avatarResponse.getMessage();
-                    if (id_to_update == 0) {
-                        hasUpdoadSelfieImageOrNot = true;
-                        image_path_url_amazon = avatarResponse.getMessage();
-                    } else if (id_to_update == 1) {
-                        hasUpdoadGovermentImageOrNot = true;
-                        if (hasTakeTwoSideOrNot) {
-                            image_path_url_amazon2 = avatarResponse.getMessage();
-                            Log.d("FullPart", image_path_url_amazon2);
-                        }
 
-                    } else if (id_to_update == 2) {
-                        hasUpdoadCardOrSheetImageOrNot = true;
+                try {
+                    if (standardResponse.getSuccess()) {
 
-                        image_path_url_amazon3 = avatarResponse.getMessage();
+                    } else {
 
-
+                        Toast.makeText(getApplicationContext(), standardResponse.getMessage(), Toast.LENGTH_LONG).show();
                     }
-
-                    //hasUpdoadSelfieImageOrNot =true;
-                    Typeface font_medium = Typeface.createFromAsset(getAssets(), "Ubuntu-Regular.ttf");
-
-                    description_textview.setText("Đạng đợi xác nhận...");
-                    circleProgressBar.setVisibility(View.GONE);
-                    imageButton_arrow.setVisibility(View.VISIBLE);
-                    pending_status.setVisibility(View.VISIBLE);
-                    description_textview.setTextColor(Color.parseColor("#FFEBEE"));
-                    pending_status.setBackground(getDrawable(R.drawable.ic_verification_pending));
-                    logo_of_pending.setBackground(getDrawable(R.drawable.ic_verification_pending_illustration));
-                    hello_texview.setText("Đang chờ xác nhận.");
-                    name_texview.setText("");
-                    other_texview.setText("Chúng tôi đang xem xét hồ sơ của bạn.Vui lòng xem trạng thái ở phía dưới.");
-                    hello_texview.setTypeface(font_medium);
-                    other_texview.setTypeface(font_medium);
-                } else {
-                    showAlertError(avatarResponse.getMessage());
-                    circleProgressBar.setVisibility(View.GONE);
-                    imageButton_arrow.setVisibility(View.VISIBLE);
-                    description_textview.setText("Có lỗi. Vui lòng thử lại");
-                    description_textview.setTextColor(Color.parseColor("#D32F2F"));
-                    pending_status.setVisibility(View.VISIBLE);
+                } catch (Exception e) {
+                    showAlertError(e.getMessage());
                 }
 
-            } else {
-                showAlertError("Sever out");
-                circleProgressBar.setVisibility(View.GONE);
-                imageButton_arrow.setVisibility(View.VISIBLE);
-                description_textview.setText("Có lỗi. Vui lòng thử lại");
-                description_textview.setTextColor(Color.parseColor("#D32F2F"));
-                pending_status.setVisibility(View.VISIBLE);
+
+
+                try {
+                    if (avatarResponse.getSuccess()) {
+                        showOverflowMenu(true);
+
+                        //image_path_url_amazon =avatarResponse.getMessage();
+                        if (id_to_update == 0) {
+                            hasUpdoadSelfieImageOrNot = true;
+                            image_path_url_amazon = avatarResponse.getMessage();
+                        } else if (id_to_update == 1) {
+                            hasUpdoadGovermentImageOrNot = true;
+                            if (hasTakeTwoSideOrNot) {
+                                image_path_url_amazon2 = avatarResponse.getMessage();
+                                Log.d("FullPart", image_path_url_amazon2);
+                            }
+
+                        } else if (id_to_update == 2) {
+                            hasUpdoadCardOrSheetImageOrNot = true;
+                            image_path_url_amazon3 = avatarResponse.getMessage();
+
+
+                        }
+
+                        //hasUpdoadSelfieImageOrNot =true;
+                        Typeface font_medium = Typeface.createFromAsset(getAssets(), "Ubuntu-Regular.ttf");
+
+                        description_textview.setText("Đạng đợi xác nhận...");
+                        circleProgressBar.setVisibility(View.GONE);
+                        imageButton_arrow.setVisibility(View.VISIBLE);
+                        pending_status.setVisibility(View.VISIBLE);
+                        description_textview.setTextColor(Color.parseColor("#FFEBEE"));
+                        pending_status.setBackground(getDrawable(R.drawable.ic_verification_pending));
+                        logo_of_pending.setBackground(getDrawable(R.drawable.ic_verification_pending_illustration));
+                        hello_texview.setText("Đang chờ xác nhận.");
+                        name_texview.setText("");
+                        other_texview.setText("Chúng tôi đang xem xét hồ sơ của bạn.Vui lòng xem trạng thái ở phía dưới.");
+                        hello_texview.setTypeface(font_medium);
+                        other_texview.setTypeface(font_medium);
+
+
+                    } else {
+                        showAlertError(avatarResponse.getMessage());
+                        circleProgressBar.setVisibility(View.GONE);
+                        imageButton_arrow.setVisibility(View.VISIBLE);
+                        description_textview.setText("Có lỗi. Vui lòng thử lại");
+                        description_textview.setTextColor(Color.parseColor("#D32F2F"));
+                        pending_status.setVisibility(View.VISIBLE);
+                    }
+                } catch (Exception e) {
+                    showAlertError(e.getMessage());
+                }
+
+            try {
+                if(mainResponse.getSuccess()){
+                    List<DocumentList> documentList = mainResponse.getData().getDocumentList();
+                    for(int i = 0 ; i < documentList.size();i++){
+                        switch (documentList.get(i).getDocTypeId()) {
+                            case 1:
+                                documentList.get(i).setImageURL(image_path_url_amazon);
+                                break;
+                            case 2:
+                                documentList.get(i).setImageURL(image_path_url_amazon2);
+                                break;
+                            case 3:
+                                documentList.get(i).setImageURL(image_path_url_amazon3);
+                                break;
+                        }
+                    }
+                }else{
+                    Toast.makeText(getApplicationContext(), mainResponse.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            } catch (Exception e) {
+                showAlertError(e.getMessage());
             }
+
+
+
 
         }
     }
+
 }
